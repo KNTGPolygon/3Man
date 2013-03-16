@@ -24,6 +24,7 @@ public:
 	GameEngine(void);
 	~GameEngine(void);
 		static GameEngine* getInstance(void);
+
 private:
 		static GameEngine * engine;
 };

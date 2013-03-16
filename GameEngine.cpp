@@ -1,8 +1,12 @@
 #include "GameEngine.h"
 
 GameEngine::GameEngine(void):steering(window.GetInput())
-{
+{	
 	window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "3Game");
+	View.SetHalfSize((float)SCREEN_WIDTH/2,(float)SCREEN_HEIGHT/2); 
+	window.SetView(View);
+
+	hero = new Hero(steering);
 }
 
 GameEngine::~GameEngine(void)
@@ -13,8 +17,13 @@ GameEngine::~GameEngine(void)
 }
 void GameEngine::EventHandling()
 {
+	hero->GetPosition();
+	hero->SetCamera(&View);
+	hero->GetEvent();
 		while(window.GetEvent(event))
 		{
+			
+
 			if(event.Type==sf::Event::Closed)
 			{
 				window.Close();
@@ -25,6 +34,7 @@ void GameEngine::EventHandling()
 void GameEngine::Display()
 {
 		 window.Clear( sf::Color( 0, 0, 0 ) );
+		 hero->Display(&window);
 		 window.Display();
 }
 bool GameEngine::run()
@@ -32,7 +42,7 @@ bool GameEngine::run()
 	bool windowIsOpen = window.IsOpened();
 	window.SetFramerateLimit(100);
 	window.Clear();
-
+	
 	while (windowIsOpen)
 	{
 	EventHandling();

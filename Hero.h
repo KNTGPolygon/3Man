@@ -17,22 +17,23 @@ sf::IntRect box;			//Collision box
 sf::Image MyTexture;			
 sf::String strMyPosition;	
 
-
 const sf::Input &steering;//Interakcja z otoczeniem
 
 public:
-	Hero(sf::Input &_steering,float Velocity = 1); //Konstruktor Bohatera
+	Hero(const sf::Input &_steering,float Velocity = 1); //Konstruktor Bohatera
 	~Hero(void);
 
 sf::IntRect get_box() {return box;} //Zwraca colision boxa
 sf::Vector2f get_position(){return myPosition;}
 
-void Display(sf::RenderWindow window);
+void Display(sf::RenderWindow *window);
+
+
 void Move();
 
 void GetEvent();
 void GetPosition();
 
-void SetCamera();			      //Ustawienie kamery
+void SetCamera(sf::View *View);			      //Ustawienie kamery
 };
 #endif

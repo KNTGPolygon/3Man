@@ -1,7 +1,7 @@
 #include "Hero.h"
 
 //-------------------------------- Hero
-Hero::Hero(sf::Input &_steering,float Velocity)
+Hero::Hero(const sf::Input &_steering,float Velocity)
 	:steering(_steering),Vel(Velocity)
 
 {
@@ -45,13 +45,12 @@ void Hero::GetEvent()
 		}
 		
 }
-void Hero::Display(sf::RenderWindow window)
+void Hero::Display(sf::RenderWindow *window)
 {
 	strMyPosition.SetPosition(Me.GetPosition());
 	strMyPosition.SetText("Sx = "+int2str((int)myPosition.x)+" Sy = "+int2str((int)myPosition.y));
-	
-	window.Draw( Me );
-	window.Draw( strMyPosition );
+	window->Draw( Me );
+	window->Draw( strMyPosition );
 }
 void Hero::Move()
 {
@@ -63,7 +62,8 @@ void Hero::Move()
 	box.Right  = 42   + box.Left;
 
 }
-void Hero::SetCamera()
+void Hero::SetCamera(sf::View *View)
 {
-	//View.SetCenter(myPosition);
+	
+	View->SetCenter(myPosition);
 }

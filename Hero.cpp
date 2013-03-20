@@ -1,11 +1,14 @@
 #include "Hero.h"
+#include "Functions.h"
+#include "ImageManager.h"
 
 //-------------------------------- Hero
 Hero::Hero(const sf::Input &_steering,float Velocity)
 	:steering(_steering),Vel(Velocity)
 
 {
-	MyTexture.LoadFromFile( "Data/Textures/Player.png" );
+	MyTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Player.PNG" );
+	//MyTexture.LoadFromFile( "Data/Textures/Player.PNG" );
 	MyTexture.CreateMaskFromColor(sf::Color(255,0,255));
 
 	strMyPosition.SetScale(0.5,0.5);

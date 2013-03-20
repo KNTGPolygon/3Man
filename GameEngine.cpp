@@ -34,6 +34,8 @@ void GameEngine::EventHandling()
 
 	if(mainMenu == true)
 	{
+		window.SetView(window.GetDefaultView());
+		
 		gameStart->GetEvent();
 		mapEditor->GetEvent();
 	}

@@ -110,7 +110,7 @@ bool GameEngine::run()
 		{
 		EventHandling();
 		Display();
-		Sleep(0.05);
+		sf::Sleep(0.05);
 
 		}
 

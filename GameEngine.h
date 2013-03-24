@@ -5,6 +5,8 @@
 #include "Maps.h"
 #include "Button.h"
 #include "Functions.h"
+#include "MapCreator.h"
+
 
 #ifndef GAME_ENGINE_H
 #define GAME_ENGINE_H
@@ -33,6 +35,7 @@ private:
 
 	Hero *hero;
 	Maps *map;
+	MapCreator *mapCreator;
 public:
 	bool run(void);
 

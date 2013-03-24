@@ -3,27 +3,29 @@
 
 Maps::Maps(const std::string& filename)
 {
+	int storedColNumber = 0;
+	rowNumber = 0;
+	colNumber = 0;
+	map_data[0][0] = 0;
+
+	//checking whether file can be opened
 	std::ifstream map(filename.c_str());
 		 if (!map) {
-
         std::cerr << "Nie uda³o siê za³adowaæ pliku " << filename << "\n";
-
 				 }
 		 else
 		 {
-			 std::vector <Tile> temp;
-
-			 std::string str;
+			 std::string stringRepresentingFileLine;
 
 			 bool loopingOrFirst = true;
 			 //passing info about map tiles' graphics (first row of map file)
 			 do{
 				if(map.good())
 				{
-					getline (map,str);
-					if(str.at(0) == '.')
+					getline (map,stringRepresentingFileLine);
+					if(stringRepresentingFileLine.at(0) == '.')
 					{
-					getTileGraphicsAddressesSet(str);
+					getTileGraphicsAddressesSet(stringRepresentingFileLine);
 					}
 					else
 					{
@@ -40,42 +42,47 @@ Maps::Maps(const std::string& filename)
 
 					if(loopingOrFirst == false)
 					{
-						 getline (map,str);
+						 getline (map,stringRepresentingFileLine);
 					}
 					else
 					{
 						loopingOrFirst = false;
 					}
-				 std::istringstream iss(str);
+				 std::istringstream iss(stringRepresentingFileLine);
+				 std::string sub;
+						do
+						{
+						iss >>sub;
+							
+							map_data[rowNumber][colNumber] = Tile(atoi(sub.c_str()), 0 + colNumber * 64, 0+rowNumber*64);
+							colNumber++;
+							storedColNumber = colNumber-1;
+						}
+						while(iss);
 
-				do
-				{
-					std::string sub;
-					iss >> sub;
-					if(!sub.empty())
-					{
-						temp.push_back(Tile (atoi(sub.c_str())));
-					}
-				} while (iss);
+						rowNumber++;
+						colNumber = 0;
 
-				m_data.push_back(temp);
-				temp.clear();
 				}
-
+			  colNumber = storedColNumber;
 				
 		 }
 		 map.close();
+
+		 createTiles();
+
 }
-void Maps::showMap()
+void Maps::showMap(sf::RenderWindow *window)
 {	
-	for(int vectorNum = 0; (unsigned)vectorNum < m_data.size(); vectorNum ++)
+	for(int row = 0; (unsigned)row < rowNumber; row ++)
 	{
 
-		for(int i = 0; i < m_data.at(vectorNum).size(); i ++)
+		for(int col = 0; col < colNumber; col ++)
 		{
-			std::cout << m_data.at(vectorNum).at(i).type;
+			sf::Vector2i tilePosition = map_data[row][col].getPosition();
+			tileSprites.at(map_data[row][col].getType()).SetPosition(tilePosition.x,tilePosition.y);
+			window->Draw(tileSprites.at(map_data[row][col].getType()));
 		}
-		std::cout << std::endl;
 	}
 }
 
@@ -106,13 +113,28 @@ void Maps::getTileGraphicsAddressesSet(std::string str)
 
 					if(!sub.empty() && sub.size() != 0 && place != 0)
 					{
-					addresses.insert(addresses.begin() + place, (path + sub + ".bmp").c_str()) ;
+					addresses.insert(addresses.begin() + place, (path + sub + ".png").c_str()) ;
 					}
 				} while (iss);
 
-				for(int i = 0; i<addresses.size(); i++)
-				{
-					std::cout << i << " " << addresses.at(i) << std::endl;
-				}
 				
+}
+
+void Maps::createTiles()
+{
+	
+	//i<addresses.size() cause last field is empty, we have to make it safe somehow
+	for(int i = 1; i < addresses.size(); i++)
+	{
+		
+		mapGraphics[i] = Tile(i, addresses.at(i));
+	}
+
+	sf::Sprite tempSprite;
+	for(int i = 1; i <= mapGraphics.size(); i++)
+	{
+		tempSprite.SetImage(mapGraphics[i].tileTexture);
+		tileSprites[i] = tempSprite;
+		
+	}
 }

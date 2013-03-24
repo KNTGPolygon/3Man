@@ -131,8 +131,9 @@ void Maps::createTiles()
 	}
 
 	sf::Sprite tempSprite;
-	for(int i = 1; i <= mapGraphics.size(); i++)
+	for(unsigned int i = 1; i <= mapGraphics.size(); i++)
 	{
+		mapGraphics[i].tileTexture.SetSmooth(false);
 		tempSprite.SetImage(mapGraphics[i].tileTexture);
 		tileSprites[i] = tempSprite;
 		

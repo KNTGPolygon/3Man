@@ -80,8 +80,8 @@ void Maps::showMap(sf::RenderWindow *window)
 		for(int col = 0; col < colNumber; col ++)
 		{
 			sf::Vector2i tilePosition = map_data[row][col].getPosition();
-			tileSprites.at(map_data[row][col].getType()).SetPosition(tilePosition.x,tilePosition.y);
-			window->Draw(tileSprites.at(map_data[row][col].getType()));
+			tileSprites[map_data[row][col].getType()].SetPosition(tilePosition.x,tilePosition.y);
+			window->Draw(tileSprites[map_data[row][col].getType()]);
 		}
 	}
 }

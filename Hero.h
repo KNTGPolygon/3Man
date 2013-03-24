@@ -10,14 +10,14 @@ class Hero
 public:
 	static const int SPRITE_SIZE  = 42; // 42 bo szerokosc tekstury
 private:
-
-	float myDistanceToMouse;
-	float vel;								
 	bool fire;
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
-Weapon *weapon;
-
+	int weaponType;
+	float myDistanceToMouse;
+	float vel;	
+	
+Weapon **weapon;
 sf::Vector2f myPosition;	//hero position
 sf::Sprite Me;				
 sf::IntRect box;			//Collision box

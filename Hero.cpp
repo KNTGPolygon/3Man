@@ -3,7 +3,7 @@
 #include "ImageManager.h"
 //-------------------------------- Hero
 Hero::Hero(const sf::Input &_steering,float velocity)
-	:steering(_steering),vel(velocity)
+	:steering(_steering),vel(velocity),weaponType(2)
 {
 	//MyTexture.LoadFromFile( "Data/Textures/Player.png" );
 	MyTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Player.PNG" );
@@ -17,7 +17,11 @@ Hero::Hero(const sf::Input &_steering,float velocity)
 	Me.SetSubRect(sf::IntRect(0,0,SPRITE_SIZE,SPRITE_SIZE));
 	Me.SetPosition( 350, 425 );
 
-	weapon = new Weapon(steering);
+	weapon = new Weapon*[4];	
+	weapon[0] = new Weapon("Plus");
+	weapon[1] = new Weapon("Minus");
+	weapon[2] = new Weapon("Derivative");
+	weapon[3] = new Weapon("Integral");
 }
 
 Hero::~Hero(void)
@@ -46,8 +50,17 @@ void Hero::GetEvent()
 	
 			    Me.Move( 0,+ vel );
 		}
-		weapon->Logic();
-		weapon->SetFiringPosition(Me.GetPosition());
+		
+		if( steering.IsKeyDown(sf::Key::Num1) )weaponType=0;
+		if( steering.IsKeyDown(sf::Key::Num2) )weaponType=1;
+		if( steering.IsKeyDown(sf::Key::Num3) )weaponType=2;
+		if( steering.IsKeyDown(sf::Key::Num4) )weaponType=3;
+		weapon[weaponType]->SetFiringPosition(Me.GetPosition());
+		weapon[weaponType]->Logic(steering.IsMouseButtonDown(sf::Mouse::Left),
+		sf::Vector2i(steering.GetMouseX()  - SCREEN_WIDTH/2 + (int)Me.GetPosition().x,
+		steering.GetMouseY()  - SCREEN_HEIGHT/2 + (int)Me.GetPosition().y ));
+		
+		
 
 
 }
@@ -55,7 +68,7 @@ void Hero::Display(sf::RenderWindow *window)
 {
 	strMyPosition.SetPosition(Me.GetPosition());
 	strMyPosition.SetText("Sx = "+int2str((int)myPosition.x)+" Sy = "+int2str((int)myPosition.y));
-	weapon->Display( window );
+	weapon[weaponType]->Display( window );
 	window->Draw( Me );
 	window->Draw( strMyPosition );
 }
@@ -87,5 +100,6 @@ void Hero::PutScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT)
 {
 	SCREEN_WIDTH  = _SCREEN_WIDTH;
 	SCREEN_HEIGHT = _SCREEN_HEIGHT;
-	weapon->PutScreenSize(_SCREEN_WIDTH, _SCREEN_HEIGHT );
+	for(int i = 0 ; i<4 ; i++)
+	weapon[i]->PutScreenSize(_SCREEN_WIDTH, _SCREEN_HEIGHT );
 }

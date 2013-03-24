@@ -1,0 +1,6 @@
+  weapon_name || directory || dmg || range || speed || reload 
+
+# Integral Integral.PNG 10 300 4.0 0.5
+# Derivative Derivative.PNG 1 300 8.0 0.25
+# Plus Plus.PNG 5 300 5.0 0.2
+# Minus Minus.PNG 5 300 5.0 0.2

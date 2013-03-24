@@ -111,7 +111,7 @@ void MapCreator::CreateSprites()
 	sf::Sprite spr;
 	for(int i = 0; i<6;i++)
 	{
-		spr.SetImage(tileGraphics.at(i).tileTexture);
+		spr.SetImage(tileGraphics[i].tileTexture);
 		spr.SetScale(0.5,0.5);
 		tileSprites.push_back(spr);
 	}

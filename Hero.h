@@ -3,8 +3,15 @@
 #define HERO_H
 #include <SFML/Graphics.hpp>
 #include "Weapon.h"
+#include "Animate.h"
 #include <vector>
-
+enum State{
+	UP,
+	DOWN,
+	RIGHT,
+	LEFT,
+	STAY
+};
 class Hero
 {
 public:
@@ -14,15 +21,19 @@ private:
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
 	int weaponType;
+	int numberOfWeapons;
 	float myDistanceToMouse;
 	float vel;	
-	
-Weapon **weapon;
-sf::Vector2f myPosition;	//hero position
-sf::Sprite Me;				
-sf::IntRect box;			//Collision box
-sf::Image MyTexture;			
-sf::String strMyPosition;	
+
+	State ANIMATION_TYPE;
+
+	Animate **animate;
+	Weapon **weapon;
+	sf::Vector2f myPosition;	//hero position
+	sf::Sprite Me;				
+	sf::IntRect box;			//Collision box
+	sf::Image MyTexture;			
+	sf::String strMyPosition;	
 
 const sf::Input &steering;//Interakcja z otoczeniem
 

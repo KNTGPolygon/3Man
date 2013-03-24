@@ -17,14 +17,16 @@ Weapon::Weapon(std::string weaponName, int BulletFireLimit,float RepeatRate)
 	if(!Load(weaponName))
 		std::cout<<"Loading weapon problem detected !\n";
 	
-	missle = new Missle*[(bulletFireLimit-1)];
+	missle = new Missle*[bulletFireLimit];
 
 	for(int i=0;i<bulletFireLimit;i++)
 	{
 		missle[i] = new Missle(directory,(float)range,(float)speed);
+		std::cout<<" Missle["<<i<<"] Loaded \n";
 	}
 	
 	fired = false;
+	std::cout<<"Konstruktor weapon online! \n";
 }
 
 Weapon::~Weapon(void)

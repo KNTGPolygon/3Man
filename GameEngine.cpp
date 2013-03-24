@@ -9,12 +9,14 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	map = new Maps("Data/Maps/Test.map");
 	mapEditor = new Button(steering,sf::Vector2f((float)(SCREEN_WIDTH/2 -50.0), (float)SCREEN_HEIGHT/2),sf::Vector2f(100.0,50.0),sf::Color(125,125,125),"Edytor");
 	gameStart = new Button(steering,sf::Vector2f((float)(SCREEN_WIDTH/2 -50.0), (float)(SCREEN_HEIGHT/2 - 100.0)),sf::Vector2f(100.0,50.0),sf::Color(125,125,125),"Gra");
-	hero = new Hero(steering, 2);
+	
+	hero = new Hero(steering,2);
 	hero->PutScreenSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
 	strMouse.SetPosition(10.0,150.0);
 	strMouse.SetScale(0.5,0.5);
 	strMouse.SetText("Pozycja myszki");
-
+		
 	//!!created map editor!!
 	mapCreator = new MapCreator(steering);
 	mapCreator->GetScreenSize(SCREEN_WIDTH, SCREEN_HEIGHT);

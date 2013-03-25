@@ -52,7 +52,6 @@ void MapCreator::Display(sf::RenderWindow *window)
 	firstFieldY = ((cameraPosition.y - 240)>0?(cameraPosition.y-240):0)/sampleSpriteSize.y;
 
 	//std::cout << Size << " -- " << noOfTilesVisible.x << " -- " << noOfTilesVisible.y << std::endl;
-	std::cout << firstFieldX << " -- " << firstFieldY << std::endl;
 	//drawing createdMap graphical representation
 	for(int row = firstFieldY; row < ((noOfTilesVisible.y + firstFieldY + 2)>Size? Size:(noOfTilesVisible.y + firstFieldY + 2)); row++)
 		for(int col = firstFieldX; col < ((noOfTilesVisible.x + firstFieldX + 2)>Size? Size:(noOfTilesVisible.x + firstFieldX + 2)); col++)

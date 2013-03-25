@@ -22,6 +22,8 @@ private:
 	double cooldown;
 	int toolboxFirstFieldNumber;
 
+	int chosenTileFromToolbox;
+
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
 
@@ -38,6 +40,7 @@ private:
 	 sf::Vector2f sampleSpriteSize;
 	 sf::Vector2i noOfTilesVisible;
 
+	std::map <int, sf::IntRect> toolboxRectangles;
 
 	const sf::Input &steering;
 	sf::Clock clock;
@@ -48,6 +51,8 @@ public:
 	void LoadTileGraphics();
 	void Display(sf::RenderWindow *window);
 	void CreateSprites();
+	void toolboxManagement(sf::Vector2i toolboxClickPosition);
+	void changingSpriteInMap(sf::Vector2i mapClickPosition);
 
 	void GetSteeringEvent();
 	void GetEvent(sf::Event);

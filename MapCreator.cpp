@@ -9,10 +9,12 @@ MapCreator::MapCreator(const sf::Input &_steering)
 	blackImage->Create(800,120,sf::Color(0,0,0,255));
 	blackSprite = new sf::Sprite();
 	blackSprite->SetImage(*blackImage);
+
+	chosenTileFromToolbox = 0;
 	
 
 	sampleSpriteSize = tileSprites.at(1).GetSize();
-	
+
 
 	//defining size of map
 	Size = 30;
@@ -64,15 +66,17 @@ void MapCreator::Display(sf::RenderWindow *window)
 			window->Draw(tileSprites.at(0));
 		}
 
+		
+
 		//checking whether there are 5 more sprites to draw in toolbox, else get number of last field
 		int lastField;
-		if(toolboxFirstFieldNumber + 5 > tileSprites.size())
+		if(toolboxFirstFieldNumber + 8 > tileSprites.size())
 		{
 			lastField = tileSprites.size();
 		}
 		else
 		{
-			lastField = toolboxFirstFieldNumber + 5;
+			lastField = toolboxFirstFieldNumber + 8;
 		}
 
 
@@ -89,6 +93,15 @@ void MapCreator::Display(sf::RenderWindow *window)
 			tileSprites.at(toolboxIterator).SetScale(0.5,0.5);
 		}
 
+		if(chosenTileFromToolbox - toolboxFirstFieldNumber + 1 > 0 )
+		{
+			tileSprites.at(0).SetPosition(-380 + cameraPosition.x + (chosenTileFromToolbox - toolboxFirstFieldNumber)*96, -280 + cameraPosition.y);
+			tileSprites.at(0).SetScale(1,1);
+			window->Draw(tileSprites.at(0));
+				tileSprites.at(0).SetScale(0.5,0.5);
+			//	std::cout << cameraPosition.x <<  " -- " <<  cameraPosition.y << std::endl;
+		}
+
 	
 }
 
@@ -101,6 +114,12 @@ void MapCreator::LoadTileGraphics()
 	tileGraphics[3] = Tile(3,"Data/Textures/pinky.png");
 	tileGraphics[4] = Tile(4,"Data/Textures/wall.png");
 	tileGraphics[5] = Tile(5,"Data/Textures/water.png");
+	tileGraphics[6] = Tile(6,"Data/Textures/border.png");
+	tileGraphics[7] = Tile(7,"Data/Textures/grass.png");	
+	tileGraphics[8] = Tile(8,"Data/Textures/lava.png");
+	tileGraphics[9] = Tile(9,"Data/Textures/pinky.png");
+	tileGraphics[10] = Tile(10,"Data/Textures/wall.png");
+	tileGraphics[11] = Tile(11,"Data/Textures/water.png");
 	//here sprites are created
 	CreateSprites();
 }
@@ -109,7 +128,7 @@ void MapCreator::CreateSprites()
 {
 	//creating sprites for each available image in MapCreator
 	sf::Sprite spr;
-	for(int i = 0; i<6;i++)
+	for(int i = 0; i<tileGraphics.size();i++)
 	{
 		spr.SetImage(tileGraphics[i].tileTexture);
 		spr.SetScale(0.5,0.5);
@@ -119,7 +138,7 @@ void MapCreator::CreateSprites()
 
 void MapCreator::GetSteeringEvent()
 {
-
+	
 	//checking events with cooldown included (so each button pressed will surely count as 1)
 	if( steering.IsKeyDown( sf::Key::Right ) ){
 				
@@ -141,7 +160,6 @@ void MapCreator::GetSteeringEvent()
 		cameraPosition.y += 20;
 		}
 
-
 }
 
 void MapCreator::GetEvent(sf::Event event)
@@ -158,6 +176,32 @@ void MapCreator::GetEvent(sf::Event event)
 			toolboxFirstFieldNumber ++;
 		cooldown = 0.1;
 	}
+
+	if((event.Type == sf::Event::MouseButtonPressed) && (event.Key.Code == sf::Mouse::Left))
+	{
+		if(steering.GetMouseY() < 100)
+		{
+			sf::Vector2i mousePos;
+			mousePos.x = steering.GetMouseX();
+			mousePos.y = steering.GetMouseY();
+
+			toolboxManagement(mousePos);
+		}
+
+	}
+
+	if((event.Type == sf::Event::MouseButtonPressed) && (event.Key.Code == sf::Mouse::Left))
+	{
+		if(steering.GetMouseY() > 100)
+		{
+			sf::Vector2i mousePos;
+			mousePos.x = steering.GetMouseX();
+			mousePos.y = steering.GetMouseY();
+			changingSpriteInMap(mousePos);
+		}
+
+	}
+
 }
 
 void MapCreator::MoveCamera(sf::View *View, sf::RenderWindow *window)
@@ -174,4 +218,43 @@ void MapCreator::GetScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT)
 
 	noOfTilesVisible.x = SCREEN_WIDTH/sampleSpriteSize.x;
 	noOfTilesVisible.y = SCREEN_WIDTH/sampleSpriteSize.y;
+
+	int numberOfToolboxRectangles = (int)((SCREEN_WIDTH-20)/96);
+
+	for(int rectangleCreator = 1; rectangleCreator <= numberOfToolboxRectangles ; rectangleCreator ++)
+	{
+		toolboxRectangles[rectangleCreator] = sf::IntRect (20 + (rectangleCreator - 1)*96 , 20, 84 + (rectangleCreator - 1)*96 , 84);
+	}
+
+}
+
+void MapCreator::toolboxManagement(sf::Vector2i toolboxClickPosition)
+{
+	for(int rectangleCheckIterator = 1; rectangleCheckIterator <= toolboxRectangles.size(); rectangleCheckIterator++)
+	{
+		if(toolboxRectangles[rectangleCheckIterator].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
+		{
+			int tempCheck = rectangleCheckIterator + (toolboxFirstFieldNumber - 1);
+			if(tempCheck >= 1 && tempCheck < tileSprites.size())
+			{
+				chosenTileFromToolbox = tempCheck;
+			}
+		}
+	}
+}
+
+
+void MapCreator::changingSpriteInMap(sf::Vector2i mapClickPosition)
+{
+	//std::cout << cameraPosition.x - 370 + mapClickPosition.x << " -- " << cameraPosition.y - 350 + mapClickPosition.y << std::endl;
+	sf::Vector2i realClickPosition;
+	realClickPosition.x = cameraPosition.x - 370 + mapClickPosition.x;
+	realClickPosition.y = cameraPosition.y - 350 + mapClickPosition.y;
+	if(realClickPosition.x > 0 && realClickPosition.y > 0 && chosenTileFromToolbox != 0 && (realClickPosition.x/32) < Size && (realClickPosition.y/32) <Size)
+	{
+		createdMap[realClickPosition.y/32][realClickPosition.x/32].changeType(chosenTileFromToolbox);
+		//std::cout << realClickPosition.y << " -- "  << realClickPosition.x<< std::endl;
+	}
+
+
 }

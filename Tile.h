@@ -21,6 +21,7 @@ public:
 	void loadSetOfGraphics(const std::string& filename);
 	int getType();
 	sf::Vector2i getPosition();
+	void changeType(int type);
 
 };
 

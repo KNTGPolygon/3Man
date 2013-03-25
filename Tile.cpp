@@ -38,3 +38,8 @@ sf::Vector2i Tile::getPosition()
 {
 	return drawingPosition;
 }
+
+	void Tile::changeType(int type)
+	{
+		this->type = type;
+	}

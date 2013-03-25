@@ -160,6 +160,19 @@ void MapCreator::GetSteeringEvent()
 		cameraPosition.y += 20;
 		}
 
+	//if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Mouse::Left))
+	if(steering.IsMouseButtonDown(sf::Mouse::Left))
+	{
+		if(steering.GetMouseY() > 100)
+		{
+			sf::Vector2i mousePos;
+			mousePos.x = steering.GetMouseX();
+			mousePos.y = steering.GetMouseY();
+			changingSpriteInMap(mousePos);
+		}
+
+	}
+
 }
 
 void MapCreator::GetEvent(sf::Event event)
@@ -178,6 +191,7 @@ void MapCreator::GetEvent(sf::Event event)
 	}
 
 	if((event.Type == sf::Event::MouseButtonPressed) && (event.Key.Code == sf::Mouse::Left))
+	//if(true)
 	{
 		if(steering.GetMouseY() < 100)
 		{
@@ -190,17 +204,7 @@ void MapCreator::GetEvent(sf::Event event)
 
 	}
 
-	if((event.Type == sf::Event::MouseButtonPressed) && (event.Key.Code == sf::Mouse::Left))
-	{
-		if(steering.GetMouseY() > 100)
-		{
-			sf::Vector2i mousePos;
-			mousePos.x = steering.GetMouseX();
-			mousePos.y = steering.GetMouseY();
-			changingSpriteInMap(mousePos);
-		}
-
-	}
+	
 
 }
 

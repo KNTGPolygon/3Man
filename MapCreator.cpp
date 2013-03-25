@@ -6,7 +6,7 @@ MapCreator::MapCreator(const sf::Input &_steering)
 	//loading images from files, creating sprites
 	LoadTileGraphics();
 	blackImage = new sf::Image();
-	blackImage->Create(600,120,sf::Color(0,0,0,255));
+	blackImage->Create(800,120,sf::Color(0,0,0,255));
 	blackSprite = new sf::Sprite();
 	blackSprite->SetImage(*blackImage);
 	
@@ -15,7 +15,7 @@ MapCreator::MapCreator(const sf::Input &_steering)
 	
 
 	//defining size of map
-	Size = 100;
+	Size = 30;
 
 	//setting default value of camera
 	cameraPosition.x = 350;
@@ -44,15 +44,18 @@ void MapCreator::Display(sf::RenderWindow *window)
 	clock.Reset();
 	window->Clear();
 
-
 	//counting from which field to draw
-	int firstFieldX = (cameraPosition.x - 350)/sampleSpriteSize.x;
-	int firstFieldY = (cameraPosition.y - 200)/sampleSpriteSize.y;
+	unsigned int firstFieldX = 0;
+	unsigned int firstFieldY = 0;
+
+	firstFieldX = ((cameraPosition.x - 400)>0?(cameraPosition.x-400):0)/sampleSpriteSize.x;
+	firstFieldY = ((cameraPosition.y - 240)>0?(cameraPosition.y-240):0)/sampleSpriteSize.y;
+
 	//std::cout << Size << " -- " << noOfTilesVisible.x << " -- " << noOfTilesVisible.y << std::endl;
-	//std::cout << firstFieldX << " -- " << firstFieldY << " -- " << noOfTilesVisible.x << " -- " << noOfTilesVisible.y << std::endl;
+	std::cout << firstFieldX << " -- " << firstFieldY << std::endl;
 	//drawing createdMap graphical representation
-	for(int row = firstFieldY; row < ((noOfTilesVisible.y + firstFieldY + 1)>Size? Size:(noOfTilesVisible.y + firstFieldY + 1)); row++)
-		for(int col = firstFieldX; col < ((noOfTilesVisible.x + firstFieldX + 1)>Size? Size:(noOfTilesVisible.x + firstFieldX + 1)); col++)
+	for(int row = firstFieldY; row < ((noOfTilesVisible.y + firstFieldY + 2)>Size? Size:(noOfTilesVisible.y + firstFieldY + 2)); row++)
+		for(int col = firstFieldX; col < ((noOfTilesVisible.x + firstFieldX + 2)>Size? Size:(noOfTilesVisible.x + firstFieldX + 2)); col++)
 		{
 			//drawing current field together with its frame
 			sf::Vector2i temp = createdMap[row][col].getPosition();
@@ -79,8 +82,6 @@ void MapCreator::Display(sf::RenderWindow *window)
 
 		for(int toolboxIterator = toolboxFirstFieldNumber;toolboxIterator < lastField; toolboxIterator ++ )
 		{
-			//toolboxIterator - 1 because first field has number 0, and we want it to be placed at right place
-			//16 because map starts at y =  96 which is 64(sprite size) + 2 * 16 to look cool
 			tileSprites.at(toolboxIterator).SetPosition(-380 + cameraPosition.x + (toolboxIterator-toolboxFirstFieldNumber)*96, -280 + cameraPosition.y);
 			//toolbox has full sized field-sprites
 			tileSprites.at(toolboxIterator).SetScale(1,1);
@@ -126,12 +127,12 @@ void MapCreator::GetSteeringEvent()
 		cameraPosition.x += 20;
 		}
 
-	if( steering.IsKeyDown( sf::Key::Left ) && cameraPosition.x > 400 ){
+	if( steering.IsKeyDown( sf::Key::Left ) && cameraPosition.x > 360 ){
 				
 		cameraPosition.x -= 20;
 		}
 
-	if( steering.IsKeyDown( sf::Key::Up ) && cameraPosition.y > 240 ){
+	if( steering.IsKeyDown( sf::Key::Up ) && cameraPosition.y > 200 ){
 				
 		cameraPosition.y -= 20;
 		}

@@ -5,10 +5,11 @@ Missle::Missle(std::string fileName, float Range ,float Velocity )
 {
 	myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Weapons/"+fileName );
 	myTexture.CreateMaskFromColor(sf::Color(255,0,255));
+
 	mySprite.SetImage(myTexture);
 	mySprite.SetPosition(0,0);
 	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
-	strAngle.SetPosition(50.0,300.0);
+
 	angle = 0;
 	inMove   = false;	
 }
@@ -31,7 +32,6 @@ void Missle::Logic()
 	angle = 90+ asin ( ( ( (-targetPosition.y)/distanceFromTarget))) * (180.0 / PI);
 	else
 	angle = 90+ asin ( ( ( (+targetPosition.y)/distanceFromTarget))) * (180.0 / PI);
-	strAngle.SetText( "angle = "+flo2str(angle)  );
 	mySprite.SetRotation(angle );
 	mySprite.Move(velocity * (targetPosition.x)/distanceFromTarget, velocity * (targetPosition.y  ) / distanceFromTarget);
 	inMove = true;
@@ -51,4 +51,8 @@ void Missle::Display(sf::RenderWindow *window)
 {
 	if(inMove != false)			//ukrywanie po skonczonym biegu
 	window->Draw( mySprite );
+}
+float Missle::ReturnAngle()
+{
+	return angle;
 }

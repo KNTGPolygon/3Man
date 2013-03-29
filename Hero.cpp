@@ -104,7 +104,7 @@ void Hero::Display(sf::RenderWindow *window)
 			animate[0]->Display( window );
 			break;	
 	}
-
+	
 	window->Draw( strMyPosition );
 }
 void Hero::Move()

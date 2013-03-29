@@ -22,12 +22,12 @@ Weapon::Weapon(std::string weaponName, int BulletFireLimit,float RepeatRate)
 	for(int i=0;i<bulletFireLimit;i++)
 	{
 		missle[i] = new Missle(directory,(float)range,(float)speed);
-		std::cout<<" Missle["<<i<<"] Loaded \n";
+		//std::cout<<" Missle["<<i<<"] Loaded \n"; //dla celow testowych
 	}
 	
 	fired = false;
 	active = false;
-	std::cout<<"Konstruktor weapon online! \n";
+	//std::cout<<"Konstruktor weapon online! \n"; //dla celow testowych
 }
 
 Weapon::~Weapon(void)
@@ -48,9 +48,12 @@ void Weapon::Logic(bool FiringLocked, sf::Vector2i target)
 			destenation.x = target.x - (int)fireFromPosition.x;
 			destenation.y = target.y - (int)fireFromPosition.y;
 			distanceFromMouse=sqrt((float)(destenation.x)*(destenation.x)+(float)(destenation.y)*(destenation.y));
+			
+			if(missle[ReturnFirstAvailable(missle,bulletFireLimit)]->inMove == false){
 			missle[ReturnFirstAvailable(missle,bulletFireLimit)]->StartPosition(fireFromPosition);
 			missle[ReturnFirstAvailable(missle,bulletFireLimit)]->SetTarget(destenation,distanceFromMouse);
 			missle[ReturnFirstAvailable(missle,bulletFireLimit)]->inMove = true;
+			}
 		}
 	
 	}
@@ -87,7 +90,6 @@ void Weapon::Display(sf::RenderWindow *window)
 	{
 		missle[i]->Display(window);
 	}
-		//window->Draw( missle[0]->strAngle );
 }
 
 int Weapon::ReturnFirstAvailable(Missle **missle,int MissleAmount )
@@ -153,13 +155,19 @@ bool Weapon::Load(std::string WeaponName)
 						 if(dataSet.eof())break;
 						 repeatRate = atof(str.c_str());
 						 std::cout <<"reload : "<<str<<"\n";
-						  
+						 
+						  dataSet >> str;
+						 if(dataSet.eof())break;
+						 bulletFireLimit = atof(str.c_str());
+						 std::cout <<"bulletLimit : "<<str<<"\n";
+
 						 dataSet >> str;
 						 if(dataSet.eof())break;
 						 error = atof(str.c_str());
 						 std::cout <<"error : "<<str<<"\n";
 					}			   
 			}
+		  std::cout <<"#--------------------#\n";
 			dataSet.close();
 		 }
 	return 1;

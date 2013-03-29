@@ -21,9 +21,6 @@ private:
 	sf::Vector2f startPosition;  //Wsp miejsca wystrza³u
 	sf::Vector2f currentPosition; 
 	sf::Vector2i targetPosition; //Pozycja docelowa
-
-	
-
 public:
 	float angle;
 	sf::String strAngle;

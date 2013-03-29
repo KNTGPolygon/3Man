@@ -19,16 +19,27 @@ private:
 
 	bool windowIsOpen;
 	bool mainMenu;
-
+	bool fpsFlag;
+	
+	float lastTime;
+	float currentTime;
 	Button *gameStart;
 	Button *mapEditor;
 
 	sf::Event event;
 	sf::RenderWindow window; 
 	sf::View View;
+	
+	sf::Sprite spr;
+	sf::Vector2f vect;
+	sf::Clock time;
+
+	const sf::Vector2f *ptrToVect;
 	const sf::Input & steering ;
 	
 	sf::String strMouse;
+	sf::String strFps;
+	sf::String strFrameTime;
 
 	void EventHandling();
 	void Display();

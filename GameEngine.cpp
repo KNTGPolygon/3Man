@@ -5,7 +5,12 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "3Game");
 	//View.SetHalfSize((float)SCREEN_WIDTH/2,(float)SCREEN_HEIGHT/2); 
 	//window.SetView(View);
+	
+	time.Reset();
+	currentTime=0;
+	lastTime = 0;
 	mainMenu = true;
+	fpsFlag = true;
 	map = new Maps("Data/Maps/Test.map");
 	mapEditor = new Button(steering,sf::Vector2f((float)(SCREEN_WIDTH/2 -50.0), (float)SCREEN_HEIGHT/2),sf::Vector2f(100.0,50.0),sf::Color(125,125,125),"Edytor");
 	gameStart = new Button(steering,sf::Vector2f((float)(SCREEN_WIDTH/2 -50.0), (float)(SCREEN_HEIGHT/2 - 100.0)),sf::Vector2f(100.0,50.0),sf::Color(125,125,125),"Gra");
@@ -16,12 +21,22 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	strMouse.SetPosition(10.0,150.0);
 	strMouse.SetScale(0.5,0.5);
 	strMouse.SetText("Pozycja myszki");
-		
+	strFps.SetPosition(10.0,50.0);
+	strFps.SetScale(0.5,0.5);
+	strFps.SetText("FPS : ");
+	strFrameTime.SetPosition(10.0,100.0);
+	strFrameTime.SetScale(0.5,0.5);
+	strFrameTime.SetText("Frame time : ");
+
 	//!!created map editor!!
 	mapCreator = new MapCreator(steering);
 	mapCreator->GetScreenSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	windowIsOpen = window.IsOpened();
+	
+	ptrToVect = &spr.GetPosition(); // pointer na vector2f
+	
+	
 }
 
 GameEngine::~GameEngine(void)
@@ -57,6 +72,8 @@ void GameEngine::EventHandling()
 			if(event.Type==sf::Event::Closed)
 			{
 				window.Close();
+				windowIsOpen = false;
+				break;
 			}
 			 if ((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::Escape))
 			{
@@ -64,7 +81,12 @@ void GameEngine::EventHandling()
 				gameStart->pressed = false;
 				mapEditor->pressed = false;
 			}
-
+			 if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::F))
+			{
+				if(fpsFlag == true)
+					fpsFlag = false;
+				else fpsFlag = true;
+			}
 			 //it's here cause I need direct access to window events
 			 mapCreator->GetEvent(event);
 		}
@@ -76,7 +98,7 @@ void GameEngine::Display()
 		
 		strMouse.SetText("X = "+int2str(steering.GetMouseX())+" Y = "+int2str(steering.GetMouseY()));
 		window.Draw( strMouse);
-
+		
 		if(mainMenu == true)
 		{
 		mapEditor->Display(&window);
@@ -99,9 +121,17 @@ void GameEngine::Display()
 			window.Draw( strMouse);
 			// Tu mstanki2 piszesz co ma wyswietlac ten edytor
 		}
+			if(fpsFlag == true)
+		{
+			currentTime = time.GetElapsedTime();	
+			strFps.SetText("FPS = "+int2str((int)(1/(currentTime-lastTime))));
+			strFrameTime.SetText("Frame time = "+flo2str(window.GetFrameTime()));
+			window.Draw( strFps );
+			window.Draw( strFrameTime );
+			lastTime = currentTime;	
+		}
 		 window.Display();
 }
-
 bool GameEngine::run()
 {
 	window.SetFramerateLimit(100);
@@ -112,7 +142,6 @@ bool GameEngine::run()
 		{
 		EventHandling();
 		Display();
-		sf::Sleep(0.05);
 
 		}
 

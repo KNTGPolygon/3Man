@@ -26,6 +26,7 @@ Weapon::Weapon(std::string weaponName, int BulletFireLimit,float RepeatRate)
 	}
 	
 	fired = false;
+	active = false;
 	std::cout<<"Konstruktor weapon online! \n";
 }
 
@@ -34,8 +35,11 @@ Weapon::~Weapon(void)
 	delete[] missle;
 }
 void Weapon::Logic(bool FiringLocked, sf::Vector2i target)
-{
-	// 
+{	
+				//FiringLocked - if weapon is firing constantly
+	if( active == true )
+	{
+
 	if(FiringLocked && fired == true)
 	{
 		if(repetition.GetElapsedTime()>repeatRate)
@@ -64,12 +68,15 @@ void Weapon::Logic(bool FiringLocked, sf::Vector2i target)
 
 		
 	fired = false;
+	active = false;
+	}
 
 	for(int i = 0;i<bulletFireLimit;i++)
-	{
+	{	
 		if(missle[i]->inMove == true)
 		{
 			missle[i]->Logic();
+			active = true;
 			fired = true;
 		}
 	}
@@ -80,7 +87,7 @@ void Weapon::Display(sf::RenderWindow *window)
 	{
 		missle[i]->Display(window);
 	}
-		window->Draw( missle[0]->strAngle );
+		//window->Draw( missle[0]->strAngle );
 }
 
 int Weapon::ReturnFirstAvailable(Missle **missle,int MissleAmount )

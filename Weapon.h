@@ -3,7 +3,7 @@
 #include "Missle.h"
 #ifndef WEAPON_H
 #define WEAPON_H
-class Weapon
+class Weapon 
 {
 private:
 	double damage;
@@ -18,8 +18,6 @@ private:
 	float cooldown;
 			 //Czêstotliwoœæ strza³ów przy wciœniêtym spuœcie
 	float distanceFromMouse;
-
-
 	std::string directory;
 
 	sf::Vector2i destenation;
@@ -32,15 +30,19 @@ private:
 	bool Load(std::string WeaponName);
 public:
 	bool fired;
+	bool active;
 	Weapon(std::string weaponName,int BulletFireLimit = 5,float RepeatRate = 0.25);
 	~Weapon(void);
+	
+    int ReturnFirstAvailable(Missle **missle,int MissleAmount );
+
 	void WeaponFiring();
 	void Display(sf::RenderWindow *window);
 	void Logic(bool FiringLocked = false, sf::Vector2i target = sf::Vector2i(0,0));
 	void SetFiringPosition(sf::Vector2f Position);
 	void SetTargetPosition(sf::Vector2f Position);
 	void PutScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);
-	int ReturnFirstAvailable(Missle **missle,int MissleAmount );
+	
 };
 
 #endif

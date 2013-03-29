@@ -9,10 +9,8 @@ Missle::Missle(std::string fileName, float Range ,float Velocity )
 	mySprite.SetPosition(0,0);
 	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
 	strAngle.SetPosition(50.0,300.0);
-	
 	angle = 0;
-	inMove   = false;
-	
+	inMove   = false;	
 }
 
 Missle::~Missle(void)
@@ -51,6 +49,6 @@ void Missle::StartPosition(sf::Vector2f Position)
 }
 void Missle::Display(sf::RenderWindow *window)
 {
-	//if(inMove == false) //ukrywanie po skonczonym biegu
+	if(inMove != false)			//ukrywanie po skonczonym biegu
 	window->Draw( mySprite );
 }

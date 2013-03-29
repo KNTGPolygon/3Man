@@ -41,19 +41,19 @@ public:
 	Hero(const sf::Input &_steering,float velocity = 1); //Konstruktor Bohatera
 	~Hero(void);
 
-sf::IntRect get_box() {return box;} //Zwraca colision boxa
-sf::Vector2f get_position(){return myPosition;}
+	sf::IntRect get_box() {return box;} //Zwraca colision boxa
+	sf::Vector2f get_position(){return myPosition;}
 
-void Display(sf::RenderWindow *window);
+	void Display(sf::RenderWindow *window);
 
-void Logic();
-void Move();
-void Shoot();
-void GetEvent();
-sf::Vector2f GetPosition();
-void UpdatePosition();
-void PutScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);
+	void Logic();
+	void Move();
+	void Shoot();
+	void GetEvent();
+	sf::Vector2f GetPosition();
+	void UpdatePosition();
+	void PutScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);
 
-void SetCamera(sf::View *View, sf::RenderWindow *window);			      //Ustawienie kamery
+	void SetCamera(sf::View *View, sf::RenderWindow *window);			      //Ustawienie kamery
 };
 #endif

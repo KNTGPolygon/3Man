@@ -6,8 +6,6 @@
 Hero::Hero(const sf::Input &_steering,float velocity)
 	:steering(_steering),vel(velocity),weaponType(0) , numberOfWeapons(4)
 {
-	//MyTexture.LoadFromFile( "Data/Textures/Player.png" );
-
 	ANIMATION_TYPE = STAY;
 
 	MyTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Player.PNG" );
@@ -20,12 +18,12 @@ Hero::Hero(const sf::Input &_steering,float velocity)
     Me.SetScale( 1, 1 ); 
 	Me.SetSubRect(sf::IntRect(0,0,SPRITE_SIZE,SPRITE_SIZE));
 	Me.SetPosition( 350, 425 );
-	
+
 	animate = new Animate*[4];
-	animate[0] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),3,20);   //DOWN
-	animate[1] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,20,1); //LEFT
-	animate[2] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,20,2); //RIGHT
-	animate[3] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),3,20,3); //UP
+	animate[0] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),3,15);   //DOWN
+	animate[1] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,15,1); //LEFT
+	animate[2] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,15,2); //RIGHT
+	animate[3] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),3,15,3); //UP
 	
 	weapon = new Weapon*[numberOfWeapons];	
 	weapon[0] = new Weapon("Plus");
@@ -45,6 +43,7 @@ void Hero::Shoot()
 void Hero::GetEvent()
 {
 		ANIMATION_TYPE = STAY;
+
 		if( steering.IsKeyDown( sf::Key::Left ) && myPosition.x>0 ){
 		ANIMATION_TYPE = LEFT;
 				Me.Move( -vel, 0 );
@@ -67,20 +66,26 @@ void Hero::GetEvent()
 		if( steering.IsKeyDown(sf::Key::Num3) )weaponType=2;
 		if( steering.IsKeyDown(sf::Key::Num4) )weaponType=3;
 
-		weapon[weaponType]->SetFiringPosition(Me.GetPosition());
-		weapon[weaponType]->Logic(steering.IsMouseButtonDown(sf::Mouse::Left),
+		weapon[weaponType]->active = true;
+
+		for(int i = 0; i < 4 ; i++)
+		{
+		weapon[i]->SetFiringPosition(Me.GetPosition());
+		weapon[i]->Logic(steering.IsMouseButtonDown(sf::Mouse::Left),
 		sf::Vector2i(steering.GetMouseX()  - SCREEN_WIDTH/2 + (int)Me.GetPosition().x,
 		steering.GetMouseY()  - SCREEN_HEIGHT/2 + (int)Me.GetPosition().y ));
-		
-		
-
+		weapon[i]->active = false;
+		}
 
 }
 void Hero::Display(sf::RenderWindow *window)
 {
 	strMyPosition.SetPosition(Me.GetPosition());
 	strMyPosition.SetText("Sx = "+int2str((int)myPosition.x)+" Sy = "+int2str((int)myPosition.y));
-	weapon[weaponType]->Display( window );
+	
+	for(int i = 0 ; i < 4 ; i++)
+	weapon[i]->Display( window );
+	
 	switch(ANIMATION_TYPE)
 	{
 		case STAY:
@@ -132,6 +137,7 @@ void Hero::PutScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT)
 {
 	SCREEN_WIDTH  = _SCREEN_WIDTH;
 	SCREEN_HEIGHT = _SCREEN_HEIGHT;
+
 	for(int i = 0 ; i<numberOfWeapons ; i++)
 	weapon[i]->PutScreenSize(_SCREEN_WIDTH, _SCREEN_HEIGHT );
 }

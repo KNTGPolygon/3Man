@@ -1,4 +1,5 @@
 #include "State.h"
+#include "MapCreator.h"
 
 #ifndef EDITORSTATE_H
 #define EDITORSTATE_H

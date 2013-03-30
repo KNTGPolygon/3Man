@@ -2,11 +2,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <map>
-#include "Hero.h"
-#include "Maps.h"
-#include "Button.h"
 #include "Functions.h"
-#include "MapCreator.h"
 #include "State.h"
 #include "GameState.h"
 #include "MainMenuState.h"
@@ -31,14 +27,10 @@ private:
 	
 	float lastTime;
 	float currentTime;
-	Button *gameStart;
-	Button *mapEditor;
 
 	sf::Event event;
 	sf::RenderWindow window; 
 	sf::View View;
-	
-	
 	
 	std::map<STATE, State*> States;
 	STATE currentState;
@@ -54,12 +46,8 @@ private:
 	sf::String strFps;
 	sf::String strFrameTime;
 
-	void EventHandling();
 	void Display();
 
-	Hero *hero;
-	Maps *map;
-	MapCreator *mapCreator;
 public:
 	bool run(void);
 
@@ -71,9 +59,7 @@ public:
 	State* getCurrentState();
 	
 	sf::RenderWindow& getWindow();
-	Maps* getMap();
 	sf::View& getView();
-	Hero* getHero();
 	const sf::Input& getSteering();
 	sf::Event& getEvent();
 

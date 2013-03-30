@@ -1,4 +1,6 @@
 #include "State.h"
+#include "Hero.h"
+#include "Maps.h"
 
 #ifndef GAMESTATE_H
 #define GAMESTATE_H

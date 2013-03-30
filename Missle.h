@@ -10,6 +10,7 @@
 class Missle
 {
 private:
+	float angle;
 	float currentDistance;		 //Chwilowa odleg³oœæ od strzelaj¹cego
 	float range;				 //Zasiêg pocisku
 	float velocity;				 //Prêdkoœæ pocisku
@@ -22,9 +23,8 @@ private:
 	sf::Vector2f currentPosition; 
 	sf::Vector2i targetPosition; //Pozycja docelowa
 public:
-	float angle;
-	sf::String strAngle;
 	bool inMove;
+	float ReturnAngle();
 	void Logic();
 	void Display(sf::RenderWindow *window);
 	Missle(std::string fileName,float Range = 10,float Velocity = 1);

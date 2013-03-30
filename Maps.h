@@ -21,7 +21,7 @@ private:
 	std::vector<std::string> addresses;
 	std::map<int, std::map<int, Tile> > map_data;
 
-	std::map <int, Tile> mapGraphics;
+	std::map <int, sf::Image> mapGraphics;
 	std::map <int, sf::Sprite> tileSprites;
 	
 

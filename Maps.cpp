@@ -90,7 +90,7 @@ void Maps::getTileGraphicsAddressesSet(std::string str)
 {
 	 std::istringstream iss(str);
 	 int place = 0;
-	 std::string path = "Data/Textures/";
+	 std::string path = "Data/Textures/MapTiles/";
 	 std::string sub;
 
 
@@ -127,14 +127,14 @@ void Maps::createTiles()
 	for(int i = 1; i < addresses.size(); i++)
 	{
 		
-		mapGraphics[i] = Tile(i, addresses.at(i));
+		mapGraphics[i].LoadFromFile(addresses.at(i));
 	}
 
 	sf::Sprite tempSprite;
 	for(unsigned int i = 1; i <= mapGraphics.size(); i++)
 	{
-		mapGraphics[i].tileTexture.SetSmooth(false);
-		tempSprite.SetImage(mapGraphics[i].tileTexture);
+		mapGraphics[i].SetSmooth(false);
+		tempSprite.SetImage(mapGraphics[i]);
 		tileSprites[i] = tempSprite;
 		
 	}

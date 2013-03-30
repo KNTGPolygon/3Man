@@ -1,16 +1,16 @@
 #pragma once
 
 #include <iostream>
-#include "Tile.h"
 #include <map>
 #include <SFML/Graphics.hpp>
 #include <vector>
 
+#include "Tile.h"
+#include "MapObject.h"
+
 
 #ifndef MAP_CREATOR_H
 #define MAP_CREATOR_H
-
-enum MapEditorStates {CHOOSING_ARRAY};
 
 class MapCreator{
 
@@ -19,31 +19,37 @@ private:
 	//cooldown used in events (delay after pressing a button)
 	//toolboxFirstFieldNumber is used in browsing through toolbox fields
 	int Size;
-	double cooldown;
 	int toolboxFirstFieldNumber;
 
 	int chosenTileFromToolbox;
+	int chosenObjectFromToolbox;
 
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
 
 	sf::Vector2f cameraPosition;
 
-	MapEditorStates state;
-
-	std::map <int, Tile> tileGraphics;
+	std::map <int, sf::Image> tileGraphics;
 	std::vector <sf::Sprite> tileSprites;
 
+	std::map <int, sf::Image> objectGraphics;
+	std::vector <sf::Sprite> objectSprites;
+
 	 Tile ** createdMap;
-	 sf::Image *blackImage;
-	 sf::Sprite *blackSprite;
+	 std::map<int, std::map<int, MapObject> > map_data;
+
+	 sf::Image *blackHorizontalImage;
+	 sf::Sprite *blackHorizontalSprite;
+	 sf::Image *blackVerticalImage;
+	 sf::Sprite *blackVerticalSprite;
+
 	 sf::Vector2f sampleSpriteSize;
 	 sf::Vector2i noOfTilesVisible;
 
 	std::map <int, sf::IntRect> toolboxRectangles;
+	std::map <int, sf::IntRect> toolboxVerticalRectangles;
 
 	const sf::Input &steering;
-	sf::Clock clock;
 
 public:
 	MapCreator(const sf::Input &_steering);
@@ -51,7 +57,8 @@ public:
 	void LoadTileGraphics();
 	void Display(sf::RenderWindow *window);
 	void CreateSprites();
-	void toolboxManagement(sf::Vector2i toolboxClickPosition);
+	void verticalToolboxManagement(sf::Vector2i toolboxClickPosition);
+	void horizontalToolboxManagement(sf::Vector2i toolboxClickPosition);
 	void changingSpriteInMap(sf::Vector2i mapClickPosition);
 
 	void GetSteeringEvent();

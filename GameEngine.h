@@ -1,15 +1,23 @@
 #pragma once
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <map>
 #include "Hero.h"
 #include "Maps.h"
 #include "Button.h"
 #include "Functions.h"
 #include "MapCreator.h"
+#include "State.h"
+#include "GameState.h"
+#include "MainMenuState.h"
+#include "EditorState.h"
 
 
 #ifndef GAME_ENGINE_H
 #define GAME_ENGINE_H
+
+enum STATE { MAINMENU, EDITOR, GAME, NOSTATE };
+
 class GameEngine
 {
 public:	
@@ -29,6 +37,11 @@ private:
 	sf::Event event;
 	sf::RenderWindow window; 
 	sf::View View;
+	
+	
+	
+	std::map<STATE, State*> States;
+	STATE currentState;
 	
 	sf::Sprite spr;
 	sf::Vector2f vect;
@@ -52,10 +65,20 @@ public:
 
 	GameEngine(void);
 	~GameEngine(void);
-		static GameEngine* getInstance(void);
+	static GameEngine* getInstance(void);
+		
+	void ChangeState(STATE);
+	State* getCurrentState();
+	
+	sf::RenderWindow& getWindow();
+	Maps* getMap();
+	sf::View& getView();
+	Hero* getHero();
+	const sf::Input& getSteering();
+	sf::Event& getEvent();
 
 private:
-		static GameEngine * engine;
+	static GameEngine * engine;
 };
 
 void deleteObj(void *obj);

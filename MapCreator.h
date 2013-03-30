@@ -55,7 +55,7 @@ public:
 	void changingSpriteInMap(sf::Vector2i mapClickPosition);
 
 	void GetSteeringEvent();
-	void GetEvent(sf::Event);
+	void GetEvent(sf::Event&);
 
 	void MoveCamera(sf::View *View, sf::RenderWindow *window);
 	void GetScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);

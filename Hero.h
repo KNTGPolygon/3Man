@@ -5,13 +5,7 @@
 #include "Weapon.h"
 #include "Animate.h"
 #include <vector>
-enum State{
-	UP,
-	DOWN,
-	RIGHT,
-	LEFT,
-	STAY
-};
+
 class Hero
 {
 public:
@@ -23,8 +17,16 @@ private:
 	int weaponType;
 	int numberOfWeapons;
 	float myDistanceToMouse;
-	float vel;	
-
+	float vel;
+	
+	enum State{
+		UP,
+		DOWN,
+		RIGHT,
+		LEFT,
+		STAY
+	};
+	
 	State ANIMATION_TYPE;
 
 	Animate **animate;

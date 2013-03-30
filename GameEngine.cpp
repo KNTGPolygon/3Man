@@ -6,17 +6,22 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	//View.SetHalfSize((float)SCREEN_WIDTH/2,(float)SCREEN_HEIGHT/2); 
 	//window.SetView(View);
 	
+	States[GAME] = new GameState();
+	States[MAINMENU] = new MainMenuState();
+	States[EDITOR] = new EditorState();
+	currentState = NOSTATE;
+	
 	time.Reset();
 	currentTime=0;
 	lastTime = 0;
 	mainMenu = true;
 	fpsFlag = true;
-	map = new Maps("Data/Maps/Test.map");
-	mapEditor = new Button(steering,sf::Vector2f((float)(SCREEN_WIDTH/2 -50.0), (float)SCREEN_HEIGHT/2),sf::Vector2f(100.0,50.0),sf::Color(125,125,125),"Edytor");
-	gameStart = new Button(steering,sf::Vector2f((float)(SCREEN_WIDTH/2 -50.0), (float)(SCREEN_HEIGHT/2 - 100.0)),sf::Vector2f(100.0,50.0),sf::Color(125,125,125),"Gra");
+	//map = new Maps("Data/Maps/Test.map");
+	//mapEditor = new Button(steering,sf::Vector2f((float)(SCREEN_WIDTH/2 -50.0), (float)SCREEN_HEIGHT/2),sf::Vector2f(100.0,50.0),sf::Color(125,125,125),"Edytor");
+	//gameStart = new Button(steering,sf::Vector2f((float)(SCREEN_WIDTH/2 -50.0), (float)(SCREEN_HEIGHT/2 - 100.0)),sf::Vector2f(100.0,50.0),sf::Color(125,125,125),"Gra");
 	
-	hero = new Hero(steering,2);
-	hero->PutScreenSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	//hero = new Hero(steering,2);
+	//hero->PutScreenSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	strMouse.SetPosition(10.0,150.0);
 	strMouse.SetScale(0.5,0.5);
@@ -29,8 +34,8 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	strFrameTime.SetText("Frame time : ");
 
 	//!!created map editor!!
-	mapCreator = new MapCreator(steering);
-	mapCreator->GetScreenSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	//mapCreator = new MapCreator(steering);
+	//mapCreator->GetScreenSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	windowIsOpen = window.IsOpened();
 	
@@ -118,10 +123,10 @@ void GameEngine::Display()
 			mainMenu = false;
 			mapCreator->MoveCamera(&View, &window);
 			mapCreator->Display(&window);
-			window.Draw( strMouse);
+			//window.Draw( strMouse);
 			// Tu mstanki2 piszesz co ma wyswietlac ten edytor
 		}
-			if(fpsFlag == true)
+		if(fpsFlag == true)
 		{
 			currentTime = time.GetElapsedTime();	
 			strFps.SetText("FPS = "+int2str((int)(1/(currentTime-lastTime))));
@@ -130,23 +135,116 @@ void GameEngine::Display()
 			window.Draw( strFrameTime );
 			lastTime = currentTime;	
 		}
-		 window.Display();
+		
+		window.Display();
 }
+
+void GameEngine::ChangeState( STATE state )
+{
+	if ( currentState != NOSTATE )
+		getCurrentState()->Cleanup();
+	
+	currentState = state;
+	getCurrentState()->Init();
+}
+
+State* GameEngine::getCurrentState()
+{
+	return States[currentState];
+}
+
+const sf::Input& GameEngine::getSteering()
+{
+	return steering;
+}
+
 bool GameEngine::run()
 {
 	window.SetFramerateLimit(100);
 	window.Clear();
 	//map->showMap();
 
-		while (windowIsOpen)
+	/*while (windowIsOpen)
 		{
 		EventHandling();
 		Display();
 
+		}*/
+	
+	ChangeState(MAINMENU);
+	
+	while (windowIsOpen)
+	{
+		getCurrentState()->EventHandling();
+		
+		while(window.GetEvent(event))
+		{
+			if(event.Type==sf::Event::Closed)
+			{
+				window.Close();
+				windowIsOpen = false;
+				break;
+			}
+			if ((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::Escape))
+			{
+				switch (currentState)
+				{
+					case MAINMENU:
+						window.Close();
+						windowIsOpen = false;
+						break;
+					case EDITOR:
+						ChangeState(MAINMENU);
+						break;
+					case GAME:
+						ChangeState(MAINMENU);
+						break;
+				}
+			}
+			 if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::F))
+			{
+				if(fpsFlag == true)
+					fpsFlag = false;
+				else fpsFlag = true;
+			}
+			
+			 getCurrentState()->GetEvents();
 		}
+		
+		window.Clear( sf::Color( 0, 0, 0 ) );
+		getCurrentState()->Display();
+		window.Display();
+	}
 
 	return 0;
 }
+
+sf::RenderWindow& GameEngine::getWindow()
+{
+	return window;
+}
+
+Maps* GameEngine::getMap()
+{
+	return map;
+}
+
+sf::View& GameEngine::getView()
+{
+	return View;
+}
+
+sf::Event& GameEngine::getEvent()
+{
+	return event;
+}
+
+Hero* GameEngine::getHero()
+{
+	return hero;
+}
+
+
 void deleteObj(void *obj)
 {
 	if (obj != NULL)

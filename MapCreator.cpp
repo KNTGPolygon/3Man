@@ -175,7 +175,7 @@ void MapCreator::GetSteeringEvent()
 
 }
 
-void MapCreator::GetEvent(sf::Event event)
+void MapCreator::GetEvent(sf::Event& event)
 {
 	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::A) )
 	{

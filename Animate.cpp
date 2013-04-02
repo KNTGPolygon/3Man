@@ -8,6 +8,7 @@ Animate::Animate(std::string filePath,sf::Vector2i FrameSize,sf::Vector2f Positi
 		myTexture = ImageManager::getInstance()->loadImage( filePath );
 		myTexture.CreateMaskFromColor(sf::Color(255,0,255));
 		myTexture.SetSmooth(false);
+
 		mySprite = new sf::Sprite[NumberOfFrames];
 
 		for(int i = 0 ; i < NumberOfFrames ; i++)
@@ -20,6 +21,8 @@ Animate::Animate(std::string filePath,sf::Vector2i FrameSize,sf::Vector2f Positi
 
 Animate::~Animate(void)
 {
+	delete[] mySprite;
+	myTexture.~Image();
 }
 void Animate::Update(sf::Vector2f Position)
 {
@@ -27,7 +30,6 @@ void Animate::Update(sf::Vector2f Position)
 		{
 		mySprite[i].SetPosition(Position);
 		}
-
 }
 void Animate::Display(sf::RenderWindow *window)
 {

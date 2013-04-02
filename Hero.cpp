@@ -35,6 +35,9 @@ Hero::Hero(const sf::Input &_steering,float velocity)
 
 Hero::~Hero(void)
 {
+	delete[] weapon;
+	delete[] animate;
+
 }
 
 void Hero::Shoot()

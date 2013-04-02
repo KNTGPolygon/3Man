@@ -16,10 +16,10 @@ class MapCreator{
 
 private:
 	//how many fields does the createdMap have
-	//cooldown used in events (delay after pressing a button)
 	//toolboxFirstFieldNumber is used in browsing through toolbox fields
 	int Size;
 	int toolboxFirstFieldNumber;
+	int verticalToolboxFirstFieldNumber;
 
 	int chosenTileFromToolbox;
 	int chosenObjectFromToolbox;
@@ -36,7 +36,7 @@ private:
 	std::vector <sf::Sprite> objectSprites;
 
 	 Tile ** createdMap;
-	 std::map<int, std::map<int, MapObject> > map_data;
+	 MapObject ** map_data;
 
 	 sf::Image *blackHorizontalImage;
 	 sf::Sprite *blackHorizontalSprite;
@@ -57,8 +57,7 @@ public:
 	void LoadTileGraphics();
 	void Display(sf::RenderWindow *window);
 	void CreateSprites();
-	void verticalToolboxManagement(sf::Vector2i toolboxClickPosition);
-	void horizontalToolboxManagement(sf::Vector2i toolboxClickPosition);
+	void toolboxManagement(sf::Vector2i toolboxClickPosition);
 	void changingSpriteInMap(sf::Vector2i mapClickPosition);
 
 	void GetSteeringEvent();

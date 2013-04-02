@@ -19,7 +19,8 @@ private:
 	int rowNumber;
 	int colNumber;
 	std::vector<std::string> addresses;
-	std::map<int, std::map<int, Tile> > map_data;
+	//std::map<int, std::map<int, Tile> > map_data;
+	Tile ** map_data;
 
 	std::map <int, sf::Image> mapGraphics;
 	std::map <int, sf::Sprite> tileSprites;

@@ -14,6 +14,8 @@ private:
 public:
 
 	MapObject(int _objectType, sf::Vector2i _objectPosition);
+	MapObject(int _objectType, int posX, int posY);
+	MapObject();
 
 };
 

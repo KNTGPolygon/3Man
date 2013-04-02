@@ -3,6 +3,13 @@
 
 Maps::Maps(const std::string& filename)
 {
+	int Size = 30;
+
+	//creating dynamic two-dimensional array (tiles created with default constructor, each with type = -1)
+	map_data = new Tile*[Size];
+	for(int i = 0; i < Size; ++i)
+    map_data[i] = new Tile[Size];
+
 	int storedColNumber = 0;
 	rowNumber = 0;
 	colNumber = 0;

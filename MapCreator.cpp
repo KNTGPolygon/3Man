@@ -6,23 +6,21 @@ MapCreator::MapCreator(const sf::Input &_steering)
 	//loading images from files, creating sprites
 	LoadTileGraphics();
 	blackHorizontalImage = new sf::Image();
-	blackHorizontalImage->Create(800,120,sf::Color(0,0,0,255));
-	blackHorizontalSprite = new sf::Sprite();
-	blackHorizontalSprite->SetImage(*blackHorizontalImage);
-	
-
 	blackVerticalImage = new sf::Image();
+
+	blackHorizontalImage->Create(800,120,sf::Color(0,0,0,255));
 	blackVerticalImage->Create(120,800,sf::Color(0,0,0,255));
+
+	blackHorizontalSprite = new sf::Sprite();
 	blackVerticalSprite = new sf::Sprite();
+
+	blackHorizontalSprite->SetImage(*blackHorizontalImage);
 	blackVerticalSprite->SetImage(*blackVerticalImage);
 	
-
 	chosenTileFromToolbox = 0;
 	chosenObjectFromToolbox = 0;
 	
-
 	sampleSpriteSize = tileSprites.at(1).GetSize();
-
 
 	//defining size of map
 	Size = 30;
@@ -32,17 +30,30 @@ MapCreator::MapCreator(const sf::Input &_steering)
 	cameraPosition.y = 200;
 
 	toolboxFirstFieldNumber = 1;
+	verticalToolboxFirstFieldNumber = 1;
 
-	//creating dynamic two-dimensional array
+	//creating dynamic two-dimensional arrays
 	createdMap = new Tile*[Size];
 	for(int i = 0; i < Size; ++i)
     createdMap[i] = new Tile[Size];
 
+	map_data = new MapObject*[Size*2];
+	for(int i = 0; i < Size; ++i)
+    map_data[i] = new MapObject[Size*2];
+
 	//initialization of createdMap array (representation of created map) with first, default tile
 	for(int row = 0; row < Size; row++)
+	{
 		for(int col = 0; col < Size; col++)
 		{
 			createdMap[row][col] = Tile(1,col*32 - 32, 48 + row*32);
+		}
+	}
+
+	for(int row = 0; row < Size; row++)
+		for(int col = 0; col < Size; col++)
+		{
+			map_data[row][col] = MapObject(0,col*16 - 32, 48 + row*16);
 		}
 
 }
@@ -59,7 +70,6 @@ void MapCreator::Display(sf::RenderWindow *window)
 	firstFieldX = ((cameraPosition.x - 400)>0?(cameraPosition.x-400):0)/sampleSpriteSize.x;
 	firstFieldY = ((cameraPosition.y - 240)>0?(cameraPosition.y-240):0)/sampleSpriteSize.y;
 
-	//std::cout << Size << " -- " << noOfTilesVisible.x << " -- " << noOfTilesVisible.y << std::endl;
 	//drawing createdMap graphical representation
 	for(int row = firstFieldY; row < ((noOfTilesVisible.y + firstFieldY - 8)>Size? Size:(noOfTilesVisible.y + firstFieldY - 8)); row++)
 		for(int col = firstFieldX; col < ((noOfTilesVisible.x + firstFieldX - 1)>Size? Size:(noOfTilesVisible.x + firstFieldX - 1)); col++)
@@ -70,9 +80,7 @@ void MapCreator::Display(sf::RenderWindow *window)
 			window->Draw(tileSprites.at(createdMap[row][col].getType()));
 		}
 
-		
-
-		//checking whether there are 5 more sprites to draw in toolbox, else get number of last field
+		//checking whether there are 8 more sprites to draw in horizontal toolbox, else get number of last field
 		int lastField;
 		if(toolboxFirstFieldNumber + 8 > tileSprites.size())
 		{
@@ -83,10 +91,11 @@ void MapCreator::Display(sf::RenderWindow *window)
 			lastField = toolboxFirstFieldNumber + 8;
 		}
 
-
+		//setting positions of black toolbox-fields
 		blackHorizontalSprite->SetPosition(cameraPosition.x-400, cameraPosition.y-300);
 		blackVerticalSprite->SetPosition(cameraPosition.x+280, cameraPosition.y - 300);
 
+		//drawing black toolbox-fields
 		window->Draw(*blackHorizontalSprite);
 		window->Draw(*blackVerticalSprite);
 
@@ -99,10 +108,38 @@ void MapCreator::Display(sf::RenderWindow *window)
 			//changing sprites size to default for map-drawing
 			tileSprites.at(toolboxIterator).SetScale(0.5,0.5);
 		}
+		
 
 		if(chosenTileFromToolbox - toolboxFirstFieldNumber + 1 > 0 )
 		{
 			tileSprites.at(0).SetPosition(-380 + cameraPosition.x + (chosenTileFromToolbox - toolboxFirstFieldNumber)*96, -280 + cameraPosition.y);
+			tileSprites.at(0).SetScale(1,1);
+			window->Draw(tileSprites.at(0));
+			tileSprites.at(0).SetScale(0.5,0.5);	
+		}
+
+
+		//--------------------
+
+		if(verticalToolboxFirstFieldNumber + 5 > objectSprites.size())
+		{
+			lastField = objectSprites.size();
+		}
+		else
+		{
+			lastField = verticalToolboxFirstFieldNumber + 5;
+		}
+
+		for(int toolboxIterator = verticalToolboxFirstFieldNumber;toolboxIterator < lastField; toolboxIterator ++ )
+		{
+			objectSprites.at(toolboxIterator).SetPosition(300 + cameraPosition.x , -270 + cameraPosition.y + (toolboxIterator - verticalToolboxFirstFieldNumber + 1)*96);
+			window->Draw(objectSprites.at(toolboxIterator));
+
+		}
+
+		if(chosenObjectFromToolbox - verticalToolboxFirstFieldNumber + 1 > 0 )
+		{
+			tileSprites.at(0).SetPosition(300 + cameraPosition.x, -270 + cameraPosition.y  + (chosenObjectFromToolbox - verticalToolboxFirstFieldNumber + 1)*96);
 			tileSprites.at(0).SetScale(1,1);
 			window->Draw(tileSprites.at(0));
 			tileSprites.at(0).SetScale(0.5,0.5);	
@@ -134,13 +171,14 @@ void MapCreator::LoadTileGraphics()
 	}
 
 	tileAddress = "Data/Textures/MapObjects/";
-	objectGraphics[0].LoadFromFile(tileAddress + "Triangle.png");
+	objectGraphics[0].LoadFromFile(tileAddress + "Blank.png");
 	objectGraphics[1].LoadFromFile(tileAddress + "Star.png");
 	objectGraphics[2].LoadFromFile(tileAddress + "Square.png");
 	objectGraphics[3].LoadFromFile(tileAddress + "Pentagon.png");
 	objectGraphics[4].LoadFromFile(tileAddress + "Cloud.png");
 	objectGraphics[5].LoadFromFile(tileAddress + "Circle.png");
 	objectGraphics[6].LoadFromFile(tileAddress + "Arrow.png");
+	objectGraphics[7].LoadFromFile(tileAddress + "Triangle.png");
 
 	for(int i = 0; i < objectGraphics.size(); i++)
 	{
@@ -165,7 +203,7 @@ void MapCreator::CreateSprites()
 	for(int i = 0; i<objectGraphics.size();i++)
 	{
 		spr.SetImage(objectGraphics[i]);
-		spr.SetScale(0.5,0.5);
+		spr.SetScale(1,1);
 		objectSprites.push_back(spr);
 	}
 
@@ -174,7 +212,6 @@ void MapCreator::CreateSprites()
 void MapCreator::GetSteeringEvent()
 {
 	
-	//checking events with cooldown included (so each button pressed will surely count as 1)
 	if( steering.IsKeyDown( sf::Key::Right ) ){
 				
 		cameraPosition.x += 20;
@@ -195,10 +232,9 @@ void MapCreator::GetSteeringEvent()
 		cameraPosition.y += 20;
 		}
 
-	//if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Mouse::Left))
 	if(steering.IsMouseButtonDown(sf::Mouse::Left))
 	{
-		if(steering.GetMouseY() > 100)
+		if(steering.GetMouseY() > 150 && steering.GetMouseX() < 680)
 		{
 			sf::Vector2i mousePos;
 			mousePos.x = steering.GetMouseX();
@@ -216,36 +252,38 @@ void MapCreator::GetEvent(sf::Event& event)
 	mousePos.x = steering.GetMouseX();
 	mousePos.y = steering.GetMouseY();
 
-	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::A) )
+	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::D) )
 	{
 		if(toolboxFirstFieldNumber > 1)
 			toolboxFirstFieldNumber --;
 	}
-	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::D) )
+
+	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::A) )
 	{
 		if(toolboxFirstFieldNumber < tileSprites.size())
 			toolboxFirstFieldNumber ++;
 	}
 
+	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::S) )
+	{
+		if(verticalToolboxFirstFieldNumber > 1)
+			verticalToolboxFirstFieldNumber --;
+	}
+
+	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::W) )
+	{
+		if(verticalToolboxFirstFieldNumber < objectSprites.size())
+			verticalToolboxFirstFieldNumber ++;
+	}
+
 	if((event.Type == sf::Event::MouseButtonPressed) && (event.Key.Code == sf::Mouse::Left))
 	{
-		if(mousePos.y < 100)
+		if(mousePos.y < 100 || mousePos.x > 700)
 		{
-			horizontalToolboxManagement(mousePos);
+			toolboxManagement(mousePos);
 		}
 
 	}
-
-/*	if((event.Type == sf::Event::MouseButtonPressed) && (event.Key.Code == sf::Mouse::Right))
-	{
-		if(mousePos.y < 100)
-		{
-			verticalToolboxManagement(mousePos);
-		}
-
-	}*/
-
-	
 
 }
 
@@ -274,13 +312,14 @@ void MapCreator::GetScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT)
 
 	for(int rectangleCreator = 1; rectangleCreator <= numberOfToolboxVerticalRectangles ; rectangleCreator ++)
 	{
-		toolboxVerticalRectangles[rectangleCreator] = sf::IntRect (700, 150 + (rectangleCreator - 1)*80, 764 , 214 + (rectangleCreator - 1)*80);
+		toolboxVerticalRectangles[rectangleCreator] = sf::IntRect (700, 125 + (rectangleCreator - 1)*96, 764 , 189 + (rectangleCreator - 1)*96);
 	}
 
 }
 
-void MapCreator::horizontalToolboxManagement(sf::Vector2i toolboxClickPosition)
+void MapCreator::toolboxManagement(sf::Vector2i toolboxClickPosition)
 {
+	if(toolboxClickPosition.y < 100)
 	for(int rectangleCheckIterator = 1; rectangleCheckIterator <= toolboxRectangles.size(); rectangleCheckIterator++)
 	{
 		if(toolboxRectangles[rectangleCheckIterator].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
@@ -292,19 +331,18 @@ void MapCreator::horizontalToolboxManagement(sf::Vector2i toolboxClickPosition)
 			}
 		}
 	}
-}
 
-
-void MapCreator::verticalToolboxManagement(sf::Vector2i toolboxClickPosition)
-{
+	if(toolboxClickPosition.x > 700)
 	for(int rectangleCheckIterator = 1; rectangleCheckIterator <= toolboxVerticalRectangles.size(); rectangleCheckIterator++)
 	{
 		if(toolboxVerticalRectangles[rectangleCheckIterator].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
 		{
-			int tempCheck = rectangleCheckIterator + (toolboxFirstFieldNumber - 1);
-			if(tempCheck >= 1 && tempCheck < tileSprites.size())
+			int tempCheck = rectangleCheckIterator + (verticalToolboxFirstFieldNumber - 1);
+			
+			if(tempCheck >= 1 && tempCheck < objectSprites.size())
 			{
-				chosenObjectFromToolbox = tempCheck;
+				chosenObjectFromToolbox = tempCheck;	
+				std::cout << chosenObjectFromToolbox << std::endl;
 			}
 		}
 	}
@@ -321,5 +359,5 @@ void MapCreator::changingSpriteInMap(sf::Vector2i mapClickPosition)
 		createdMap[realClickPosition.y/32][realClickPosition.x/32].changeType(chosenTileFromToolbox);
 	}
 
-
 }
+ 

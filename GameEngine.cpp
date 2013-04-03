@@ -144,7 +144,21 @@ sf::Event& GameEngine::getEvent()
 	return event;
 }
 
+static bool Collision( SpriteExt& sprite1, SpriteExt& sprite2 )
+{
+	CollisionMask* mask1 = sprite1.getCollisionMask();
+	CollisionMask* mask2 = sprite2.getCollisionMask();
 
+	if ( mask1 == NULL || mask2 == NULL )
+		return false;
+
+	if ( mask1->getType() == BOX && mask2->getType() == BOX )
+	{
+		return ((BoxMask*)mask1)->getRect().Intersects( ((BoxMask*)mask1)->getRect(), &((BoxMask*)mask2)->getRect() );
+	}
+
+	return false;
+}
 
 void deleteObj(void *obj)
 {

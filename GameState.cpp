@@ -2,7 +2,7 @@
 
 GameState::GameState():State()
 {
-
+	std::cout << "Konstruktor GameState!" << std::endl;
 }
 
 void GameState::Init()
@@ -35,4 +35,5 @@ void GameState::Cleanup()
 {
 	delete hero;
 	delete map;
+	init = 0;
 }

@@ -4,9 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include "Weapon.h"
 #include "Animate.h"
+#include "SpriteExt.h"
 #include <vector>
-
-
 
 class Hero
 {
@@ -33,7 +32,8 @@ private:
 	Animate **animate;
 	Weapon **weapon;
 	sf::Vector2f myPosition;	//hero position
-	sf::Sprite Me;				
+	//sf::Sprite Me;
+	SpriteExt Me;
 	sf::IntRect box;			//Collision box
 	sf::Image MyTexture;			
 	sf::String strMyPosition;	

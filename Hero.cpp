@@ -2,6 +2,7 @@
 #include "Functions.h"
 #include "ImageManager.h"
 #include <iostream>
+#include "Collision/BoxMask.h"
 //-------------------------------- Hero
 Hero::Hero(const sf::Input &_steering,float velocity)
 	:steering(_steering),vel(velocity),weaponType(0) , numberOfWeapons(4)
@@ -18,6 +19,8 @@ Hero::Hero(const sf::Input &_steering,float velocity)
     Me.SetScale( 1, 1 ); 
 	Me.SetSubRect(sf::IntRect(0,0,SPRITE_SIZE,SPRITE_SIZE));
 	Me.SetPosition( 350, 425 );
+
+	Me.setBoxMask(sf::IntRect(0,0,SPRITE_SIZE,SPRITE_SIZE)); //ustawia maske kolizji na prostakat o rozmiarach obrazka
 
 	animate = new Animate*[4];
 	animate[0] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),3,15);   //DOWN
@@ -108,6 +111,8 @@ void Hero::Display(sf::RenderWindow *window)
 			break;	
 	}
 	
+	((BoxMask*)Me.getCollisionMask())->Display(window,Me.GetPosition());
+
 	window->Draw( strMyPosition );
 }
 void Hero::Move()

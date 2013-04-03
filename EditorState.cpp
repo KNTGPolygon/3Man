@@ -2,6 +2,7 @@
 
 EditorState::EditorState():State()
 {
+	std::cout << "Konstruktor EditorState!" << std::endl;
 }
 
 void EditorState::Init()
@@ -29,6 +30,7 @@ void EditorState::GetEvents()
 
 void EditorState::Cleanup()
 {
-
+	delete mapCreator;
+	init = 0;
 }
 

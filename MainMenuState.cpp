@@ -1,6 +1,5 @@
 #include "MainMenuState.h"
 
-
 MainMenuState::MainMenuState():State()
 {
 	std::cout <<  "Konstruktor MainMenuState!" << std::endl;
@@ -51,6 +50,8 @@ void MainMenuState::GetEvents()
 
 void MainMenuState::Cleanup()
 {
-
+	delete mapEditor;
+	delete gameStart;
+	init = 0;
 }
 

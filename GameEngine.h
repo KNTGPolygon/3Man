@@ -7,6 +7,8 @@
 #include "GameState.h"
 #include "MainMenuState.h"
 #include "EditorState.h"
+#include "SpriteExt.h"
+#include "Collision/BoxMask.h"
 
 
 #ifndef GAME_ENGINE_H
@@ -62,6 +64,8 @@ public:
 	sf::View& getView();
 	const sf::Input& getSteering();
 	sf::Event& getEvent();
+
+	static bool Collision( SpriteExt&, SpriteExt& );
 
 private:
 	static GameEngine * engine;

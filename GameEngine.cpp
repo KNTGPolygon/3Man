@@ -8,6 +8,7 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	States[MAINMENU] = new MainMenuState();
 	States[EDITOR] = new EditorState();
 	currentState = NOSTATE;
+	nextState = NOSTATE;
 	
 	time.Reset();
 	currentTime=0;
@@ -56,10 +57,17 @@ void GameEngine::Display()
 
 void GameEngine::ChangeState( STATE state )
 {
+	nextState = state;
+}
+
+void GameEngine::SwitchState()
+{
+	if ( nextState == currentState || nextState == NOSTATE ) return;
+
 	if ( currentState != NOSTATE )
 		getCurrentState()->Cleanup();
 	
-	currentState = state;
+	currentState = nextState;
 	getCurrentState()->Init();
 }
 
@@ -82,6 +90,8 @@ bool GameEngine::run()
 	
 	while (windowIsOpen)
 	{
+		SwitchState();
+
 		getCurrentState()->EventHandling();
 		
 		while(window.GetEvent(event))

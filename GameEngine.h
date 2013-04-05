@@ -49,6 +49,7 @@ private:
 	
 	std::map<STATE, State*> States;
 	STATE currentState;
+	STATE nextState;
 	
 	std::priority_queue<Drawable*, std::vector<Drawable*>, CompareDrawable> RenderQueue;
 
@@ -72,7 +73,8 @@ public:
 	~GameEngine(void);
 	static GameEngine* getInstance(void);
 		
-	void ChangeState(STATE);
+	void ChangeState(STATE); // wysyla zadanie zmiany state'a
+	void SwitchState();		 // dokonuje faktycznej zamiany state'ow (nie ruszac, to sie robi samo!)
 	State* getCurrentState();
 	
 	void AddToRenderQueue(Drawable*);

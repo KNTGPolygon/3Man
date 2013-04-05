@@ -11,15 +11,15 @@ class Missle
 {
 private:
 	float angle;
-	float currentDistance;		 //Chwilowa odleg³oœæ od strzelaj¹cego
-	float range;				 //Zasiêg pocisku
-	float velocity;				 //Prêdkoœæ pocisku
-	float distanceFromTarget;	 // Odleg³oœæ od celu ( kliku myszki )
+	float currentDistance;		 //Chwilowa odlegï¿½oï¿½ï¿½ od strzelajï¿½cego
+	float range;				 //Zasiï¿½g pocisku
+	float velocity;				 //Prï¿½dkoï¿½ï¿½ pocisku
+	float distanceFromTarget;	 // Odlegï¿½oï¿½ï¿½ od celu ( kliku myszki )
 	
 	sf::Image myTexture;
 	sf::Sprite mySprite;
 
-	sf::Vector2f startPosition;  //Wsp miejsca wystrza³u
+	sf::Vector2f startPosition;  //Wsp miejsca wystrzaï¿½u
 	sf::Vector2f currentPosition; 
 	sf::Vector2i targetPosition; //Pozycja docelowa
 public:

@@ -2,12 +2,13 @@
 #ifndef HERO_H
 #define HERO_H
 #include <SFML/Graphics.hpp>
+#include "Drawable.h"
 #include "Weapon.h"
 #include "Animate.h"
 #include "SpriteExt.h"
 #include <vector>
 
-class Hero
+class Hero : public Drawable
 {
 public:
 	static const int SPRITE_SIZE  = 42; // 42 bo szerokosc tekstury

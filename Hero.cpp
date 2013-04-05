@@ -9,6 +9,8 @@ Hero::Hero(const sf::Input &_steering,float velocity)
 {
 	ANIMATION_TYPE = STAY;
 
+	depth = 0;
+
 	MyTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Player.PNG" );
 	MyTexture.CreateMaskFromColor(sf::Color(255,0,255));
 	MyTexture.SetSmooth(false);
@@ -38,6 +40,11 @@ Hero::Hero(const sf::Input &_steering,float velocity)
 
 Hero::~Hero(void)
 {
+	/*for ( int i = 0; i < 4; i++ )
+	{
+		delete animate[i];
+		delete weapon[i];
+	}*/
 	delete[] weapon;
 	delete[] animate;
 

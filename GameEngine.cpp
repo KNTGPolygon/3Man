@@ -106,6 +106,10 @@ bool GameEngine::run()
 					case GAME:
 						ChangeState(MAINMENU);
 						break;
+					case NOSTATE:
+						window.Close();
+						windowIsOpen = false;
+						break;
 				}
 			}
 			 if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::F))
@@ -129,19 +133,24 @@ bool GameEngine::run()
 	return 0;
 }
 
-sf::RenderWindow& GameEngine::getWindow()
+void GameEngine::AddToRenderQueue(Drawable* obj)
 {
-	return window;
+	RenderQueue.push(obj);
 }
 
-sf::View& GameEngine::getView()
+void GameEngine::FlushRenderQueue()
 {
-	return View;
+	while (!RenderQueue.empty())
+		RenderQueue.pop();
 }
 
-sf::Event& GameEngine::getEvent()
+void GameEngine::ExecuteRenderQueue()
 {
-	return event;
+	while (!RenderQueue.empty())
+	{
+		RenderQueue.top()->Display(&window);
+		RenderQueue.pop();
+	}
 }
 
 static bool Collision( SpriteExt& sprite1, SpriteExt& sprite2 )
@@ -158,6 +167,21 @@ static bool Collision( SpriteExt& sprite1, SpriteExt& sprite2 )
 	}
 
 	return false;
+}
+
+sf::RenderWindow& GameEngine::getWindow()
+{
+	return window;
+}
+
+sf::View& GameEngine::getView()
+{
+	return View;
+}
+
+sf::Event& GameEngine::getEvent()
+{
+	return event;
 }
 
 void deleteObj(void *obj)

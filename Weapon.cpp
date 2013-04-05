@@ -1,3 +1,4 @@
+#include "GameEngine.h"
 #include "Weapon.h"
 #include <iostream>
 #include <fstream>
@@ -86,7 +87,7 @@ void Weapon::Logic(bool FiringLocked, sf::Vector2i target)
 }
 void Weapon::Display(sf::RenderWindow *window)
 {
-		for(int i =0; i < bulletFireLimit ; i++)
+	for(int i =0; i < bulletFireLimit ; i++)
 	{
 		missle[i]->Display(window);
 	}
@@ -118,7 +119,7 @@ bool Weapon::Load(std::string WeaponName)
 	std::string str;
 	bool WeaponFound = false;
 		 if (!dataSet) {
-        std::cerr << "Nie uda³o siê za³adowaæ pliku " <<" WeaponData.txt "<< "\n";
+        std::cerr << "Nie udaï¿½o siï¿½ zaï¿½adowaï¿½ pliku " <<" WeaponData.txt "<< "\n";
 		return 0;
 				 }
 		 if(dataSet.good() == true)

@@ -15,9 +15,14 @@ void GameState::Init()
 
 void GameState::Display()
 {
+	GameEngine::getInstance()->FlushRenderQueue();
+
+	GameEngine::getInstance()->AddToRenderQueue((Drawable*)hero);
+
 	map->showMap(&GameEngine::getInstance()->getWindow());
 	hero->SetCamera(&GameEngine::getInstance()->getView(),&GameEngine::getInstance()->getWindow());
-	hero->Display(&GameEngine::getInstance()->getWindow());
+
+	GameEngine::getInstance()->ExecuteRenderQueue();
 }
 
 void GameState::EventHandling()

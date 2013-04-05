@@ -1,9 +1,10 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Drawable.h"
 #include "Missle.h"
 #ifndef WEAPON_H
 #define WEAPON_H
-class Weapon 
+class Weapon : public Drawable
 {
 private:
 	double damage;
@@ -16,7 +17,7 @@ private:
 	int bulletLeft;
 
 	float cooldown;
-			 //Czêstotliwoœæ strza³ów przy wciœniêtym spuœcie
+			 //Czï¿½stotliwoï¿½ï¿½ strzaï¿½ï¿½w przy wciï¿½niï¿½tym spuï¿½cie
 	float distanceFromMouse;
 	std::string directory;
 

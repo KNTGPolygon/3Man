@@ -2,6 +2,9 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <map>
+#include <queue>
+#include <vector>
+#include "Drawable.h"
 #include "Functions.h"
 #include "State.h"
 #include "GameState.h"
@@ -15,6 +18,16 @@
 #define GAME_ENGINE_H
 
 enum STATE { MAINMENU, EDITOR, GAME, NOSTATE };
+
+class CompareDrawable
+{
+public:
+	bool operator()(Drawable* obj1, Drawable* obj2)
+	{
+		if ( obj1->getDepth() < obj2->getDepth() ) return true;
+		else return false;
+	}
+};
 
 class GameEngine
 {
@@ -37,6 +50,8 @@ private:
 	std::map<STATE, State*> States;
 	STATE currentState;
 	
+	std::priority_queue<Drawable*, std::vector<Drawable*>, CompareDrawable> RenderQueue;
+
 	sf::Sprite spr;
 	sf::Vector2f vect;
 	sf::Clock time;
@@ -60,6 +75,10 @@ public:
 	void ChangeState(STATE);
 	State* getCurrentState();
 	
+	void AddToRenderQueue(Drawable*);
+	void FlushRenderQueue();
+	void ExecuteRenderQueue();
+
 	sf::RenderWindow& getWindow();
 	sf::View& getView();
 	const sf::Input& getSteering();
@@ -70,6 +89,7 @@ public:
 private:
 	static GameEngine * engine;
 };
+
 
 void deleteObj(void *obj);
 #endif

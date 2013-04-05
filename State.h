@@ -9,6 +9,7 @@ protected:
 	bool init;
 public:
 	State();
+	virtual ~State();
 	virtual void Init() = 0;
 	virtual void Display() = 0;
 	virtual void EventHandling() = 0;

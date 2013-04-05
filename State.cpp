@@ -9,3 +9,8 @@ bool State::Initialized()
 {
 	return init;
 }
+
+State::~State()
+{
+
+}

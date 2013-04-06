@@ -151,19 +151,20 @@ void MapCreator::Display(sf::RenderWindow *window)
 void MapCreator::LoadTileGraphics()
 {
 	//creating map tiles (will be anchanced)
+	ImageManager* imgmng = ImageManager::getInstance();
 	std::string tileAddress = "Data/Textures/EditorMapTiles/";
-	tileGraphics[0].LoadFromFile(tileAddress + "border.png");
-	tileGraphics[1].LoadFromFile(tileAddress + "grass.png");	
-	tileGraphics[2].LoadFromFile(tileAddress + "lava.png");
-	tileGraphics[3].LoadFromFile(tileAddress + "pinky.png");
-	tileGraphics[4].LoadFromFile(tileAddress + "wall.png");
-	tileGraphics[5].LoadFromFile(tileAddress + "water.png");
-	tileGraphics[6].LoadFromFile(tileAddress + "border.png");
-	tileGraphics[7].LoadFromFile(tileAddress + "grass.png");	
-	tileGraphics[8].LoadFromFile(tileAddress + "lava.png");
-	tileGraphics[9].LoadFromFile(tileAddress + "pinky.png");
-	tileGraphics[10].LoadFromFile(tileAddress + "wall.png");
-	tileGraphics[11].LoadFromFile(tileAddress + "water.png");
+	tileGraphics[0] = imgmng->loadImage(tileAddress + "border.png");
+	tileGraphics[1] = imgmng->loadImage(tileAddress + "grass.png");
+	tileGraphics[2] = imgmng->loadImage(tileAddress + "lava.png");
+	tileGraphics[3] = imgmng->loadImage(tileAddress + "pinky.png");
+	tileGraphics[4] = imgmng->loadImage(tileAddress + "wall.png");
+	tileGraphics[5] = imgmng->loadImage(tileAddress + "water.png");
+	tileGraphics[6] = imgmng->loadImage(tileAddress + "border.png");
+	tileGraphics[7] = imgmng->loadImage(tileAddress + "grass.png");
+	tileGraphics[8] = imgmng->loadImage(tileAddress + "lava.png");
+	tileGraphics[9] = imgmng->loadImage(tileAddress + "pinky.png");
+	tileGraphics[10] = imgmng->loadImage(tileAddress + "wall.png");
+	tileGraphics[11] = imgmng->loadImage(tileAddress + "water.png");
 
 	for(int i = 0; i < tileGraphics.size(); i++)
 	{
@@ -171,14 +172,14 @@ void MapCreator::LoadTileGraphics()
 	}
 
 	tileAddress = "Data/Textures/MapObjects/";
-	objectGraphics[0].LoadFromFile(tileAddress + "Blank.png");
-	objectGraphics[1].LoadFromFile(tileAddress + "Star.png");
-	objectGraphics[2].LoadFromFile(tileAddress + "Square.png");
-	objectGraphics[3].LoadFromFile(tileAddress + "Pentagon.png");
-	objectGraphics[4].LoadFromFile(tileAddress + "Cloud.png");
-	objectGraphics[5].LoadFromFile(tileAddress + "Circle.png");
-	objectGraphics[6].LoadFromFile(tileAddress + "Arrow.png");
-	objectGraphics[7].LoadFromFile(tileAddress + "Triangle.png");
+	objectGraphics[0] = imgmng->loadImage(tileAddress + "Blank.png");
+	objectGraphics[1] = imgmng->loadImage(tileAddress + "Star.png");
+	objectGraphics[2] = imgmng->loadImage(tileAddress + "Square.png");
+	objectGraphics[3] = imgmng->loadImage(tileAddress + "Pentagon.png");
+	objectGraphics[4] = imgmng->loadImage(tileAddress + "Cloud.png");
+	objectGraphics[5] = imgmng->loadImage(tileAddress + "Circle.png");
+	objectGraphics[6] = imgmng->loadImage(tileAddress + "Arrow.png");
+	objectGraphics[7] = imgmng->loadImage(tileAddress + "Triangle.png");
 
 	for(int i = 0; i < objectGraphics.size(); i++)
 	{
@@ -359,5 +360,17 @@ void MapCreator::changingSpriteInMap(sf::Vector2i mapClickPosition)
 		createdMap[realClickPosition.y/32][realClickPosition.x/32].changeType(chosenTileFromToolbox);
 	}
 
+}
+
+MapCreator::~MapCreator()
+{
+	delete blackHorizontalImage;
+	delete blackVerticalImage;
+	delete blackHorizontalSprite;
+	delete blackVerticalSprite;
+
+	for ( int i = 0; i < Size; ++i )
+		delete[] createdMap[i];
+	delete[] createdMap;
 }
  

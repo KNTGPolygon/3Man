@@ -18,7 +18,7 @@ Maps::Maps(const std::string& filename)
 	//checking whether file can be opened
 	std::ifstream map(filename.c_str());
 		 if (!map) {
-        std::cerr << "Nie uda³o siê za³adowaæ pliku " << filename << "\n";
+        std::cerr << "Nie udaï¿½o siï¿½ zaï¿½adowaï¿½ pliku " << filename << "\n";
 				 }
 		 else
 		 {
@@ -145,4 +145,12 @@ void Maps::createTiles()
 		tileSprites[i] = tempSprite;
 		
 	}
+}
+
+Maps::~Maps()
+{
+	for ( int i = 0; i < 30; i++ )
+		delete map_data[i];
+
+	delete[] map_data;
 }

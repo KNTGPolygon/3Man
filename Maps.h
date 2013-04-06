@@ -29,6 +29,7 @@ private:
 
 public:
 	Maps(const std::string& filename);
+	~Maps();
 	void showMap(sf::RenderWindow *window);
 	void getTileGraphicsAddressesSet(std::string str);
 	void createTiles();

@@ -22,7 +22,6 @@ Animate::Animate(std::string filePath,sf::Vector2i FrameSize,sf::Vector2f Positi
 Animate::~Animate(void)
 {
 	delete[] mySprite;
-	myTexture.~Image();
 }
 void Animate::Update(sf::Vector2f Position)
 {

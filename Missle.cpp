@@ -16,7 +16,6 @@ Missle::Missle(std::string fileName, float Range ,float Velocity )
 
 Missle::~Missle(void)
 {
-	myTexture.~Image();
 }
 void Missle::Logic()
 {

@@ -40,11 +40,11 @@ Hero::Hero(const sf::Input &_steering,float velocity)
 
 Hero::~Hero(void)
 {
-	/*for ( int i = 0; i < 4; i++ )
-	{
+	for ( int i = 0; i < 4; i++ )
 		delete animate[i];
+	for ( int i = 0; i < numberOfWeapons; i++ )
 		delete weapon[i];
-	}*/
+
 	delete[] weapon;
 	delete[] animate;
 

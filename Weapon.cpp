@@ -33,6 +33,8 @@ Weapon::Weapon(std::string weaponName, int BulletFireLimit,float RepeatRate)
 
 Weapon::~Weapon(void)
 {
+	for ( int i = 0; i < bulletFireLimit; i++ )
+		delete missle[i];
 	delete[] missle;
 }
 void Weapon::Logic(bool FiringLocked, sf::Vector2i target)

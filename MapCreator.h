@@ -53,6 +53,7 @@ private:
 
 public:
 	MapCreator(const sf::Input &_steering);
+	~MapCreator();
 	void Run();
 	void LoadTileGraphics();
 	void Display(sf::RenderWindow *window);

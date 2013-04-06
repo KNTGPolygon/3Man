@@ -163,7 +163,7 @@ void GameEngine::ExecuteRenderQueue()
 	}
 }
 
-static bool Collision( SpriteExt& sprite1, SpriteExt& sprite2 )
+bool GameEngine::Collision( SpriteExt& sprite1, SpriteExt& sprite2 )
 {
 	CollisionMask* mask1 = sprite1.getCollisionMask();
 	CollisionMask* mask2 = sprite2.getCollisionMask();
@@ -173,10 +173,36 @@ static bool Collision( SpriteExt& sprite1, SpriteExt& sprite2 )
 
 	if ( mask1->getType() == BOX && mask2->getType() == BOX )
 	{
-		return ((BoxMask*)mask1)->getRect().Intersects( ((BoxMask*)mask1)->getRect(), &((BoxMask*)mask2)->getRect() );
+		int Ax1 = sprite1.GetPosition().x-sprite1.GetCenter().x+((BoxMask*)mask1)->getRect().Left;
+		int Ax2 = sprite1.GetPosition().x-sprite1.GetCenter().x+((BoxMask*)mask1)->getRect().Right;
+		int Ay1 = sprite1.GetPosition().y-sprite1.GetCenter().y+((BoxMask*)mask1)->getRect().Top;
+		int Ay2 = sprite1.GetPosition().y-sprite1.GetCenter().y+((BoxMask*)mask1)->getRect().Bottom;
+		int Bx1 = sprite2.GetPosition().x-sprite2.GetCenter().x+((BoxMask*)mask2)->getRect().Left;
+		int Bx2 = sprite2.GetPosition().x-sprite2.GetCenter().x+((BoxMask*)mask2)->getRect().Right;
+		int By1 = sprite2.GetPosition().y-sprite2.GetCenter().y+((BoxMask*)mask2)->getRect().Top;
+		int By2 = sprite2.GetPosition().y-sprite2.GetCenter().y+((BoxMask*)mask2)->getRect().Bottom;
+
+		if ( Ax1 <= Bx2 && Ax2 >= Bx1 && Ay1 <= By2 && Ay2 >= By1 )
+			return true;
+		else return false;
 	}
 
 	return false;
+}
+
+void GameEngine::FlushCollisionList()
+{
+	CollisionList.clear();
+}
+
+void GameEngine::AddToCollisionList( SpriteExt* spr )
+{
+	CollisionList.push_back(spr);
+}
+
+std::vector<SpriteExt*>& GameEngine::getCollisionList()
+{
+	return CollisionList;
 }
 
 sf::RenderWindow& GameEngine::getWindow()

@@ -53,6 +53,8 @@ private:
 	
 	std::priority_queue<Drawable*, std::vector<Drawable*>, CompareDrawable> RenderQueue;
 
+	std::vector<SpriteExt*> CollisionList;
+
 	sf::Sprite spr;
 	sf::Vector2f vect;
 	sf::Clock time;
@@ -87,6 +89,9 @@ public:
 	sf::Event& getEvent();
 
 	static bool Collision( SpriteExt&, SpriteExt& );
+	void AddToCollisionList(SpriteExt*);
+	void FlushCollisionList();
+	std::vector<SpriteExt*>& getCollisionList();
 
 private:
 	static GameEngine * engine;

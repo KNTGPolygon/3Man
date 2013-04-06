@@ -1,3 +1,4 @@
+#include "GameEngine.h"
 #include "Hero.h"
 #include "Functions.h"
 #include "ImageManager.h"
@@ -21,8 +22,11 @@ Hero::Hero(const sf::Input &_steering,float velocity)
     Me.SetScale( 1, 1 ); 
 	Me.SetSubRect(sf::IntRect(0,0,SPRITE_SIZE,SPRITE_SIZE));
 	Me.SetPosition( 350, 425 );
+	Me.SetCenter(16,32);
 
-	Me.setBoxMask(sf::IntRect(0,0,SPRITE_SIZE,SPRITE_SIZE)); //ustawia maske kolizji na prostakat o rozmiarach obrazka
+	Me.setBoxMask(sf::IntRect(0,26,SPRITE_SIZE,SPRITE_SIZE)); //ustawia maske kolizji na prostakat
+
+	GameEngine::getInstance()->AddToCollisionList(&Me);
 
 	animate = new Animate*[4];
 	animate[0] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),3,15);   //DOWN
@@ -118,7 +122,26 @@ void Hero::Display(sf::RenderWindow *window)
 			break;	
 	}
 	
-	((BoxMask*)Me.getCollisionMask())->Display(window,Me.GetPosition());
+	std::vector<SpriteExt*> list = GameEngine::getInstance()->getCollisionList();
+
+	bool col = 0;
+	for ( int i = 0; i < list.size(); i++ )
+	{
+		if( GameEngine::Collision(Me,*list[i]) && list[i] != &Me )
+		{
+			((BoxMask*)Me.getCollisionMask())->Display(window,
+													   sf::Vector2f(Me.GetPosition().x-Me.GetCenter().x,
+															        Me.GetPosition().y-Me.GetCenter().y),
+													   sf::Color(255, 0, 0));
+			col = 1;
+			break;
+		}
+	}
+
+	if (!col)
+		((BoxMask*)Me.getCollisionMask())->Display(window,
+												   sf::Vector2f(Me.GetPosition().x-Me.GetCenter().x,
+														        Me.GetPosition().y-Me.GetCenter().y));
 
 	window->Draw( strMyPosition );
 }
@@ -143,6 +166,7 @@ void Hero::UpdatePosition()
 	 myPosition     = Me.GetPosition();
 	 for(int i = 0 ; i < 4 ; i++)
 	 animate[i]->Update(Me.GetPosition());
+	 depth = -Me.GetPosition().y;
 }
 sf::Vector2f Hero::GetPosition()
 {

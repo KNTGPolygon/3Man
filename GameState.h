@@ -11,7 +11,7 @@ class GameState : public State
 private:
 	Hero* hero;
 	Maps* map;
-	Tree* tree[4];
+	Tree* tree[8];
 public:
 	GameState();
 	void Init();

@@ -479,12 +479,12 @@ bool MapCreator::saveMap(std::string filename)
 		tempFilename << i;
 		tempFilename << ".map";
 		inputFile.close();
-		inputFile.open(path + tempFilename.str());
+		inputFile.open((path + tempFilename.str()).c_str());
 
 	}
 
 	
-	outputFile.open(path + tempFilename.str());
+	outputFile.open((path + tempFilename.str()).c_str());
 
 	if(outputFile)
 	{

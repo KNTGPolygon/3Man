@@ -15,7 +15,7 @@ class ImageManager
 	public:
 	
 	static ImageManager* getInstance();
-	sf::Image loadImage( std::string filename );
+	sf::Image& loadImage( std::string filename );
 };
 
 #endif

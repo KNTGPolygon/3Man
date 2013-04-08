@@ -16,10 +16,8 @@
 class Maps{
 
 private:
-	int rowNumber;
-	int colNumber;
+	int Size;
 	std::vector<std::string> addresses;
-	//std::map<int, std::map<int, Tile> > map_data;
 	Tile ** map_data;
 
 	std::map <int, sf::Image> mapGraphics;
@@ -30,11 +28,15 @@ private:
 public:
 	Maps(const std::string& filename);
 	~Maps();
-	void showMap(sf::RenderWindow *window);
-	void getTileGraphicsAddressesSet(std::string str);
+	void showMap(sf::RenderWindow *window, sf::Vector2f heroPosition);
+	void getTileGraphicsAddressesSet(std::string str, std::string path);
 	void createTiles();
 
 
 };
 
 #endif
+
+
+//30 30		//map size in format rows x columns number
+//*

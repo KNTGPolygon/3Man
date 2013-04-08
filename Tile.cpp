@@ -28,3 +28,8 @@ sf::Vector2i Tile::getPosition()
 	{
 		this->type = type;
 	}
+
+	Tile::~Tile()
+	{
+
+	}

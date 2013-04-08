@@ -19,3 +19,18 @@ MapObject::MapObject()
 	sf::Vector2i defaultPosition(0,0);
 	objectPosition = defaultPosition;
 }
+
+void MapObject::changeType(int _type)
+{
+	objectType = _type;
+}
+
+sf::Vector2i MapObject::getPosition()
+{
+	return objectPosition;
+}
+
+int MapObject::getType()
+{
+	return objectType;
+}

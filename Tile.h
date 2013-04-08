@@ -19,6 +19,8 @@ public:
 	sf::Vector2i getPosition();
 	void changeType(int type);
 
+	~Tile();
+
 };
 
 #endif

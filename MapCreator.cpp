@@ -468,7 +468,7 @@ bool MapCreator::saveMap(std::string filename)
 	std::ofstream outputFile;
 
 	std::ifstream inputFile;
-	inputFile.open(path + filename + ".map");
+	inputFile.open((path + filename + ".map").c_str());
 
 	if(!inputFile.eof())
 	{	

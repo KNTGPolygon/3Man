@@ -29,8 +29,7 @@ void GameState::Display()
 	GameEngine::getInstance()->AddToRenderQueue((Drawable*)hero);
 	for ( int i = 0; i < 8; i++ )
 		GameEngine::getInstance()->AddToRenderQueue((Drawable*)tree[i]);
-
-	map->showMap(&GameEngine::getInstance()->getWindow());
+	map->showMap(&GameEngine::getInstance()->getWindow(), hero->GetPosition());
 	hero->SetCamera(&GameEngine::getInstance()->getView(),&GameEngine::getInstance()->getWindow());
 
 	GameEngine::getInstance()->ExecuteRenderQueue();

@@ -7,12 +7,17 @@ Button::Button(const sf::Input &_steering,sf::Vector2f _position,sf::Vector2f _s
 	box   = sf::Shape::Rectangle(0,0,size.x,size.y,color);
 	text.SetColor(sf::Color(255,255,255));
 	box.SetPosition(position);
-	text.SetPosition(box.GetPosition());
 	text.SetText( _text );
-	text.SetCenter(box.GetCenter());
+	//text.SetCenter(box.GetCenter());
+	text.SetCenter(text.GetRect().GetWidth() /2,text.GetRect().GetHeight()/2);
+	text.SetPosition(box.GetPosition().x + size.x/2,box.GetPosition().y + size.y/2);
+	//text.SetCenter((text.GetRect().GetWidth() - size.x)/2, (text.GetRect().GetHeight() + size.y)/2);
+
+
 }
 
 Button::~Button(void)
+
 {
 }
 void Button::SetPosition(sf::Vector2f newPosition)

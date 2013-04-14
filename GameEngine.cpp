@@ -189,7 +189,10 @@ bool GameEngine::Collision( SpriteExt& sprite1, SpriteExt& sprite2 )
 
 	return false;
 }
-
+void GameEngine::SwitchWindowIsOpen(bool WindowIsOpen)
+{
+	windowIsOpen = WindowIsOpen;
+}
 void GameEngine::FlushCollisionList()
 {
 	CollisionList.clear();

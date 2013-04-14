@@ -79,6 +79,7 @@ public:
 	void SwitchState();		 // dokonuje faktycznej zamiany state'ow (nie ruszac, to sie robi samo!)
 	State* getCurrentState();
 	
+	void SwitchWindowIsOpen(bool WindowIsOpen);
 	void AddToRenderQueue(Drawable*);
 	void FlushRenderQueue();
 	void ExecuteRenderQueue();

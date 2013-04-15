@@ -502,7 +502,7 @@ bool MapCreator::saveMap(std::string filename)
 			tempFilename << filename << ".map";
 
 	
-	outputFile.open(path + tempFilename.str());
+	outputFile.open((path + tempFilename.str()).c_str());
 
 	if(outputFile)
 	{

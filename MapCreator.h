@@ -14,12 +14,11 @@
 #ifndef MAP_CREATOR_H
 #define MAP_CREATOR_H
 
+enum CreatorStates {SET_MAP_SIZE, MAIN};
+
 class MapCreator{
 
 private:
-	//how many fields does the createdMap have
-	//toolboxFirstFieldNumber is used in browsing through toolbox fields
-	int cooldown;
 	unsigned int Size;
 	unsigned int toolboxFirstFieldNumber;
 	unsigned int verticalToolboxFirstFieldNumber;
@@ -64,8 +63,11 @@ public:
 	void changingSpriteInMap(sf::Vector2i mapClickPosition);
 	void changingObjectInMap(sf::Vector2i mapClickPosition);
 
+	void initializeMapArrays (int Size);
+
 	void GetSteeringEvent();
 	void GetEvent(sf::Event&);
+	void GetTextboxEvent(sf::Event&, std::string text, CreatorStates &state);
 
 	void MoveCamera(sf::View *View, sf::RenderWindow *window);
 	void GetScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);

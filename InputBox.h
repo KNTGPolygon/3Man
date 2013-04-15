@@ -36,7 +36,7 @@ private:
 	static	const int TEXT_SHIFT = 5;
 	const sf::Input &steering;
 public:
-	InputBox(const sf::Input &_steering,sf::Vector2f _position,sf::Vector2f _size = sf::Vector2f(200,30));
+	InputBox(const sf::Input &_steering,sf::Vector2f _position, std::string defaultInboxText = "Wprowadz text", sf::Vector2f _size = sf::Vector2f(200,30));
 	~InputBox(void);
 
 	void HandleEvent(sf::Event event);

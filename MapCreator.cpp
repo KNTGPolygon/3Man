@@ -3,7 +3,6 @@
 MapCreator::MapCreator(const sf::Input &_steering)
 	:steering(_steering)
 {
-	cooldown = 0;
 
 	//loading images from files, creating sprites
 	LoadTileGraphics();
@@ -24,15 +23,19 @@ MapCreator::MapCreator(const sf::Input &_steering)
 	
 	sampleSpriteSize = tileSprites.at(1).GetSize();
 
-	//defining size of map
-	Size = 30;
-
 	//setting default value of camera
 	cameraPosition.x = 350;
 	cameraPosition.y = 200;
 
 	toolboxFirstFieldNumber = 1;
 	verticalToolboxFirstFieldNumber = 1;
+
+}
+
+void MapCreator::initializeMapArrays (int Size)
+{
+	//defining size of map
+	this->Size = Size;
 
 	//creating dynamic two-dimensional arrays
 	createdMap = new Tile*[Size];
@@ -59,7 +62,6 @@ MapCreator::MapCreator(const sf::Input &_steering)
 		}
 
 }
-
 
 void MapCreator::Display(sf::RenderWindow *window)
 {
@@ -166,13 +168,9 @@ void MapCreator::Display(sf::RenderWindow *window)
 				tileSprites.at(0).SetScale(1,1);
 				window->Draw(tileSprites.at(0));
 				tileSprites.at(0).SetScale(0.5,0.5);
-
-				cooldown = 10;
 			}
 			
 
-		if(cooldown > 0)
-			cooldown--;
 
 }
 
@@ -185,7 +183,6 @@ bool MapCreator::LoadTileGraphics()
 	std::ifstream dataSet("Data/Textures/EditorMapTiles/EditorLoadingFile.txt");
 	std::string str;
 
-	bool WeaponFound = false;
 		 if (!dataSet) {
         std::cerr << "Nie udało się załadował pliku " <<" EditorLoadingFile.txt "<< "\n";
 		return 0;
@@ -226,6 +223,7 @@ bool MapCreator::LoadTileGraphics()
 				counter ++;
 			
 			 }
+		   dataSet.close();
 		 }
 		  
 
@@ -311,37 +309,61 @@ void MapCreator::GetSteeringEvent()
 
 }
 
+void MapCreator::GetTextboxEvent(sf::Event& event, std::string text, CreatorStates &state)
+{
+	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::Return) && state == SET_MAP_SIZE)
+	{
+		int x = atoi(text.c_str());
+		if (x>256)
+			{
+				x = 256;
+			}
+		else if(x==0)
+			{
+				x = 32;
+				std::cout << "!!! WARNING: Setting default: 32x32 fields !!!" << std::endl;
+			}
+		initializeMapArrays(x);
+		state = MAIN;
+	}
+}
+
 void MapCreator::GetEvent(sf::Event& event)
 {
 	sf::Vector2i mousePos;
 	mousePos.x = steering.GetMouseX();
 	mousePos.y = steering.GetMouseY();
 
-	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::D) )
+	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::F2))
+	{
+		saveMap("Test");
+	}
+
+	else if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::D) )
 	{
 		if(toolboxFirstFieldNumber > 1)
 			toolboxFirstFieldNumber --;
 	}
 
-	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::A) )
+	else if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::A) )
 	{
 		if(toolboxFirstFieldNumber < tileSprites.size())
 			toolboxFirstFieldNumber ++;
 	}
 
-	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::S) )
+	else if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::S) )
 	{
 		if(verticalToolboxFirstFieldNumber > 1)
 			verticalToolboxFirstFieldNumber --;
 	}
 
-	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::W) )
+	else if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::W) )
 	{
 		if(verticalToolboxFirstFieldNumber < objectSprites.size())
 			verticalToolboxFirstFieldNumber ++;
 	}
 
-	if((event.Type == sf::Event::MouseButtonPressed) && (event.Key.Code == sf::Mouse::Left))
+	else if((event.Type == sf::Event::MouseButtonPressed) && (event.Key.Code == sf::Mouse::Left))
 	{
 		if(mousePos.y < 100 || mousePos.x > 700)
 		{
@@ -440,7 +462,6 @@ void MapCreator::changingObjectInMap(sf::Vector2i mapClickPosition)
 
 MapCreator::~MapCreator()
 {
-	saveMap("Test");
 	
 	for(unsigned int i = 0; i < Size; ++i)
     delete [] createdMap[i];
@@ -462,36 +483,83 @@ MapCreator::~MapCreator()
 
 bool MapCreator::saveMap(std::string filename)
 {
+	int counter = 0;
 	std::stringstream tempFilename;
 
 	std::string path = "./Data/Maps/";
 	std::ofstream outputFile;
 
-	std::ifstream inputFile;
-	inputFile.open((path + filename + ".map").c_str());
+	//opening dataSet!
+	std::ifstream dataSet("Data/Textures/EditorMapTiles/EditorLoadingFile.txt");
+	std::string str;
 
-	if(!inputFile.eof())
-	{	
-		srand ((unsigned int)time(NULL));
-		int i = rand() % 1000;
+		 if (!dataSet) 
+			 {
+				std::cerr << "Nie udało się załadował pliku " <<" EditorLoadingFile.txt "<< "\n";
+				return 0;
+			 }
 		
-		tempFilename << filename;
-		tempFilename << i;
-		tempFilename << ".map";
-		inputFile.close();
-		inputFile.open((path + tempFilename.str()).c_str());
-
-	}
+			tempFilename << filename << ".map";
 
 	
-	outputFile.open((path + tempFilename.str()).c_str());
+	outputFile.open(path + tempFilename.str());
 
 	if(outputFile)
 	{
+		outputFile << Size << "\n" << "*" << "\n";
+		outputFile << "./Data/Textures/MapTiles/" << "\n" << "*" << "\n";
+			
+				  while( !dataSet.eof() )
+					{	
+						dataSet >> str;
+							if(str.at(0) == '-')
+						{
+							counter = 0;
+							break;
+						}
 
+						if(counter != 0)
+						outputFile << counter << "-" << str << "\n";
+
+						counter ++;
+				   }
+		outputFile << "*" << "\n";
+		for(unsigned int row = 0; row < Size; row++)
+		{
+			for(unsigned int col = 0; col < Size ; col++)
+			{
+				if(col != Size-1)
+					outputFile << createdMap[row][col].getType() << " ";
+				else
+				{
+					outputFile << createdMap[row][col].getType();
+				}
+			}
+			outputFile << "\n" ;
+		}
+		outputFile << "*" << "\n";
+
+		for(unsigned int row = 0; row < Size*2; row++)
+			{
+				for(unsigned int col = 0; col < Size*2; col++)
+				{
+					if(col != Size*2-1 && mapObjects[row][col].getType() != -1)
+						outputFile << " " << mapObjects[row][col].getType() << " ";
+					else if(col != Size*2-2)
+					{
+						outputFile << mapObjects[row][col].getType() << " ";
+					}
+					else
+					{
+						outputFile << mapObjects[row][col].getType();
+					}
+				}
+				outputFile << "\n" ;
+			}
+		outputFile << "*" ;
+		std::cout << "Map saved!" << std::endl;
 	}
 
 	outputFile.close();
-	inputFile.close();
 	return true;
 }

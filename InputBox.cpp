@@ -1,16 +1,16 @@
 #include "InputBox.h"
 
 
-InputBox::InputBox(const sf::Input &_steering,sf::Vector2f _position,sf::Vector2f _size):
+InputBox::InputBox(const sf::Input &_steering,sf::Vector2f _position, std::string defaultInboxText, sf::Vector2f _size):
 steering(_steering),position(_position),size(_size)
 {
 	textSize = 20.0;
 	box		= sf::Shape::Rectangle(0,0,size.x,size.y,sf::Color(125,125,125));
 	karetka = sf::Shape::Rectangle(0,0,2.0,textSize + 4,sf::Color(0,0,0));
 	text.SetColor(sf::Color(0,0,0));
-	textString = "Wprowadz text";
+	textString = defaultInboxText;
 	tempTextString = textString;
-	text.SetText("Wprowadz text");
+	text.SetText(textString);
 	text.SetSize(textSize);
 	box.SetPosition(position);
 	text.SetPosition(position.x + TEXT_SHIFT,position.y + 5 );

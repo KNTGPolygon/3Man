@@ -79,18 +79,24 @@ Maps::Maps(const std::string& filename)
 				}
 			 }while(looping);
 
-				//decoding map (from second row)
+
 			  while ( map.good() )
 				{
+						int fieldType = -1;
 						 getline (map,stringRepresentingFileLine);
 					
 				 std::istringstream iss(stringRepresentingFileLine);
 				 std::string sub;
 
+				 looping = true;
 						do
 						{
 						iss >>sub;
-							
+						if(sub.at(0) == '*')
+						{
+							break;
+						}
+						
 							map_data[rowNumber][colNumber] = Tile(atoi(sub.c_str()), 0 + colNumber * 64, 0+rowNumber*64);
 							colNumber++;
 						}
@@ -99,15 +105,22 @@ Maps::Maps(const std::string& filename)
 						rowNumber++;
 						colNumber = 0;
 
+						if(sub.at(0) == '*')
+							{
+								break;
+							}
+
 				}
 				
 		 map.close();
 
 		 createTiles();
 
+
 }
 void Maps::showMap(sf::RenderWindow *window, sf::Vector2f heroPosition)
 {	
+
 	sf::Vector2i leftTopFieldVisible;
 	sf::Vector2i rightBotFieldVisible;
 

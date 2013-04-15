@@ -545,9 +545,13 @@ bool MapCreator::saveMap(std::string filename)
 				{
 					if(col != Size*2-1 && mapObjects[row][col].getType() != -1)
 						outputFile << " " << mapObjects[row][col].getType() << " ";
-					else if(col != Size*2-2)
+					else if(col != Size*2-1)
 					{
 						outputFile << mapObjects[row][col].getType() << " ";
+					}
+					else if(mapObjects[row][col].getType() != -1)
+					{
+						outputFile << " " << mapObjects[row][col].getType();
 					}
 					else
 					{

@@ -2,6 +2,7 @@
 #include "Hero.h"
 #include "Maps.h"
 #include "Tree.h"
+#include "Enemy.h"
 
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
@@ -12,6 +13,8 @@ private:
 	Hero* hero;
 	Maps* map;
 	Tree* tree[8];
+	Enemy* pirate;
+
 public:
 	GameState();
 	void Init();

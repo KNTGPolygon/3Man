@@ -17,6 +17,10 @@ private:
 	float velocity;
 	float distanceFromTarget;
 
+	float pullRange;
+	float escapeRange;
+	float distanceFromHero;
+
 	std::vector<sf::Vector2i> *path;
 private:
 
@@ -39,6 +43,8 @@ private:
 
 	sf::Vector2i myPosition;
 	sf::Vector2i target;
+	sf::Vector2i heroPosition;
+
 public:
 
 	void Display(sf::RenderWindow *window);
@@ -48,6 +54,9 @@ public:
 	void AI();
 	void SetStartPosition(sf::Vector2f Position);
 	void SetPathPoints(std::vector<sf::Vector2i> *Path);
-	Enemy(sf::Vector2i Position = sf::Vector2i(300,300),std::string fileName = "Pirate.PNG" , float Velocity = 2.0 );
+	Enemy(sf::Vector2i Position = sf::Vector2i(300,300),std::string fileName = "Pirate.PNG" ,
+		float Velocity = 2.0 , float PullRange = 200.0 );
 	~Enemy(void);
+
+	void SetHeroPosition( sf::Vector2f HeroPosition );
 };

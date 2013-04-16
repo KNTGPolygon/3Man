@@ -43,6 +43,7 @@ void GameState::EventHandling()
 	hero->UpdatePosition();
 	hero->GetEvent();
 	//pirate->Logic(sf::Vector2i(500,500));
+	pirate->SetHeroPosition(hero->GetPosition());
 	pirate->AI();
 
 	for ( int i = 0; i < 8; i++ )

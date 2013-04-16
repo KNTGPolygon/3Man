@@ -1,7 +1,8 @@
 #include "Enemy.h"
 
-Enemy::Enemy(sf::Vector2i Position,std::string fileName, float Velocity )
-:myPosition(Position) ,velocity(Velocity)
+Enemy::Enemy(sf::Vector2i Position,std::string fileName, float Velocity,
+	float PullRange)
+:myPosition(Position) ,velocity(Velocity),pullRange(PullRange)
 {
 	myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+fileName );
 	myTexture.SetSmooth( false );
@@ -15,6 +16,8 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, float Velocity )
 	inMove		  = false;
 	targetReached = false;
 	pathNumber	  = 0;
+	escapeRange = 300;
+	pullRange = PullRange;
 	path = new std::vector<sf::Vector2i> ;
 	path->push_back(sf::Vector2i(500,500));
 	path->push_back(sf::Vector2i(400,400));
@@ -58,28 +61,23 @@ void Enemy::Logic(sf::Vector2i Target)
 }
 void Enemy::AI()
 {
-
 	switch( myAI )
 	{
 	case PATHWALK:
+
+		if( distanceFromHero < pullRange )
+		{
+			myAI = FOLLOW;
+			std::cout<<"Following...\n";
+			break;
+		}
+
 		if( pathNumber <  (signed) ( path->size() ) )
 		{
 			if (  targetReached == false )
 			{
 					Logic( path[0][pathNumber] );
 					
-					/*
-					std::cout<<" unsigned path size = "<< path->size()<<"\n";
-					std::cout<<" signed path size = "<<(signed) path->size()<<"\n";
-					std::cout<<" path[2].x  = "<< path[2]->x <<"\n";
-					std::cout<<" path[2].y  = "<< path[2]->y <<"\n";
-					std::cout<<" path[0][0].x  = "<< path[0][0].x <<"\n";
-					std::cout<<" path[0][0].y  = "<< path[0][0].y <<"\n";
-					std::cout<<" path[0][1].x  = "<< path[0][1].x <<"\n";
-					std::cout<<" path[0][1].y  = "<< path[0][1].y <<"\n";
-					system("pause");
-					system("pause");
-					*/
 			}else
 			{
 				targetReached = false;
@@ -93,24 +91,22 @@ void Enemy::AI()
 		{
 			pathNumber = 0;
 			std::cout<<"pathNumber = "<< pathNumber <<"\n";
-			//system("pause");
 		}		
 		break;
-	case FOLLOW:
+	case FOLLOW:	
+			Logic( heroPosition );
+			if( distanceFromHero > escapeRange )
+			{
+			myAI = PATHWALK;
+			std::cout<<"Returning to path...\n";
+			}
+
 		break;
 	case COMBAT:
 		break;
 	default:
 		break;
 	}
-	/*if(targetReached == false )
-	{
-		
-	}
-	else
-	
-	Logic( target );
-	*/
 }
 
 int Enemy::GoToPosition(sf::Vector2i Destination)
@@ -146,4 +142,11 @@ void Enemy::Display(sf::RenderWindow *window)
 void Enemy::SetPathPoints(std::vector<sf::Vector2i> *Path)
 {
 	path = Path;
+}
+void Enemy::SetHeroPosition( sf::Vector2f HeroPosition )
+{
+	heroPosition.x = (int) HeroPosition.x;
+	heroPosition.y = (int) HeroPosition.y;
+
+	distanceFromHero = sqrt(pow(myPosition.x - HeroPosition.x,2) + pow(myPosition.y - HeroPosition.y,2));
 }

@@ -44,6 +44,7 @@ private:
 	sf::Vector2i myPosition;
 	sf::Vector2i target;
 	sf::Vector2i heroPosition;
+	sf::Vector2f shiftVector;
 
 public:
 
@@ -55,7 +56,7 @@ public:
 	void SetStartPosition(sf::Vector2f Position);
 	void SetPathPoints(std::vector<sf::Vector2i> *Path);
 	Enemy(sf::Vector2i Position = sf::Vector2i(300,300),std::string fileName = "Pirate.PNG" ,
-		float Velocity = 2.0 , float PullRange = 200.0 );
+		float Velocity = 1.0 , float PullRange = 200.0 );
 	~Enemy(void);
 
 	void SetHeroPosition( sf::Vector2f HeroPosition );

@@ -18,6 +18,7 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, float Velocity,
 	pathNumber	  = 0;
 	escapeRange = 300;
 	pullRange = PullRange;
+
 	path = new std::vector<sf::Vector2i> ;
 	path->push_back(sf::Vector2i(500,500));
 	path->push_back(sf::Vector2i(400,400));
@@ -33,7 +34,7 @@ void Enemy::Logic(sf::Vector2i Target)
 	if(GoToPosition( Target ) ){
 		switch ( myDirection )
 		{
-		case UP:
+	/*	case UP:
 			mySprite.Move( 0 , -velocity );
 				  break;
 		case DOWN:
@@ -44,10 +45,11 @@ void Enemy::Logic(sf::Vector2i Target)
 				  break;
 		case LEFT:
 			mySprite.Move( -velocity , 0 );
-				  break;
+				  break; */
 		case STAY:
-				  break;
+				  break; 
 		default:
+			mySprite.Move(velocity*shiftVector);
 			break;
 		
 		}
@@ -112,11 +114,13 @@ void Enemy::AI()
 int Enemy::GoToPosition(sf::Vector2i Destination)
 {
 	distanceFromTarget = sqrt( pow((float)(myPosition.x - Destination.x),2) +  pow((float)(myPosition.y - Destination.y),2) );
-	
+	shiftVector.x = ( Destination.x - myPosition.x )/ distanceFromTarget ;
+	shiftVector.y = ( Destination.y - myPosition.y )/ distanceFromTarget ;
+
 	if( distanceFromTarget < 5.0 ) inMove = false;
 	else inMove = true;
 
-	if(Destination.x <= myPosition.x && Destination.y < myPosition.y )		//I
+	/*if(Destination.x <= myPosition.x && Destination.y < myPosition.y )		//I
 		myDirection = LEFT;
 	else if(Destination.x > myPosition.x && Destination.y <= myPosition.y )	//II
 		myDirection = UP;
@@ -124,6 +128,7 @@ int Enemy::GoToPosition(sf::Vector2i Destination)
 		myDirection = DOWN;
 	else if(Destination.x >= myPosition.x && Destination.y > myPosition.y )	//IV
 		myDirection = RIGHT;
+		*/
 	if(Destination == myPosition)
 		myDirection = STAY;
 

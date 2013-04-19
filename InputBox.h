@@ -27,6 +27,8 @@ private:
 	bool karetkaVisable;
 	bool typing;
 	bool shifted;
+	bool singleKeyPress;
+	bool keyHolded;
 
 	float lastTime;
 	float currentTime;

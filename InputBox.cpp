@@ -17,7 +17,8 @@ steering(_steering),position(_position),size(_size)
 	karetka.SetPosition(position.x + TEXT_SHIFT,position.y + 3 );
 	karetkaVisable  = false;
 	typing			= false;
-	shifted			= false;
+	keyHolded		= false;
+	singleKeyPress  = false;
 	lastTime = currentTime = 0.0;
 	karetkaBlinkTime = 0.5;
 	lastSymbolEntered = 0;
@@ -52,16 +53,18 @@ void InputBox::HandleEvent(sf::Event event)
 	if(active == true)
 	{
 		currentTime = timer.GetElapsedTime();
-		
-
-		
+			
 		if(event.Type == sf::Event::TextEntered)		
 		{	
 			typing = true;
-			if(event.Text.Unicode == lastSymbolEntered)
+
+			
+			
+			
+			// wcisnieto raz 
+			if(event.Text.Unicode == lastSymbolEntered && singleKeyPress == false)
 			{
-				if(event.Text.Unicode == 8 && textString.length()>0 
-									&& (currentTime-lastTime)>0.05)
+				if(event.Text.Unicode == 8 && textString.   length()>0 )
 				{
 					textString.erase( textString.length() - 1 );
 					lastSymbolEntered = event.Text.Unicode;
@@ -70,27 +73,64 @@ void InputBox::HandleEvent(sf::Event event)
 				}
 
 				else
-				if((currentTime-lastTime)>0.2)
 				{
 					lastSymbolEntered = event.Text.Unicode;
 					lastTime = currentTime;	
 					textString += (char)event.Text.Unicode;
 				}
 			}
+			//przytrzymano
+
+			else if(event.Text.Unicode == lastSymbolEntered && singleKeyPress == true)
+			{
+				if( (currentTime - lastTime) > 0.5  )
+				{
+						keyHolded = true;
+						lastTime = currentTime;
+				}
+
+				if( keyHolded == true )
+				{
+					if(event.Text.Unicode == 8 && textString.length()>0 
+					 && (currentTime-lastTime)>0.05 )
+					{
+						textString.erase( textString.length() - 1 );
+						lastSymbolEntered = event.Text.Unicode;
+						lastTime = currentTime;	
+						if( stringShift > 0 ) stringShift--;
+					}
+
+					else
+					if((currentTime-lastTime)>0.05)
+					{
+						lastSymbolEntered = event.Text.Unicode;
+						lastTime = currentTime;	
+						textString += (char)event.Text.Unicode;
+					}
+				}
+			}
+
+			//wcisnieto inny klawisz
 			if( event.Text.Unicode != lastSymbolEntered)
 			{
 				if(event.Text.Unicode == 8 && textString.length()>0)
 				{
 					textString.erase( textString.length() - 1 );
 				}
+				
 				lastTime = currentTime;
 				lastSymbolEntered = event.Text.Unicode;
 				textString += (char)event.Text.Unicode;
 				if( stringShift > 0 ) stringShift--;
 			}
-					
+			singleKeyPress = true;		
 		}
-		else typing = false;
+		else 
+			{
+				typing		   = false;
+				singleKeyPress = false;
+				keyHolded      = false;
+			}
 		
 		text.SetText( tempTextString );
 		karetka.SetPosition(text.GetPosition().x + text.GetRect().GetWidth() ,position.y + 3);

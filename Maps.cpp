@@ -7,7 +7,6 @@ Maps::Maps(const std::string& filename)
 
 	//checking whether file can be opened
 	std::ifstream map(filename.c_str());
-	//std::ifstream map(filename.c_str(), std::ifstream::out );
 		 if (!map) 
 		 {
 			std::cerr << "Nie udalo sie zaladowac pliku mapy!!! " << filename << "\n";
@@ -35,9 +34,9 @@ Maps::Maps(const std::string& filename)
 		  }while(looping);
 
 	//creating dynamic two-dimensional array (tiles created with default constructor, each with type = -1)
-	map_data = new Tile*[1000];   // Tutaj sie wywalo, bo Size nie bylo deklarowane. Tymczasowo ustawiam sztywny rozmiar mapy na 1000,
-	for(int i = 0; i < 1000; ++i) // ale pozniej trzeba dodac obsluge wczytywanie rozmiaru mapy z pliku.
-    map_data[i] = new Tile[1000];
+	map_data = new Tile*[Size];
+	for(int i = 0; i < Size; ++i)
+    map_data[i] = new Tile[Size];
 
 	int rowNumber = 0;
 	int colNumber = 0;
@@ -79,7 +78,7 @@ Maps::Maps(const std::string& filename)
 					}
 				}
 			 }while(looping);
-
+//------------------------
 
 			  while ( map.good() )
 				{
@@ -100,10 +99,23 @@ Maps::Maps(const std::string& filename)
 						
 							map_data[rowNumber][colNumber] = Tile(atoi(sub.c_str()), 0 + colNumber * 64, 0+rowNumber*64);
 							colNumber++;
+
+							if(colNumber == Size)
+							{
+								break;
+							}
+
 						}
 						while(iss);
 
+						
 						rowNumber++;
+
+						if(rowNumber == Size)
+							break;
+
+						
+
 						colNumber = 0;
 
 						if(sub.at(0) == '*')
@@ -117,7 +129,7 @@ Maps::Maps(const std::string& filename)
 
 		 createTiles();
 
-
+		 //----------------------
 }
 void Maps::showMap(sf::RenderWindow *window, sf::Vector2f heroPosition)
 {	

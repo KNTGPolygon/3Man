@@ -52,7 +52,11 @@ void GameState::EventHandling()
 
 void GameState::GetEvents()
 {
-
+	sf::Event event = GameEngine::getInstance()->getEvent();
+	if ((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::Escape))
+	{
+		GameEngine::getInstance()->ChangeState(MAINMENU);
+	}
 }
 
 void GameState::Cleanup()

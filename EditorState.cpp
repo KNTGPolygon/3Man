@@ -43,20 +43,28 @@ void EditorState::EventHandling()
 
 void EditorState::GetEvents()
 {
+
+	sf::Event event = GameEngine::getInstance()->getEvent();
 		if(state==SET_MAP_SIZE)
 			{
-			inputBox->HandleEvent(GameEngine::getInstance()->getEvent());
-			mapCreator->GetTextboxEvent(GameEngine::getInstance()->getEvent(), inputBox->GetString(), state);
+			inputBox->HandleEvent(event);
+			mapCreator->GetTextboxEvent(event, inputBox->GetString(), state);
 			}
 		else if (state == MAIN)
 			{
-			mapCreator->GetEvent(GameEngine::getInstance()->getEvent());
+			mapCreator->GetEvent(event);
 			}
+
+		if ((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::Escape))
+		{
+			GameEngine::getInstance()->ChangeState(MAINMENU);
+		}
 }
 
 void EditorState::Cleanup()
 {
-	delete mapCreator;
+	if (state == MAIN)
+		delete mapCreator;
 	init = 0;
 }
 

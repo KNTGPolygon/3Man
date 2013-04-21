@@ -102,26 +102,6 @@ bool GameEngine::run()
 				windowIsOpen = false;
 				break;
 			}
-			if ((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::Escape))
-			{
-				switch (currentState)
-				{
-					case MAINMENU:
-						window.Close();
-						windowIsOpen = false;
-						break;
-					case EDITOR:
-						ChangeState(MAINMENU);
-						break;
-					case GAME:
-						ChangeState(MAINMENU);
-						break;
-					case NOSTATE:
-						window.Close();
-						windowIsOpen = false;
-						break;
-				}
-			}
 			 if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::F))
 			{
 				if(fpsFlag == true)

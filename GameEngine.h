@@ -4,6 +4,7 @@
 #include <map>
 #include <queue>
 #include <vector>
+#include <cmath>
 #include "Drawable.h"
 #include "Functions.h"
 #include "State.h"
@@ -89,7 +90,7 @@ public:
 	const sf::Input& getSteering();
 	sf::Event& getEvent();
 
-	static bool Collision( SpriteExt&, SpriteExt& );
+	static bool Collision( SpriteExt*, SpriteExt* );
 	void AddToCollisionList(SpriteExt*);
 	void FlushCollisionList();
 	std::vector<SpriteExt*>& getCollisionList();

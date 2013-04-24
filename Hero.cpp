@@ -24,7 +24,8 @@ Hero::Hero(const sf::Input &_steering,float velocity)
 	Me.SetPosition( 350, 425 );
 	Me.SetCenter(16,32);
 
-	Me.setBoxMask(sf::IntRect(0,26,SPRITE_SIZE,SPRITE_SIZE)); //ustawia maske kolizji na prostakat
+	//Me.setBoxMask(sf::IntRect(0,26,SPRITE_SIZE,SPRITE_SIZE)); //ustawia maske kolizji na prostakat
+	Me.setCircleMask(Me.GetCenter().x,Me.GetCenter().y,30);
 
 	GameEngine::getInstance()->AddToCollisionList(&Me);
 
@@ -125,11 +126,11 @@ void Hero::Display(sf::RenderWindow *window)
 	std::vector<SpriteExt*> list = GameEngine::getInstance()->getCollisionList();
 
 	bool col = 0;
-	for ( int i = 0; i < list.size(); i++ )
+	for ( unsigned int i = 0; i < list.size(); i++ )
 	{
-		if( GameEngine::Collision(Me,*list[i]) && list[i] != &Me )
+		if( GameEngine::Collision(&Me,list[i]) && list[i] != &Me )
 		{
-			((BoxMask*)Me.getCollisionMask())->Display(window,
+			((CircleMask*)Me.getCollisionMask())->Display(window,
 													   sf::Vector2f(Me.GetPosition().x-Me.GetCenter().x,
 															        Me.GetPosition().y-Me.GetCenter().y),
 													   sf::Color(255, 0, 0));
@@ -139,7 +140,7 @@ void Hero::Display(sf::RenderWindow *window)
 	}
 
 	if (!col)
-		((BoxMask*)Me.getCollisionMask())->Display(window,
+		((CircleMask*)Me.getCollisionMask())->Display(window,
 												   sf::Vector2f(Me.GetPosition().x-Me.GetCenter().x,
 														        Me.GetPosition().y-Me.GetCenter().y));
 

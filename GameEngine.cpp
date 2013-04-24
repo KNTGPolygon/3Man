@@ -143,26 +143,75 @@ void GameEngine::ExecuteRenderQueue()
 	}
 }
 
-bool GameEngine::Collision( SpriteExt& sprite1, SpriteExt& sprite2 )
+bool GameEngine::Collision( SpriteExt* sprite1, SpriteExt* sprite2 )
 {
-	CollisionMask* mask1 = sprite1.getCollisionMask();
-	CollisionMask* mask2 = sprite2.getCollisionMask();
+	CollisionMask* mask1 = sprite1->getCollisionMask();
+	CollisionMask* mask2 = sprite2->getCollisionMask();
 
 	if ( mask1 == NULL || mask2 == NULL )
 		return false;
 
 	if ( mask1->getType() == BOX && mask2->getType() == BOX )
 	{
-		int Ax1 = sprite1.GetPosition().x-sprite1.GetCenter().x+((BoxMask*)mask1)->getRect().Left;
-		int Ax2 = sprite1.GetPosition().x-sprite1.GetCenter().x+((BoxMask*)mask1)->getRect().Right;
-		int Ay1 = sprite1.GetPosition().y-sprite1.GetCenter().y+((BoxMask*)mask1)->getRect().Top;
-		int Ay2 = sprite1.GetPosition().y-sprite1.GetCenter().y+((BoxMask*)mask1)->getRect().Bottom;
-		int Bx1 = sprite2.GetPosition().x-sprite2.GetCenter().x+((BoxMask*)mask2)->getRect().Left;
-		int Bx2 = sprite2.GetPosition().x-sprite2.GetCenter().x+((BoxMask*)mask2)->getRect().Right;
-		int By1 = sprite2.GetPosition().y-sprite2.GetCenter().y+((BoxMask*)mask2)->getRect().Top;
-		int By2 = sprite2.GetPosition().y-sprite2.GetCenter().y+((BoxMask*)mask2)->getRect().Bottom;
+		int Ax1 = sprite1->GetPosition().x-sprite1->GetCenter().x+((BoxMask*)mask1)->getRect().Left;
+		int Ax2 = sprite1->GetPosition().x-sprite1->GetCenter().x+((BoxMask*)mask1)->getRect().Right;
+		int Ay1 = sprite1->GetPosition().y-sprite1->GetCenter().y+((BoxMask*)mask1)->getRect().Top;
+		int Ay2 = sprite1->GetPosition().y-sprite1->GetCenter().y+((BoxMask*)mask1)->getRect().Bottom;
+		int Bx1 = sprite2->GetPosition().x-sprite2->GetCenter().x+((BoxMask*)mask2)->getRect().Left;
+		int Bx2 = sprite2->GetPosition().x-sprite2->GetCenter().x+((BoxMask*)mask2)->getRect().Right;
+		int By1 = sprite2->GetPosition().y-sprite2->GetCenter().y+((BoxMask*)mask2)->getRect().Top;
+		int By2 = sprite2->GetPosition().y-sprite2->GetCenter().y+((BoxMask*)mask2)->getRect().Bottom;
 
 		if ( Ax1 <= Bx2 && Ax2 >= Bx1 && Ay1 <= By2 && Ay2 >= By1 )
+			return true;
+		else return false;
+	}
+
+	if ( mask1->getType() == CIRCLE && mask2->getType() == CIRCLE )
+	{
+		int x1 = sprite1->GetPosition().x-sprite1->GetCenter().x+((CircleMask*)mask1)->getX();
+		int y1 = sprite1->GetPosition().y-sprite1->GetCenter().y+((CircleMask*)mask1)->getY();
+		int x2 = sprite2->GetPosition().x-sprite2->GetCenter().x+((CircleMask*)mask2)->getX();
+		int y2 = sprite2->GetPosition().y-sprite2->GetCenter().y+((CircleMask*)mask2)->getY();
+		int r1 = ((CircleMask*)mask1)->getRadius();
+		int r2 = ((CircleMask*)mask2)->getRadius();
+
+		if ( sqrt(pow(x1-x2,2)+pow(y1-y2,2)) <= r1+r2 )
+			return true;
+		else return false;
+	}
+
+	if ( (mask1->getType() == BOX && mask2->getType() == CIRCLE) ||  (mask1->getType() == CIRCLE && mask2->getType() == BOX))
+	{
+		if (mask1->getType() == CIRCLE)
+		{
+			SpriteExt* tmp = sprite1;
+			sprite1 = sprite2;
+			sprite2 = tmp;
+			mask1 = sprite1->getCollisionMask();
+			mask2 = sprite2->getCollisionMask();
+		}
+
+		int x1 = sprite1->GetPosition().x-sprite1->GetCenter().x+((BoxMask*)mask1)->getRect().Left;
+		int x2 = sprite1->GetPosition().x-sprite1->GetCenter().x+((BoxMask*)mask1)->getRect().Right;
+		int y1 = sprite1->GetPosition().y-sprite1->GetCenter().y+((BoxMask*)mask1)->getRect().Top;
+		int y2 = sprite1->GetPosition().y-sprite1->GetCenter().y+((BoxMask*)mask1)->getRect().Bottom;
+
+		int cx = sprite2->GetPosition().x-sprite2->GetCenter().x+((CircleMask*)mask2)->getX();
+		int cy = sprite2->GetPosition().y-sprite2->GetCenter().y+((CircleMask*)mask2)->getY();
+		int r = ((CircleMask*)mask2)->getRadius();
+
+		if ( cx >= x1 && cx <= x2 && cy >= y1 && cy <= y2 )
+			return true;
+		else if ( sqrt(pow(x1-cx,2)+pow(y1-cy,2)) <= r ||
+				  sqrt(pow(x2-cx,2)+pow(y1-cy,2)) <= r ||
+				  sqrt(pow(x1-cx,2)+pow(y2-cy,2)) <= r ||
+				  sqrt(pow(x2-cx,2)+pow(y2-cy,2)) <= r )
+			return true;
+		else if ( (abs(cx-x1) <= r && (cy-y1)*(cy-y2) < 0 ) ||
+				  (abs(cx-x2) <= r && (cy-y1)*(cy-y2) < 0 ) ||
+				  (abs(cy-y1) <= r && (cx-x1)*(cx-x2) < 0 ) ||
+				  (abs(cy-y2) <= r && (cx-x1)*(cx-x2) < 0 ) )
 			return true;
 		else return false;
 	}

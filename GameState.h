@@ -12,7 +12,7 @@ class GameState : public State
 private:
 	Hero* hero;
 	Maps* map;
-	Tree* tree[8];
+	Tree* tree[20];
 	Enemy* pirate;
 
 public:

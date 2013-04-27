@@ -48,10 +48,16 @@ void GameState::Display()
 	hero->SetCamera(&GameEngine::getInstance()->getView(),&GameEngine::getInstance()->getWindow());
 	
 	GameEngine::getInstance()->ExecuteRenderQueue();
+
+	if(GameEngine::getInstance()->devmode)
+		GameEngine::getInstance()->DisplayCollisionQuadtree();
+
 }
 
 void GameState::EventHandling()
 {
+	GameEngine::getInstance()->ClearCollisionQuadtree();
+
 	hero->UpdatePosition();
 	hero->GetEvent();
 	//pirate->Logic(sf::Vector2i(500,500));
@@ -78,6 +84,5 @@ void GameState::Cleanup()
 	delete pirate;
 	for ( int i = 0; i < 20; i++ )
 		delete tree[i];
-
 	init = 0;
 }

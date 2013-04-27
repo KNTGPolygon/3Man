@@ -3,6 +3,7 @@
 #include <math.h>
 #include "ImageManager.h"
 #include "Functions.h"
+#include "SpriteExt.h"
 #ifndef MISSLE_H
 #define MISSLE_H
 
@@ -17,7 +18,7 @@ private:
 	float distanceFromTarget;	 // Odleg�o�� od celu ( kliku myszki )
 	
 	sf::Image myTexture;
-	sf::Sprite mySprite;
+	SpriteExt mySprite;
 
 	sf::Vector2f startPosition;  //Wsp miejsca wystrza�u
 	sf::Vector2f currentPosition; 

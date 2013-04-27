@@ -15,6 +15,7 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	lastTime = 0;
 	mainMenu = true;
 	fpsFlag = true;
+	devmode = true;
 
 	strMouse.SetPosition(10.0,150.0);
 	strMouse.SetScale(0.5,0.5);
@@ -30,11 +31,14 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	
 	ptrToVect = &spr.GetPosition(); // pointer na vector2f
 	
+	collisionQuadtree = new QuadtreeNode(0,0,600,600);
+
 }
 
 GameEngine::~GameEngine(void)
 {
 	//freeResources(); ale to potem 
+	delete collisionQuadtree;
 	window.Clear();
 	window.Close();
 }
@@ -102,13 +106,11 @@ bool GameEngine::run()
 				windowIsOpen = false;
 				break;
 			}
-			 if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::F))
-			{
-				if(fpsFlag == true)
-					fpsFlag = false;
-				else fpsFlag = true;
-			}
-			
+			if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::F))
+				 fpsFlag = !fpsFlag;
+			if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::G))
+				devmode = !devmode;
+
 			 getCurrentState()->GetEvents();
 		}
 		
@@ -235,6 +237,26 @@ void GameEngine::AddToCollisionList( SpriteExt* spr )
 std::vector<SpriteExt*>& GameEngine::getCollisionList()
 {
 	return CollisionList;
+}
+
+void GameEngine::AddToCollisionQuadtree(SpriteExt* spr)
+{
+	collisionQuadtree->Add(spr);
+}
+
+bool GameEngine::DetectCollision(SpriteExt* spr)
+{
+	return collisionQuadtree->Collide(spr);
+}
+
+void GameEngine::ClearCollisionQuadtree()
+{
+	collisionQuadtree->Clear();
+}
+
+void GameEngine::DisplayCollisionQuadtree()
+{
+	collisionQuadtree->Display(&window);
 }
 
 sf::RenderWindow& GameEngine::getWindow()

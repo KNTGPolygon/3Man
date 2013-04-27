@@ -16,7 +16,7 @@ Animate::Animate(std::string filePath,sf::Vector2i FrameSize,sf::Vector2f Positi
 			mySprite[i].SetImage(myTexture);
 			mySprite[i].SetSubRect(sf::IntRect(i*FrameSize.x,Shift*FrameSize.y,FrameSize.x + i*FrameSize.x,Shift*FrameSize.y+FrameSize.y));
 			mySprite[i].SetPosition(Position);
-			mySprite[i].SetCenter(16,32);
+			mySprite[i].SetCenter(18,25);
 		}
 }
 

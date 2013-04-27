@@ -4,6 +4,7 @@
 SpriteExt::SpriteExt()
 {
 	collision_mask = NULL;
+	type = "";
 }
 
 void SpriteExt::setBoxMask(const sf::IntRect& _rect)
@@ -22,6 +23,16 @@ void SpriteExt::setCircleMask(int _x, int _y, int _radius)
 CollisionMask* SpriteExt::getCollisionMask()
 {
 	return collision_mask;
+}
+
+void SpriteExt::setType(std::string str)
+{
+	type = str;
+}
+
+std::string SpriteExt::getType()
+{
+	return type;
 }
 
 SpriteExt::~SpriteExt()

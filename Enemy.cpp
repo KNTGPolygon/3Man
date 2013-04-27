@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "GameEngine.h"
 
 Enemy::Enemy(sf::Vector2i Position,std::string fileName, float Velocity,
 	float PullRange)
@@ -24,6 +25,8 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, float Velocity,
 	path->push_back(sf::Vector2i(400,400));
 	path->push_back(sf::Vector2i(100,100));
 	path->push_back(sf::Vector2i(300,100));
+
+	mySprite.setCircleMask(20,20,20);
 }
 
 Enemy::~Enemy(void)
@@ -31,6 +34,7 @@ Enemy::~Enemy(void)
 }
 void Enemy::Logic(sf::Vector2i Target)
 {
+	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
 	if(GoToPosition( Target ) ){
 		switch ( myDirection )
 		{
@@ -143,6 +147,18 @@ void Enemy::SetStartPosition(sf::Vector2f Position)
 void Enemy::Display(sf::RenderWindow *window)
 {
 	window->Draw( mySprite );
+
+	if(GameEngine::getInstance()->devmode)
+	{
+		if ( GameEngine::getInstance()->DetectCollision(&mySprite) )
+		((CircleMask*)mySprite.getCollisionMask())->Display(window,
+														 sf::Vector2f(mySprite.GetPosition().x-mySprite.GetCenter().x,
+																	  mySprite.GetPosition().y-mySprite.GetCenter().y), sf::Color(255,0,0));
+		else
+		((CircleMask*)mySprite.getCollisionMask())->Display(window,
+														 sf::Vector2f(mySprite.GetPosition().x-mySprite.GetCenter().x,
+																	  mySprite.GetPosition().y-mySprite.GetCenter().y));
+	}
 }
 void Enemy::SetPathPoints(std::vector<sf::Vector2i> *Path)
 {

@@ -22,7 +22,8 @@ Hero::Hero(const sf::Input &_steering,float velocity)
     Me.SetScale( 1, 1 ); 
 	Me.SetSubRect(sf::IntRect(0,0,SPRITE_SIZE,SPRITE_SIZE));
 	Me.SetPosition( 350, 425 );
-	Me.SetCenter(16,32);
+	Me.SetCenter(18,25);
+	Me.setType("hero");
 
 	//Me.setBoxMask(sf::IntRect(0,26,SPRITE_SIZE,SPRITE_SIZE)); //ustawia maske kolizji na prostakat
 	Me.setCircleMask(Me.GetCenter().x,Me.GetCenter().y,30);
@@ -62,19 +63,19 @@ void Hero::GetEvent()
 {
 		ANIMATION_TYPE = STAY;
 
-		if( steering.IsKeyDown( sf::Key::Left ) && myPosition.x>0 ){
+		if( steering.IsKeyDown( sf::Key::A ) && myPosition.x>0 ){
 		ANIMATION_TYPE = LEFT;
 				Me.Move( -vel, 0 );
 		}
-		if( steering.IsKeyDown( sf::Key::Right ) ){
+		if( steering.IsKeyDown( sf::Key::D ) ){
 		ANIMATION_TYPE = RIGHT;
 				Me.Move( + vel, 0 );
 		}
-		if( steering.IsKeyDown( sf::Key::Up )&& myPosition.y>0 ){
+		if( steering.IsKeyDown( sf::Key::W )&& myPosition.y>0 ){
 		ANIMATION_TYPE = UP;		
 			    Me.Move( 0,- vel );
 		}
-		if( steering.IsKeyDown( sf::Key::Down )){
+		if( steering.IsKeyDown( sf::Key::S )){
 		ANIMATION_TYPE = DOWN;
 			    Me.Move( 0,+ vel );
 		}
@@ -125,26 +126,20 @@ void Hero::Display(sf::RenderWindow *window)
 	
 	std::vector<SpriteExt*> list = GameEngine::getInstance()->getCollisionList();
 
-	bool col = 0;
-	for ( unsigned int i = 0; i < list.size(); i++ )
+	window->Draw( strMyPosition );
+
+	if(GameEngine::getInstance()->devmode)
 	{
-		if( GameEngine::Collision(&Me,list[i]) && list[i] != &Me )
-		{
+		if ( GameEngine::getInstance()->DetectCollision(&Me) )
 			((CircleMask*)Me.getCollisionMask())->Display(window,
 													   sf::Vector2f(Me.GetPosition().x-Me.GetCenter().x,
-															        Me.GetPosition().y-Me.GetCenter().y),
+																	Me.GetPosition().y-Me.GetCenter().y),
 													   sf::Color(255, 0, 0));
-			col = 1;
-			break;
-		}
+		else
+			((CircleMask*)Me.getCollisionMask())->Display(window,
+													   sf::Vector2f(Me.GetPosition().x-Me.GetCenter().x,
+																	Me.GetPosition().y-Me.GetCenter().y));
 	}
-
-	if (!col)
-		((CircleMask*)Me.getCollisionMask())->Display(window,
-												   sf::Vector2f(Me.GetPosition().x-Me.GetCenter().x,
-														        Me.GetPosition().y-Me.GetCenter().y));
-
-	window->Draw( strMyPosition );
 }
 void Hero::Move()
 {
@@ -164,6 +159,7 @@ void Hero::SetCamera(sf::View *View, sf::RenderWindow *window)
 }
 void Hero::UpdatePosition()
 {
+	 GameEngine::getInstance()->AddToCollisionQuadtree(&Me);
 	 myPosition     = Me.GetPosition();
 	 for(int i = 0 ; i < 4 ; i++)
 	 animate[i]->Update(Me.GetPosition());

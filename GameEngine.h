@@ -35,6 +35,7 @@ class GameEngine
 public:	
 	static const int SCREEN_WIDTH  = 800;
 	static const int SCREEN_HEIGHT = 600;
+	bool devmode;
 private:
 
 	bool windowIsOpen;
@@ -55,6 +56,7 @@ private:
 	std::priority_queue<Drawable*, std::vector<Drawable*>, CompareDrawable> RenderQueue;
 
 	std::vector<SpriteExt*> CollisionList;
+	QuadtreeNode* collisionQuadtree;
 
 	sf::Sprite spr;
 	sf::Vector2f vect;
@@ -94,6 +96,10 @@ public:
 	void AddToCollisionList(SpriteExt*);
 	void FlushCollisionList();
 	std::vector<SpriteExt*>& getCollisionList();
+	void AddToCollisionQuadtree(SpriteExt*);
+	bool DetectCollision(SpriteExt*);
+	void ClearCollisionQuadtree();
+	void DisplayCollisionQuadtree();
 
 private:
 	static GameEngine * engine;

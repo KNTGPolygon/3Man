@@ -1,4 +1,5 @@
 #include "Missle.h"
+#include "GameEngine.h"
 
 Missle::Missle(std::string fileName, float Range ,float Velocity )
 :range(Range), velocity(Velocity)
@@ -9,6 +10,8 @@ Missle::Missle(std::string fileName, float Range ,float Velocity )
 	mySprite.SetImage(myTexture);
 	mySprite.SetPosition(0,0);
 	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
+	mySprite.setCircleMask(mySprite.GetCenter().x, mySprite.GetCenter().y, 4);
+	mySprite.setType("missile");
 
 	angle = 0;
 	inMove   = false;	
@@ -19,6 +22,8 @@ Missle::~Missle(void)
 }
 void Missle::Logic()
 {
+
+	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
 
 	inMove = false;
 
@@ -51,6 +56,19 @@ void Missle::Display(sf::RenderWindow *window)
 {
 	if(inMove != false)			//ukrywanie po skonczonym biegu
 	window->Draw( mySprite );
+
+	if(GameEngine::getInstance()->devmode)
+	{
+		if ( GameEngine::getInstance()->DetectCollision(&mySprite) )
+			((CircleMask*)mySprite.getCollisionMask())->Display(window,
+													   sf::Vector2f(mySprite.GetPosition().x-mySprite.GetCenter().x,
+																	mySprite.GetPosition().y-mySprite.GetCenter().y),
+													   sf::Color(255, 0, 0));
+		else
+			((CircleMask*)mySprite.getCollisionMask())->Display(window,
+													   sf::Vector2f(mySprite.GetPosition().x-mySprite.GetCenter().x,
+																	mySprite.GetPosition().y-mySprite.GetCenter().y));
+	}
 }
 float Missle::ReturnAngle()
 {

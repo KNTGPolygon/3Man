@@ -3,6 +3,7 @@
 #include "Maps.h"
 #include "Tree.h"
 #include "Enemy.h"
+#include "Collision/QuadtreeNode.h"
 
 #ifndef GAMESTATE_H
 #define GAMESTATE_H

@@ -64,7 +64,7 @@ void InputBox::HandleEvent(sf::Event event)
 			// wcisnieto raz 
 			if(event.Text.Unicode == lastSymbolEntered && singleKeyPress == false)
 			{
-				if(event.Text.Unicode == 8 && textString.   length()>0 )
+				if(event.Text.Unicode == 8 && textString.  length()>0 )
 				{
 					textString.erase( textString.length() - 1 );
 					lastSymbolEntered = event.Text.Unicode;
@@ -116,11 +116,14 @@ void InputBox::HandleEvent(sf::Event event)
 				if(event.Text.Unicode == 8 && textString.length()>0)
 				{
 					textString.erase( textString.length() - 1 );
+				}else
+				{
+				textString += (char)event.Text.Unicode;
 				}
 				
 				lastTime = currentTime;
 				lastSymbolEntered = event.Text.Unicode;
-				textString += (char)event.Text.Unicode;
+				
 				if( stringShift > 0 ) stringShift--;
 			}
 			singleKeyPress = true;		

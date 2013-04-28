@@ -72,7 +72,7 @@ void InputBox::HandleEvent(sf::Event event)
 					if( stringShift > 0 ) stringShift--;
 				}
 
-				else
+				else if(event.Text.Unicode != 8 )
 				{
 					lastSymbolEntered = event.Text.Unicode;
 					lastTime = currentTime;	
@@ -101,7 +101,7 @@ void InputBox::HandleEvent(sf::Event event)
 					}
 
 					else
-					if((currentTime-lastTime)>0.05)
+					if((currentTime-lastTime)>0.05 && event.Text.Unicode != 8 )
 					{
 						lastSymbolEntered = event.Text.Unicode;
 						lastTime = currentTime;	
@@ -116,7 +116,8 @@ void InputBox::HandleEvent(sf::Event event)
 				if(event.Text.Unicode == 8 && textString.length()>0)
 				{
 					textString.erase( textString.length() - 1 );
-				}else
+					if( stringShift > 0 ) stringShift--;
+				}else if(event.Text.Unicode != 8 )
 				{
 				textString += (char)event.Text.Unicode;
 				}
@@ -124,7 +125,7 @@ void InputBox::HandleEvent(sf::Event event)
 				lastTime = currentTime;
 				lastSymbolEntered = event.Text.Unicode;
 				
-				if( stringShift > 0 ) stringShift--;
+				
 			}
 			singleKeyPress = true;		
 		}

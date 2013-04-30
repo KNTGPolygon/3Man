@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <map>
 #include <queue>
 #include <vector>
@@ -68,6 +69,9 @@ private:
 	sf::String strMouse;
 	sf::String strFps;
 	sf::String strFrameTime;
+
+	sf::SoundBuffer soundBuffer;
+	sf::Music soundtrack;
 
 	void Display();
 

@@ -3,7 +3,7 @@
 GameEngine::GameEngine(void):steering(window.GetInput())
 {	
 	window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "3Game");
-	
+
 	States[GAME] = new GameState();
 	States[MAINMENU] = new MainMenuState();
 	States[EDITOR] = new EditorState();
@@ -32,6 +32,15 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	ptrToVect = &spr.GetPosition(); // pointer na vector2f
 	
 	collisionQuadtree = new QuadtreeNode(0,0,600,600);
+		
+	if (!soundtrack.OpenFromFile("Data/Music/Aurora_down.ogg"))
+	{
+    // Error...
+		std::cout<<"Cannot load file : Data/Music/Aurora_down.ogg\n";
+	}
+	soundtrack.SetVolume( 75.f );
+	soundtrack.SetLoop( true );
+	soundtrack.Play();
 
 }
 
@@ -178,7 +187,7 @@ bool GameEngine::Collision( SpriteExt* sprite1, SpriteExt* sprite2 )
 		int r1 = ((CircleMask*)mask1)->getRadius();
 		int r2 = ((CircleMask*)mask2)->getRadius();
 
-		if ( sqrt(pow(x1-x2,2)+pow(y1-y2,2)) <= r1+r2 )
+		if ( sqrt(pow((float)x1-x2,2)+pow((float)y1-y2,2)) <= r1+r2 )
 			return true;
 		else return false;
 	}
@@ -205,10 +214,10 @@ bool GameEngine::Collision( SpriteExt* sprite1, SpriteExt* sprite2 )
 
 		if ( cx >= x1 && cx <= x2 && cy >= y1 && cy <= y2 )
 			return true;
-		else if ( sqrt(pow(x1-cx,2)+pow(y1-cy,2)) <= r ||
-				  sqrt(pow(x2-cx,2)+pow(y1-cy,2)) <= r ||
-				  sqrt(pow(x1-cx,2)+pow(y2-cy,2)) <= r ||
-				  sqrt(pow(x2-cx,2)+pow(y2-cy,2)) <= r )
+		else if ( sqrt(pow((float)x1-cx,2)+pow((float)y1-cy,2)) <= r ||
+				  sqrt(pow((float)x2-cx,2)+pow((float)y1-cy,2)) <= r ||
+				  sqrt(pow((float)x1-cx,2)+pow((float)y2-cy,2)) <= r ||
+				  sqrt(pow((float)x2-cx,2)+pow((float)y2-cy,2)) <= r )
 			return true;
 		else if ( (abs(cx-x1) <= r && (cy-y1)*(cy-y2) < 0 ) ||
 				  (abs(cx-x2) <= r && (cy-y1)*(cy-y2) < 0 ) ||

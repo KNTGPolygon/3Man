@@ -314,15 +314,14 @@ void MapCreator::GetTextboxEvent(sf::Event& event, std::string text, CreatorStat
 	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::Return) && state == SET_MAP_SIZE)
 	{
 		int x = atoi(text.c_str());
-		if (x <= 0)
-		{
-			std::cout << " This size is <= 0, which is wrong! Setting to 32" << std::endl;
-			x = 32;
-		}
 		if (x>256)
 			{
-				std::cout << " Size too big! Over 256! Setting to default 256 " << std::endl;
 				x = 256;
+			}
+		else if(x==0)
+			{
+				x = 32;
+				std::cout << "!!! WARNING: Setting default: 32x32 fields !!!" << std::endl;
 			}
 		initializeMapArrays(x);
 		state = MAIN;
@@ -464,18 +463,17 @@ void MapCreator::changingObjectInMap(sf::Vector2i mapClickPosition)
 MapCreator::~MapCreator()
 {
 	
-	if(createdMap != NULL)
-	{
 	for(unsigned int i = 0; i < Size; ++i)
     delete [] createdMap[i];
+
 	delete [] createdMap;
 
 
 	for(unsigned int i = 0; i < Size; ++i)
     delete mapObjects[i];
-	delete mapObjects;
-	}
 
+	delete mapObjects;
+	
 	 delete blackHorizontalImage;
 	 delete blackHorizontalSprite;
 	 delete blackVerticalImage;
@@ -506,9 +504,6 @@ bool MapCreator::saveMap(std::string filename)
 	
 	outputFile.open((path + tempFilename.str()).c_str());
 
-	//to skip border image address
-	dataSet >> str;
-
 	if(outputFile)
 	{
 		outputFile << Size << "\n" << "*" << "\n";
@@ -519,33 +514,16 @@ bool MapCreator::saveMap(std::string filename)
 						dataSet >> str;
 							if(str.at(0) == '-')
 						{
-							
+							counter = 0;
 							break;
 						}
 
-						outputFile << str << "\n";
+						if(counter != 0)
+						outputFile << counter << "-" << str << "\n";
 
+						counter ++;
 				   }
 		outputFile << "*" << "\n";
-
-		//skipping blank object
-		dataSet >> str;
-
-		//saving info about objects into map file
-		while( !dataSet.eof() )
-					{	
-						dataSet >> str;
-							if(str.at(0) == '-')
-						{
-							break;
-						}
-
-						outputFile << str << "\n";
-
-				   }
-
-		outputFile << "*" << "\n";
-
 		for(unsigned int row = 0; row < Size; row++)
 		{
 			for(unsigned int col = 0; col < Size ; col++)

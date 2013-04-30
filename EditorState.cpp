@@ -14,13 +14,12 @@ void EditorState::Init()
 	inputBox = new InputBox(GameEngine::getInstance()->getSteering(),
 					sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -100),
 			       (float)(GameEngine::SCREEN_HEIGHT/2)),
-				   ""); 
-		textBox = new TextBox(sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -150.0),
+				   "Rozmiar mapy"); 
+	textBox = new TextBox(sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -150.0),
 			       (float)(GameEngine::SCREEN_HEIGHT/2 - 200)),
 			       sf::Vector2f(250.0,100.0),
 			       sf::Color(61,61,61),
 			       "Jakis jeden tekst tu jest \n a tu jakis drugi \n a tu nawet trzeci");
-
 	init = 1;
 	state = SET_MAP_SIZE;
 }
@@ -54,13 +53,8 @@ void EditorState::GetEvents()
 	sf::Event event = GameEngine::getInstance()->getEvent();
 		if(state==SET_MAP_SIZE)
 			{
-				inputBox->HandleEvent(event);
-				if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::Return))
-				{
-					std::string tempStr = inputBox->GetString();	
-
-					mapCreator->GetTextboxEvent(event, tempStr , state);
-				}
+			inputBox->HandleEvent(event);
+			mapCreator->GetTextboxEvent(event, inputBox->GetString(), state);
 			}
 		else if (state == MAIN)
 			{

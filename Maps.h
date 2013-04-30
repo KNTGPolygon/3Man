@@ -7,8 +7,6 @@
 #include <map>
 #include <cstdlib>
 #include "Tile.h"
-#include "MapObject.h"
-#include "GameObject.h"
 
 #ifndef MAPS_H
 #define MAPS_H
@@ -19,15 +17,11 @@ class Maps{
 
 private:
 	int Size;
-	int numberOfObjects;
-	std::map<const int, std::string> addresses;
+	std::vector<std::string> addresses;
 	Tile ** map_data;
-	GameObject ** mapGameObjects;
 
 	std::map <int, sf::Image> mapGraphics;
 	std::map <int, sf::Sprite> tileSprites;
-
-
 	
 
 
@@ -35,11 +29,14 @@ public:
 	Maps(const std::string& filename);
 	~Maps();
 	void showMap(sf::RenderWindow *window, sf::Vector2f heroPosition);
+	void getTileGraphicsAddressesSet(std::string str, std::string path);
 	void createTiles();
-	int getSize();
-	int getNoOfObjects();
-	GameObject ** getMapGameObjects();
+
 
 };
 
 #endif
+
+
+//30 30		//map size in format rows x columns number
+//*

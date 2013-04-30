@@ -4,6 +4,12 @@ lava.png
 pinky.png
 wall.png
 water.png
+border.png
+grass.png
+lava.png
+pinky.png
+wall.png
+water.png
 -
 Blank.png
 Star.png

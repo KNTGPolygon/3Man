@@ -10,7 +10,11 @@ void GameState::Init()
 	GameEngine::getInstance()->FlushCollisionList();
 	hero = new Hero(GameEngine::getInstance()->getSteering(),2);
 	hero->PutScreenSize(GameEngine::SCREEN_WIDTH, GameEngine::SCREEN_HEIGHT);
+
 	map = new Maps("Data/Maps/Test.map");
+	numberOfObjects = map->getNoOfObjects();
+	arrayOfObjects = map->getMapGameObjects();
+
 	pirate = new Enemy(sf::Vector2i(400,300));
 
 	tree[0] = new Tree(391,320);
@@ -43,6 +47,11 @@ void GameState::Display()
 	GameEngine::getInstance()->AddToRenderQueue((Drawable*)hero);
 	for ( int i = 0; i < 20; i++ )
 		GameEngine::getInstance()->AddToRenderQueue((Drawable*)tree[i]);
+
+	for ( int i = 0; i < numberOfObjects; i++ )
+		GameEngine::getInstance()->AddToRenderQueue((Drawable*)arrayOfObjects[i]);
+
+
 	map->showMap(&GameEngine::getInstance()->getWindow(), hero->GetPosition());
 	pirate->Display(&GameEngine::getInstance()->getWindow());
 	hero->SetCamera(&GameEngine::getInstance()->getView(),&GameEngine::getInstance()->getWindow());
@@ -66,6 +75,9 @@ void GameState::EventHandling()
 
 	for ( int i = 0; i < 20; i++ )
 		tree[i]->Update();
+
+	for ( int i = 0; i < numberOfObjects; i++ )
+		arrayOfObjects[i]->Update();
 }
 
 void GameState::GetEvents()
@@ -84,5 +96,6 @@ void GameState::Cleanup()
 	delete pirate;
 	for ( int i = 0; i < 20; i++ )
 		delete tree[i];
+
 	init = 0;
 }

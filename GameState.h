@@ -16,6 +16,9 @@ private:
 	Tree* tree[20];
 	Enemy* pirate;
 
+	int numberOfObjects;
+	GameObject ** arrayOfObjects;
+
 public:
 	GameState();
 	void Init();

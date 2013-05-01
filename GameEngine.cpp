@@ -28,9 +28,7 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	strFrameTime.SetText("Frame time : ");
 
 	windowIsOpen = window.IsOpened();
-	
-	ptrToVect = &spr.GetPosition(); // pointer na vector2f
-	
+		
 	collisionQuadtree = new QuadtreeNode(0,0,600,600);
 		
 	if (!soundtrack.OpenFromFile("Data/Music/Aurora_down.ogg"))

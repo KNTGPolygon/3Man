@@ -1,8 +1,8 @@
 #include "Enemy.h"
 #include "GameEngine.h"
 
-Enemy::Enemy(sf::Vector2i Position,std::string fileName, float Velocity,
-	float PullRange)
+Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
+	float Velocity , float PullRange)
 :myPosition(Position) ,velocity(Velocity),pullRange(PullRange)
 {
 	myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+fileName );
@@ -11,14 +11,30 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, float Velocity,
 
 	mySprite.SetImage( myTexture );
 	mySprite.SetPosition((float) myPosition.x ,(float) myPosition.y );
+	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
 	
-	myAI = PATHWALK;
+	startPosition = Position;
+	target = Position;
+	MovementVector.x = MovementVector.y = 150;
 
+	
+	if( RandomPathMode )
+	{
+	pathMode = RANDOM_PATHWALK;
+		myAI = RANDOM_PATHWALK;
+	}
+	else
+	{
+	pathMode = PATHWALK;
+	myAI = PATHWALK;
+	}
 	inMove		  = false;
 	targetReached = false;
 	pathNumber	  = 0;
 	escapeRange = 300;
 	pullRange = PullRange;
+	waitTimeCounter = 0;
+	waitTime = 50;
 
 	path = new std::vector<sf::Vector2i> ;
 	path->push_back(sf::Vector2i(500,500));
@@ -35,28 +51,11 @@ Enemy::~Enemy(void)
 void Enemy::Logic(sf::Vector2i Target)
 {
 	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
+
 	if(GoToPosition( Target ) ){
-		switch ( myDirection )
-		{
-	/*	case UP:
-			mySprite.Move( 0 , -velocity );
-				  break;
-		case DOWN:
-			mySprite.Move( 0 , velocity  );
-				  break;
-		case RIGHT:
-			mySprite.Move( velocity , 0  );
-				  break;
-		case LEFT:
-			mySprite.Move( -velocity , 0 );
-				  break; */
-		case STAY:
-				  break; 
-		default:
-			mySprite.Move(velocity*shiftVector);
-			break;
-		
-		}
+
+		mySprite.Move(velocity*shiftVector);
+
 		myPosition.x =(int) mySprite.GetPosition().x;
 		myPosition.y =(int) mySprite.GetPosition().y;
 
@@ -69,7 +68,7 @@ void Enemy::AI()
 {
 	switch( myAI )
 	{
-	case PATHWALK:
+	case PATHWALK: //   ---  PATHWALK ---
 
 		if( distanceFromHero < pullRange )
 		{
@@ -78,6 +77,16 @@ void Enemy::AI()
 			break;
 		}
 
+		if(waitTimeCounter < waitTime && targetReached == true)
+		{
+			waitTimeCounter++;
+			break;
+		}
+		else
+		{
+			waitTimeCounter = 0;
+		}
+		// satrt chodzenia sciezka
 		if( pathNumber <  (signed) ( path->size() ) )
 		{
 			if (  targetReached == false )
@@ -89,7 +98,6 @@ void Enemy::AI()
 				targetReached = false;
 				pathNumber++;
 				std::cout<<"pathNumber = "<< pathNumber <<"\n";
-				//system("pause");
 			}
 		}
 		else
@@ -97,18 +105,49 @@ void Enemy::AI()
 		{
 			pathNumber = 0;
 			std::cout<<"pathNumber = "<< pathNumber <<"\n";
-		}		
+		}	
+		// stop chodzenia sciezka
 		break;
 	case FOLLOW:	
 			Logic( heroPosition );
 			if( distanceFromHero > escapeRange )
 			{
-			myAI = PATHWALK;
+			myAI = pathMode;
 			std::cout<<"Returning to path...\n";
 			}
 
 		break;
 	case COMBAT:
+		break;
+	case RANDOM_PATHWALK: //   ---  RANDOM_PATHWALK ---
+		
+		if( distanceFromHero < pullRange )
+		{
+			myAI = FOLLOW;
+			std::cout<<"Following...\n";
+			break;
+		}
+
+		if(waitTimeCounter < waitTime && targetReached == true)
+		{
+			waitTimeCounter++;
+			break;
+		}
+		else
+		{
+			waitTimeCounter = 0;
+		}
+		
+		if (  targetReached == false )
+		{
+			Logic(target);
+		}
+		else
+		{
+		targetReached = false;
+		GenerateRandomPath();
+	//	std::cout<<"Going to point ( "<<target.x<<" , "<<target.y<<" )\n";
+		}
 		break;
 	default:
 		break;
@@ -121,22 +160,20 @@ int Enemy::GoToPosition(sf::Vector2i Destination)
 	shiftVector.x = ( Destination.x - myPosition.x )/ distanceFromTarget ;
 	shiftVector.y = ( Destination.y - myPosition.y )/ distanceFromTarget ;
 
-	if( distanceFromTarget < 5.0 ) inMove = false;
+	if( distanceFromTarget < 2.0 ) inMove = false;
 	else inMove = true;
 
-	/*if(Destination.x <= myPosition.x && Destination.y < myPosition.y )		//I
-		myDirection = LEFT;
-	else if(Destination.x > myPosition.x && Destination.y <= myPosition.y )	//II
-		myDirection = UP;
-	else if(Destination.x < myPosition.x && Destination.y >= myPosition.y )	//III
-		myDirection = DOWN;
-	else if(Destination.x >= myPosition.x && Destination.y > myPosition.y )	//IV
-		myDirection = RIGHT;
-		*/
-	if(Destination == myPosition)
-		myDirection = STAY;
-
 	return inMove;
+}
+void Enemy::RandomPathWalk()
+{
+		
+		
+}
+void Enemy::GenerateRandomPath()
+{
+	target.x = rand()%( 2 * MovementVector.x ) + ( startPosition.x - MovementVector.x );
+	target.y = rand()%( 2 * MovementVector.y ) + ( startPosition.y - MovementVector.y );
 }
 void Enemy::SetStartPosition(sf::Vector2f Position)
 {

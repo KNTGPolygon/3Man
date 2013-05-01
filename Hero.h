@@ -33,9 +33,8 @@ private:
 	Animate **animate;
 	Weapon **weapon;
 	sf::Vector2f myPosition;	//hero position
-	//sf::Sprite Me;
 	SpriteExt Me;
-	sf::IntRect box;			//Collision box
+
 	sf::Image MyTexture;			
 	sf::String strMyPosition;	
 
@@ -45,7 +44,6 @@ public:
 	Hero(const sf::Input &_steering,float velocity = 1); //Konstruktor Bohatera
 	~Hero(void);
 
-	sf::IntRect get_box() {return box;} //Zwraca colision boxa
 	sf::Vector2f get_position(){return myPosition;}
 
 	void Display(sf::RenderWindow *window);

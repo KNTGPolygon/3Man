@@ -4,6 +4,14 @@
 #include "Missle.h"
 #ifndef WEAPON_H
 #define WEAPON_H
+
+	enum WeaponType{
+		Integral,
+		Derivative,
+		Minus,
+		Plus
+	};
+
 class Weapon : public Drawable
 {
 private:
@@ -32,7 +40,7 @@ private:
 public:
 	bool fired;
 	bool active;
-	Weapon(std::string weaponName,int BulletFireLimit = 5,float RepeatRate = 0.25);
+	Weapon(std::string weaponName, WeaponType weaponType = Integral ,int BulletFireLimit = 5,float RepeatRate = 0.25);
 	~Weapon(void);
 	
     int ReturnFirstAvailable(Missle **missle,int MissleAmount );
@@ -43,6 +51,7 @@ public:
 	void SetFiringPosition(sf::Vector2f Position);
 	void SetTargetPosition(sf::Vector2f Position);
 	void PutScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);
+	int SetWeapon(WeaponType Weapon);
 	
 };
 

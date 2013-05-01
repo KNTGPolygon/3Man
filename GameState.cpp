@@ -16,6 +16,14 @@ void GameState::Init()
 	arrayOfObjects = map->getMapGameObjects();
 
 	pirate = new Enemy(sf::Vector2i(400,300));
+	seven  = new Number(sf::Vector2i(300,300),7);
+	numbers = new Number*[NUM_OF_ENEMIES];
+
+	numbers[0] = new Number(sf::Vector2i(330,300),-1);
+	numbers[1] = new Number(sf::Vector2i(300,310),-2);
+	numbers[2] = new Number(sf::Vector2i(350,320),-3);
+	numbers[3] = new Number(sf::Vector2i(310,330),-4);
+	numbers[4] = new Number(sf::Vector2i(250,340),-5);
 
 	tree[0] = new Tree(391,320);
 	tree[1] = new Tree(179,28);
@@ -54,6 +62,10 @@ void GameState::Display()
 
 	map->showMap(&GameEngine::getInstance()->getWindow(), hero->GetPosition());
 	pirate->Display(&GameEngine::getInstance()->getWindow());
+	seven->Display(&GameEngine::getInstance()->getWindow());
+	for( int i = 0; i < NUM_OF_ENEMIES ; i++)
+		numbers[i]->Display(&GameEngine::getInstance()->getWindow());
+	
 	hero->SetCamera(&GameEngine::getInstance()->getView(),&GameEngine::getInstance()->getWindow());
 	
 	GameEngine::getInstance()->ExecuteRenderQueue();
@@ -69,10 +81,15 @@ void GameState::EventHandling()
 
 	hero->UpdatePosition();
 	hero->GetEvent();
-	//pirate->Logic(sf::Vector2i(500,500));
 	pirate->SetHeroPosition(hero->GetPosition());
 	pirate->AI();
-
+	for( int i = 0; i < NUM_OF_ENEMIES ; i++)
+		{
+			numbers[i]->SetHeroPosition(hero->GetPosition());
+			numbers[i]->AI();
+		}
+	seven->SetHeroPosition(hero->GetPosition());
+	seven->AI();
 	for ( int i = 0; i < 20; i++ )
 		tree[i]->Update();
 
@@ -94,8 +111,11 @@ void GameState::Cleanup()
 	delete hero;
 	delete map;
 	delete pirate;
+	delete seven;
 	for ( int i = 0; i < 20; i++ )
 		delete tree[i];
+	for ( int i = 0; i < NUM_OF_ENEMIES; i++ )
+		delete numbers[i];
 
 	init = 0;
 }

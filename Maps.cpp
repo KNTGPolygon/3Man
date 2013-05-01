@@ -110,6 +110,12 @@ Maps::Maps(const std::string& filename)
 						counter = 0;
 					}
 				}
+				else
+				{
+					std::cout<<"map is not good\n";
+					break;
+
+				}
 			 }while(looping);
 
 
@@ -280,7 +286,7 @@ void Maps::createTiles()
 	//i<addresses.size() cause last field is empty, we have to make it safe somehow
 	for(unsigned int i = 1; i <= addresses.size(); i++)
 	{
-		mapGraphics[i].LoadFromFile(addresses.at(i));
+		mapGraphics[i].LoadFromFile(addresses[i]);
 		mapGraphics[i].CreateMaskFromColor(sf::Color(255,0,255));
 	}
 

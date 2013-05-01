@@ -37,10 +37,10 @@ Hero::Hero(const sf::Input &_steering,float velocity)
 	animate[3] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),3,15,3); //UP
 	
 	weapon = new Weapon*[numberOfWeapons];	
-	weapon[0] = new Weapon("Plus");
-	weapon[1] = new Weapon("Minus");
-	weapon[2] = new Weapon("Derivative");
-	weapon[3] = new Weapon("Integral");
+	weapon[0] = new Weapon("Plus",Plus);
+	weapon[1] = new Weapon("Minus",Minus);
+	weapon[2] = new Weapon("Derivative",Derivative);
+	weapon[3] = new Weapon("Integral",Integral);
 	std::cout<<"Hero constructor online\n";
 }
 
@@ -140,16 +140,7 @@ void Hero::Display(sf::RenderWindow *window)
 													   sf::Vector2f(Me.GetPosition().x-Me.GetCenter().x,
 																	Me.GetPosition().y-Me.GetCenter().y));
 	}
-}
-void Hero::Move()
-{
-
-	box.Left = (int)myPosition.x;
-	box.Top  = (int)myPosition.y;
-
-	box.Bottom = SPRITE_SIZE   + box.Top;  
-	box.Right  = SPRITE_SIZE   + box.Left;
-
+	
 }
 void Hero::SetCamera(sf::View *View, sf::RenderWindow *window)
 {

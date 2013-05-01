@@ -31,6 +31,7 @@ void MainMenuState::Init()
 	inputBox = new InputBox(GameEngine::getInstance()->getSteering(),
 					sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -100),
 			       (float)(GameEngine::SCREEN_HEIGHT/2 - 150.0))); 
+
 	init = 1;
 }
 

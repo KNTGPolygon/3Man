@@ -60,10 +60,8 @@ private:
 	QuadtreeNode* collisionQuadtree;
 
 	sf::Sprite spr;
-	sf::Vector2f vect;
 	sf::Clock time;
 
-	const sf::Vector2f *ptrToVect;
 	const sf::Input & steering ;
 	
 	sf::String strMouse;

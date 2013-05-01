@@ -4,7 +4,8 @@
 #include <fstream>
 #include <cstdlib>
 #include "Functions.h"
-Weapon::Weapon(std::string weaponName, int BulletFireLimit,float RepeatRate)
+
+Weapon::Weapon(std::string weaponName,WeaponType weaponType , int BulletFireLimit,float RepeatRate)
 :bulletFireLimit(BulletFireLimit), repeatRate(RepeatRate)
 {
 	directory = "Integral.PNG";
@@ -14,9 +15,12 @@ Weapon::Weapon(std::string weaponName, int BulletFireLimit,float RepeatRate)
 
 	SCREEN_WIDTH  = 800; 
 	SCREEN_HEIGHT = 600;
-	
-	if(!Load(weaponName))
-		std::cout<<"Loading weapon problem detected !\n";
+
+	//if(!Load(weaponName))
+	//	std::cout<<"Loading weapon problem detected !\n";
+
+	if(!SetWeapon(weaponType))
+		std::cout<<"Wrong weapon type \n";
 	
 	missle = new Missle*[bulletFireLimit];
 
@@ -161,7 +165,7 @@ bool Weapon::Load(std::string WeaponName)
 						 
 						  dataSet >> str;
 						 if(dataSet.eof())break;
-						 bulletFireLimit = atof(str.c_str());
+						 bulletFireLimit = atoi(str.c_str());
 						 std::cout <<"bulletLimit : "<<str<<"\n";
 
 						 dataSet >> str;
@@ -174,4 +178,50 @@ bool Weapon::Load(std::string WeaponName)
 			dataSet.close();
 		 }
 	return 1;
+}
+int Weapon::SetWeapon(WeaponType Weapon)
+{
+	switch(Weapon)
+	{
+	case Integral:
+		directory = "Integral.png";
+		damage = 10;
+		range = 300;
+		speed = 4.0;
+		repeatRate = 0.5;
+		bulletFireLimit = 5;
+		error = 0.0;
+		break;
+	case Derivative:
+		directory = "Derivative.png";
+		damage = 1;
+		range = 300;
+		speed = 8.0;
+		repeatRate = 0.2;
+		bulletFireLimit = 5;
+		error = 25.0;
+		break;
+	case Plus:
+		directory = "Plus.png";
+		damage = 50;
+		range = 300;
+		speed = 5.0;
+		repeatRate = 0.25;
+		bulletFireLimit = 5;
+		error = 5.0;
+		break;
+	case Minus:
+		directory = "Minus.png";
+		damage = 5;
+		range = 300;
+		speed = 5.0;
+		repeatRate = 0.25;
+		bulletFireLimit = 5;
+		error = 10.0;
+		break;
+	default:
+		return 1;
+		break;
+	}
+	return 0;
 }

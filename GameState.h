@@ -3,6 +3,7 @@
 #include "Maps.h"
 #include "Tree.h"
 #include "Enemy.h"
+#include "Number.h"
 #include "Collision/QuadtreeNode.h"
 
 #ifndef GAMESTATE_H
@@ -15,10 +16,12 @@ private:
 	Maps* map;
 	Tree* tree[20];
 	Enemy* pirate;
+	Number *seven;
+	Number **numbers;
 
 	int numberOfObjects;
 	GameObject ** arrayOfObjects;
-
+	static const int NUM_OF_ENEMIES = 5;
 public:
 	GameState();
 	void Init();

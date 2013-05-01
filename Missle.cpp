@@ -69,6 +69,7 @@ void Missle::Display(sf::RenderWindow *window)
 													   sf::Vector2f(mySprite.GetPosition().x-mySprite.GetCenter().x,
 																	mySprite.GetPosition().y-mySprite.GetCenter().y));
 	}
+	
 }
 float Missle::ReturnAngle()
 {

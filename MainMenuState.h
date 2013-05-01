@@ -1,6 +1,7 @@
 #include "State.h"
 #include "Button.h"
 #include "InputBox.h"
+#include "TextBox.h"
 
 #ifndef MAINMENUSTATE_H
 #define MAINMENUSTATE_H

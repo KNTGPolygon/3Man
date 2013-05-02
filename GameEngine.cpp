@@ -231,20 +231,6 @@ void GameEngine::SwitchWindowIsOpen(bool WindowIsOpen)
 {
 	windowIsOpen = WindowIsOpen;
 }
-void GameEngine::FlushCollisionList()
-{
-	CollisionList.clear();
-}
-
-void GameEngine::AddToCollisionList( SpriteExt* spr )
-{
-	CollisionList.push_back(spr);
-}
-
-std::vector<SpriteExt*>& GameEngine::getCollisionList()
-{
-	return CollisionList;
-}
 
 void GameEngine::AddToCollisionQuadtree(SpriteExt* spr)
 {
@@ -254,6 +240,21 @@ void GameEngine::AddToCollisionQuadtree(SpriteExt* spr)
 bool GameEngine::DetectCollision(SpriteExt* spr)
 {
 	return collisionQuadtree->Collide(spr);
+}
+
+bool GameEngine::DetectCollision(SpriteExt* spr, std::string type)
+{
+	return collisionQuadtree->Collide(spr, type);
+}
+
+void GameEngine::DetectCollision(SpriteExt* spr, std::vector<SpriteExt*>& results)
+{
+	return collisionQuadtree->Collide(spr, results);
+}
+
+void GameEngine::DetectCollision(SpriteExt* spr, std::vector<SpriteExt*>& results, std::string type)
+{
+	return collisionQuadtree->Collide(spr, results, type);
 }
 
 void GameEngine::ClearCollisionQuadtree()

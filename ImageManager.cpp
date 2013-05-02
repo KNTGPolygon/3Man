@@ -23,4 +23,6 @@ sf::Image& ImageManager::loadImage( std::string filename )
 		images[filename] = img;
 		return images[filename];
 	}
+	else
+		return image_blank;
 }

@@ -12,8 +12,6 @@ Tree::Tree(float x, float y)
 	mySprite.SetCenter(48,115);
 	mySprite.setBoxMask(sf::IntRect(26,103,72,120));
 	mySprite.setType("tree");
-
-	GameEngine::getInstance()->AddToCollisionList(&mySprite);
 }
 
 void Tree::Update()

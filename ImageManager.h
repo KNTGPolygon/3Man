@@ -11,6 +11,7 @@ class ImageManager
 	
 	static ImageManager* INSTANCE;
 	std::map<std::string, sf::Image> images;
+	sf::Image image_blank;
 	
 	public:
 	

@@ -23,8 +23,9 @@ public:
 	void Add(SpriteExt*);
 	bool Contains(SpriteExt*);
 	bool Collide(SpriteExt*);
-	bool Collide(SpriteExt*, std::string type);
+	bool Collide(SpriteExt*, std::string);
 	void Collide(SpriteExt*, std::vector<SpriteExt*>&);
+	void Collide(SpriteExt*, std::vector<SpriteExt*>&, std::string);
 	void Clear();
 	void Display(sf::RenderWindow*,  const sf::Color = sf::Color(255,0,255));
 };

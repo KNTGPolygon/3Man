@@ -7,7 +7,6 @@ GameState::GameState():State()
 
 void GameState::Init()
 {
-	GameEngine::getInstance()->FlushCollisionList();
 	hero = new Hero(GameEngine::getInstance()->getSteering(),2);
 	hero->PutScreenSize(GameEngine::SCREEN_WIDTH, GameEngine::SCREEN_HEIGHT);
 

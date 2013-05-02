@@ -23,7 +23,7 @@ GameObject::GameObject(float x, float y, int _type, std::string imageFilePath)
 	mySprite.setBoxMask(sf::IntRect(2,24,30,30));
 	mySprite.setType("sth");
 
-	GameEngine::getInstance()->AddToCollisionList(&mySprite);
+	//GameEngine::getInstance()->AddToCollisionList(&mySprite);
 
 }
 
@@ -50,8 +50,6 @@ void GameObject::Display(sf::RenderWindow * window)
 																	  mySprite.GetPosition().y-mySprite.GetCenter().y));
 	}
 
-	
-	
 }
 
 sf::Vector2f GameObject::GetPosition()

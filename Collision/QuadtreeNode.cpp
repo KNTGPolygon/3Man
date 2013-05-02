@@ -130,6 +130,17 @@ void QuadtreeNode::Collide(SpriteExt* spr, std::vector<SpriteExt*>& results)
 			subNodes[i]->Collide(spr, results);
 }
 
+void QuadtreeNode::Collide(SpriteExt* spr, std::vector<SpriteExt*>& results, std::string type)
+{
+	for ( int i = 0; i < objects.size(); i++ )
+		if ( objects[i] != spr && objects[i]->getType() == type && GameEngine::Collision(spr,objects[i]) )
+			results.push_back(objects[i]);
+
+	if ( subNodes != NULL )
+		for ( int i = 0; i < 4; i++ )
+			subNodes[i]->Collide(spr, results, type);
+}
+
 void QuadtreeNode::Display(sf::RenderWindow* window, const sf::Color color)
 {
 	sf::Shape rect = sf::Shape::Rectangle(((float)x),

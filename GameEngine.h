@@ -56,7 +56,6 @@ private:
 	
 	std::priority_queue<Drawable*, std::vector<Drawable*>, CompareDrawable> RenderQueue;
 
-	std::vector<SpriteExt*> CollisionList;
 	QuadtreeNode* collisionQuadtree;
 
 	sf::Sprite spr;
@@ -95,11 +94,11 @@ public:
 	sf::Event& getEvent();
 
 	static bool Collision( SpriteExt*, SpriteExt* );
-	void AddToCollisionList(SpriteExt*);
-	void FlushCollisionList();
-	std::vector<SpriteExt*>& getCollisionList();
 	void AddToCollisionQuadtree(SpriteExt*);
 	bool DetectCollision(SpriteExt*);
+	bool DetectCollision(SpriteExt*, std::string);
+	void DetectCollision(SpriteExt*, std::vector<SpriteExt*>&);
+	void DetectCollision(SpriteExt*, std::vector<SpriteExt*>&, std::string);
 	void ClearCollisionQuadtree();
 	void DisplayCollisionQuadtree();
 

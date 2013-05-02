@@ -28,7 +28,7 @@ Hero::Hero(const sf::Input &_steering,float velocity)
 	//Me.setBoxMask(sf::IntRect(0,26,SPRITE_SIZE,SPRITE_SIZE)); //ustawia maske kolizji na prostakat
 	Me.setCircleMask(Me.GetCenter().x,Me.GetCenter().y,30);
 
-	GameEngine::getInstance()->AddToCollisionList(&Me);
+	//GameEngine::getInstance()->AddToCollisionList(&Me);
 
 	animate = new Animate*[4];
 	animate[0] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),3,15);   //DOWN
@@ -124,7 +124,7 @@ void Hero::Display(sf::RenderWindow *window)
 			break;	
 	}
 	
-	std::vector<SpriteExt*> list = GameEngine::getInstance()->getCollisionList();
+	//std::vector<SpriteExt*> list = GameEngine::getInstance()->getCollisionList();
 
 	window->Draw( strMyPosition );
 

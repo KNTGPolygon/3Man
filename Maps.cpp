@@ -6,6 +6,8 @@ Maps::Maps(const std::string& filename)
 	MapObject **tempConstructorObjects;
 	std::map <const int, std::string> tempAddressesArray;
 
+	std::map <int, int> passageRightsRead;
+
 	//checking whether file can be opened
 	std::ifstream map(filename.c_str());
 		 if (!map) 
@@ -39,7 +41,6 @@ Maps::Maps(const std::string& filename)
 	for(int i = 0; i < Size; ++i)
     map_data[i] = new Tile[Size];
 
-
 	//creating temporary array for map objects (for storing loaded data)
 	tempConstructorObjects = new MapObject*[Size*2];
 	for(unsigned int i = 0; i < Size*2; ++i)
@@ -71,16 +72,27 @@ Maps::Maps(const std::string& filename)
 
 			looping = true;
 			 unsigned int counter = 1;
+			 std::string substring;
 
 			 //passing info about map tiles' graphics (first row of map file)
 			 do{
 				if(map.good())
 				{
 					getline (map,stringRepresentingFileLine);
+					std::istringstream iss(stringRepresentingFileLine);
+
 					if(stringRepresentingFileLine.at(0) != '*')
 					{
 						//std::cout << mapTilesPath << " " <<  stringRepresentingFileLine << std::endl;
-						addresses[counter] = (mapTilesPath + stringRepresentingFileLine).c_str() ;
+						iss >> substring;
+						addresses[counter] = (mapTilesPath + substring).c_str() ;
+						iss >> substring;
+						if(substring.size() > 0)
+						passageRightsRead[counter] =atoi(substring.c_str());
+						else
+						{
+							std::cout << " Passage rights are not specified somewhere! " << std::endl;
+						}
 						counter++;
 					}
 					else
@@ -120,7 +132,6 @@ Maps::Maps(const std::string& filename)
 
 
 //------------------------
-
 			  while ( map.good() )
 				{
 						int fieldType = -1;
@@ -128,17 +139,21 @@ Maps::Maps(const std::string& filename)
 					
 				 std::istringstream iss(stringRepresentingFileLine);
 				 std::string sub;
+				 int passageRight;
 
 				 looping = true;
+				 int tileType;
 						do
 						{
+						//getline (map,stringRepresentingFileLine);
 						iss >>sub;
 						if(sub.at(0) == '*')
 						{
 							break;
 						}
-						
-							map_data[rowNumber][colNumber] = Tile(atoi(sub.c_str()), 0 + colNumber * 64, 0+rowNumber*64);
+
+							tileType = atoi(sub.c_str());
+							map_data[rowNumber][colNumber] = Tile(tileType, 0 + colNumber * 64, 0+rowNumber*64, passageRightsRead[tileType]);
 							colNumber++;
 							if(colNumber == Size)
 							{
@@ -148,7 +163,6 @@ Maps::Maps(const std::string& filename)
 						}
 						while(iss);
 
-						
 						rowNumber++;					
 
 						colNumber = 0;

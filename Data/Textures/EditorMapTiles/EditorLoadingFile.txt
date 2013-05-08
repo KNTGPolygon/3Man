@@ -1,9 +1,9 @@
 border.png
-grass.png
-lava.png
-pinky.png
-wall.png
-water.png
+grass.png 1
+lava.png 0
+pinky.png 0
+wall.png 0
+water.png 0
 -
 Blank.png
 Star.png

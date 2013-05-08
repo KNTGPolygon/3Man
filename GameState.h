@@ -19,6 +19,7 @@ private:
 	Number *seven;
 	Number **numbers;
 
+	int mapPixelatedSize;
 	int numberOfObjects;
 	GameObject ** arrayOfObjects;
 	static const int NUM_OF_ENEMIES = 5;

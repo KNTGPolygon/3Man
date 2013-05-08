@@ -13,6 +13,7 @@ void GameState::Init()
 	map = new Maps("Data/Maps/Test.map");
 	numberOfObjects = map->getNoOfObjects();
 	arrayOfObjects = map->getMapGameObjects();
+	mapPixelatedSize = map->getSize() * 64;
 
 	pirate = new Enemy(sf::Vector2i(400,300));
 	seven  = new Number(sf::Vector2i(300,300),7);
@@ -79,7 +80,7 @@ void GameState::EventHandling()
 	GameEngine::getInstance()->ClearCollisionQuadtree();
 
 	hero->UpdatePosition();
-	hero->GetEvent();
+	hero->GetEvent(mapPixelatedSize);
 	pirate->SetHeroPosition(hero->GetPosition());
 	pirate->AI();
 	for( int i = 0; i < NUM_OF_ENEMIES ; i++)

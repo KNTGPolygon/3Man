@@ -51,7 +51,7 @@ public:
 	void Logic();
 	void Move();
 	void Shoot();
-	void GetEvent();
+	void GetEvent(int mapPixelatedSize);
 	sf::Vector2f GetPosition();
 	void UpdatePosition();
 	void PutScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);

@@ -59,7 +59,7 @@ Hero::~Hero(void)
 void Hero::Shoot()
 {
 }
-void Hero::GetEvent()
+void Hero::GetEvent(int mapPixelatedSize)
 {
 		ANIMATION_TYPE = STAY;
 
@@ -67,7 +67,7 @@ void Hero::GetEvent()
 		ANIMATION_TYPE = LEFT;
 				Me.Move( -vel, 0 );
 		}
-		if( steering.IsKeyDown( sf::Key::D ) ){
+		if( steering.IsKeyDown( sf::Key::D ) && myPosition.x<(mapPixelatedSize-20)){
 		ANIMATION_TYPE = RIGHT;
 				Me.Move( + vel, 0 );
 		}
@@ -75,7 +75,7 @@ void Hero::GetEvent()
 		ANIMATION_TYPE = UP;		
 			    Me.Move( 0,- vel );
 		}
-		if( steering.IsKeyDown( sf::Key::S )){
+		if( steering.IsKeyDown( sf::Key::S ) && myPosition.y<(mapPixelatedSize-20)){
 		ANIMATION_TYPE = DOWN;
 			    Me.Move( 0,+ vel );
 		}

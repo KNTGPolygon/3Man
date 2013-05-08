@@ -4,6 +4,12 @@ MapCreator::MapCreator(const sf::Input &_steering)
 	:steering(_steering)
 {
 
+	for(int i = 0; i < 10; i++)
+	{
+		hotKeys[i] = 0;
+	}
+	lControlPressed = false;
+
 	//loading images from files, creating sprites
 	LoadTileGraphics();
 	blackHorizontalImage = new sf::Image();
@@ -66,7 +72,6 @@ void MapCreator::initializeMapArrays (int Size)
 void MapCreator::Display(sf::RenderWindow *window)
 {
 	window->Clear();
-
 	//counting from which field to draw
 	unsigned int firstFieldX = 0;
 	unsigned int firstFieldY = 0;
@@ -194,7 +199,11 @@ bool MapCreator::LoadTileGraphics()
 			 //loading tileGraphics
 		  while( !dataSet.eof() )
 			{	
-				dataSet >> str;
+				getline (dataSet,str);
+
+				//reading paths and ignoring everything after space
+				std::istringstream iss(str);
+				iss >> str;
 					if(str.at(0) == '-')
 				{
 					counter = 0;
@@ -286,6 +295,8 @@ void MapCreator::GetSteeringEvent()
 		cameraPosition.y += 20;
 		}
 
+	
+
 	if(steering.IsMouseButtonDown(sf::Mouse::Left))
 	{
 		
@@ -307,6 +318,7 @@ void MapCreator::GetSteeringEvent()
 
 	}
 
+
 }
 
 void MapCreator::GetTextboxEvent(sf::Event& event, std::string text, CreatorStates &state)
@@ -327,51 +339,93 @@ void MapCreator::GetTextboxEvent(sf::Event& event, std::string text, CreatorStat
 		initializeMapArrays(x);
 		state = MAIN;
 	}
+
 }
 
 void MapCreator::GetEvent(sf::Event& event)
 {
-	sf::Vector2i mousePos;
-	mousePos.x = steering.GetMouseX();
-	mousePos.y = steering.GetMouseY();
 
-	if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::F2))
+	if(event.Type == sf::Event::KeyPressed)
 	{
-		saveMap("Test");
-	}
+		if(event.Key.Code == sf::Key::LControl && lControlPressed == false)
+		{
+			lControlPressed = true;
+		}
 
-	else if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::D) )
-	{
-		if(toolboxFirstFieldNumber > 1)
-			toolboxFirstFieldNumber --;
-	}
+		if(lControlPressed == true)
+		{
+			if(event.Key.Code == sf::Key::S)
+				{
+					saveMap("Test");
+				}
 
-	else if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::A) )
-	{
-		if(toolboxFirstFieldNumber < tileSprites.size())
+			if((event.Key.Code >= sf::Key::Num0) && (event.Key.Code <= sf::Key::Num9))
+				{
+					if(chosenTileFromToolbox > 0)
+					{	
+						hotKeys[event.Key.Code - 48] = chosenTileFromToolbox;
+					}
+				}
+
+		}
+
+		if(lControlPressed == false)
+		{
+			if((event.Key.Code >= sf::Key::Num0) && (event.Key.Code <= sf::Key::Num9))
+				{
+					if(hotKeys[event.Key.Code - 48] > 0)
+					{	
+						toolboxFirstFieldNumber = hotKeys[event.Key.Code - 48];
+					}
+				}
+		}
+		
+
+		if(event.Key.Code == sf::Key::D)
+		{
+			if(toolboxFirstFieldNumber > 1)
+				toolboxFirstFieldNumber --;
+		}
+
+		if(event.Key.Code == sf::Key::A)
+		{
+			if(toolboxFirstFieldNumber < tileSprites.size())
 			toolboxFirstFieldNumber ++;
-	}
+		}
 
-	else if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::S) )
-	{
-		if(verticalToolboxFirstFieldNumber > 1)
+		if(event.Key.Code == sf::Key::S)
+		{
+			if(verticalToolboxFirstFieldNumber > 1)
 			verticalToolboxFirstFieldNumber --;
-	}
+		}
 
-	else if((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::W) )
-	{
-		if(verticalToolboxFirstFieldNumber < objectSprites.size())
+		if(event.Key.Code == sf::Key::W)
+		{
+			if(verticalToolboxFirstFieldNumber < objectSprites.size())
 			verticalToolboxFirstFieldNumber ++;
+		}
 	}
 
-	else if((event.Type == sf::Event::MouseButtonPressed) && (event.Key.Code == sf::Mouse::Left))
+	
+	if((event.Type == sf::Event::KeyReleased) && (event.Key.Code == sf::Key::LControl))
 	{
+		lControlPressed = false;
+	}
+
+
+	if((event.Type == sf::Event::MouseButtonPressed) && (event.Key.Code == sf::Mouse::Left))
+	{
+			sf::Vector2i mousePos;
+			mousePos.x = steering.GetMouseX();
+			mousePos.y = steering.GetMouseY();
+
 		if(mousePos.y < 100 || mousePos.x > 700)
 		{
 			toolboxManagement(mousePos);
 		}
 
 	}
+
 
 }
 
@@ -517,13 +571,20 @@ bool MapCreator::saveMap(std::string filename)
 				  while( !dataSet.eof() )
 					{	
 						dataSet >> str;
-							if(str.at(0) == '-')
+						
+							if(str[0] == '-')
 						{
-							
 							break;
 						}
 
-						outputFile << str << "\n";
+							if(str.size() != 1)
+								outputFile << str << " " ;
+							else
+							{
+								outputFile << str << " ";
+								dataSet >> str;
+								outputFile << str << "\n";
+							}
 
 				   }
 		outputFile << "*" << "\n";

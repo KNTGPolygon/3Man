@@ -22,7 +22,9 @@ private:
 	unsigned int Size;
 	unsigned int toolboxFirstFieldNumber;
 	unsigned int verticalToolboxFirstFieldNumber;
+	bool lControlPressed;
 
+	int hotKeys[10];
 	int chosenTileFromToolbox;
 	int chosenObjectFromToolbox;
 

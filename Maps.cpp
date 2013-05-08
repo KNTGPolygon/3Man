@@ -3,6 +3,8 @@
 
 Maps::Maps(const std::string& filename)
 {
+	clockCounter = 0;
+
 	MapObject **tempConstructorObjects;
 	std::map <const int, std::string> tempAddressesArray;
 
@@ -86,13 +88,13 @@ Maps::Maps(const std::string& filename)
 						//std::cout << mapTilesPath << " " <<  stringRepresentingFileLine << std::endl;
 						iss >> substring;
 						addresses[counter] = (mapTilesPath + substring).c_str() ;
+
 						iss >> substring;
-						if(substring.size() > 0)
 						passageRightsRead[counter] =atoi(substring.c_str());
-						else
-						{
-							std::cout << " Passage rights are not specified somewhere! " << std::endl;
-						}
+
+						iss >> substring;
+						typeOfTileAnimations[counter] =atoi(substring.c_str());
+
 						counter++;
 					}
 					else
@@ -145,13 +147,12 @@ Maps::Maps(const std::string& filename)
 				 int tileType;
 						do
 						{
-						//getline (map,stringRepresentingFileLine);
 						iss >>sub;
 						if(sub.at(0) == '*')
 						{
 							break;
 						}
-
+						//geting type of tile <ID 1,2,3... which tells what is it's picture
 							tileType = atoi(sub.c_str());
 							map_data[rowNumber][colNumber] = Tile(tileType, 0 + colNumber * 64, 0+rowNumber*64, passageRightsRead[tileType]);
 							colNumber++;
@@ -266,7 +267,8 @@ Maps::Maps(const std::string& filename)
 		 //----------------------
 }
 void Maps::showMap(sf::RenderWindow *window, sf::Vector2f heroPosition)
-{	
+{		
+	animate();
 
 	sf::Vector2i leftTopFieldVisible;
 	sf::Vector2i rightBotFieldVisible;
@@ -294,6 +296,49 @@ void Maps::showMap(sf::RenderWindow *window, sf::Vector2f heroPosition)
 
 }
 
+void Maps::animate()
+{
+	clockCounter++;
+	int period = 200;
+
+	if(clockCounter == 1)
+	{
+		for(unsigned int i = 1; i <= mapGraphics.size(); i++)
+		{
+			if(typeOfTileAnimations[i]==1)
+			tileSprites[i].SetColor(sf::Color(255,255,255,235));
+		}
+	}
+	else if (clockCounter == period*1)
+	{
+		for(unsigned int i = 1; i <= mapGraphics.size(); i++)
+		{
+			if(typeOfTileAnimations[i]==1)
+			tileSprites[i].SetColor(sf::Color(255,255,255,215));
+		}
+	}
+	else if(clockCounter == period*2)
+	{
+		for(unsigned int i = 1; i <= mapGraphics.size(); i++)
+		{
+			if(typeOfTileAnimations[i]==1)
+			tileSprites[i].SetColor(sf::Color(255,255,255,235));
+		}
+	}
+	else if(clockCounter == period*3)
+	{
+		for(unsigned int i = 1; i <= mapGraphics.size(); i++)
+		{
+			if(typeOfTileAnimations[i]==1)
+			tileSprites[i].SetColor(sf::Color(255,255,255,255));
+		}
+	}
+	else if(clockCounter == period*4)
+	{
+		clockCounter = 0;
+	}
+}
+
 void Maps::createTiles()
 {
 	
@@ -309,6 +354,7 @@ void Maps::createTiles()
 	{
 		mapGraphics[i].SetSmooth(false);
 		tempSprite.SetImage(mapGraphics[i]);
+		tileSprites[i].SetColor(sf::Color(255,255,255,240));
 		tileSprites[i] = tempSprite;
 		
 	}

@@ -1,0 +1,12 @@
+s¹ te 2 liczby po tile'ach <prócz pierwszego który siê nie wczytuje nigdzie w grze samej>
+
+pierwsza liczba to typ pola
+0 - wolny dostêp
+1 - brak przejœcia
+2 - niebezpieczne(niskie obra¿enia)
+3 - niebezpieczne(œrednie obra¿enia)
+4 - niebezpieczne(wysokie obra¿enia)
+
+druga liczba to rodzaj animacji, aktualnie jest tylko tryb on/off
+0 - brak animacji
+1 - animowane

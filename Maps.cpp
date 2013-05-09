@@ -3,7 +3,7 @@
 
 Maps::Maps(const std::string& filename)
 {
-	clockCounter = 0;
+	clockCounter = 1;
 
 	MapObject **tempConstructorObjects;
 	std::map <const int, std::string> tempAddressesArray;
@@ -298,34 +298,10 @@ void Maps::showMap(sf::RenderWindow *window, sf::Vector2f heroPosition)
 
 void Maps::animate()
 {
-	clockCounter++;
-	int period = 200;
+	
+	int period = 300;
 
 	if(clockCounter == 1)
-	{
-		for(unsigned int i = 1; i <= mapGraphics.size(); i++)
-		{
-			if(typeOfTileAnimations[i]==1)
-			tileSprites[i].SetColor(sf::Color(255,255,255,235));
-		}
-	}
-	else if (clockCounter == period*1)
-	{
-		for(unsigned int i = 1; i <= mapGraphics.size(); i++)
-		{
-			if(typeOfTileAnimations[i]==1)
-			tileSprites[i].SetColor(sf::Color(255,255,255,215));
-		}
-	}
-	else if(clockCounter == period*2)
-	{
-		for(unsigned int i = 1; i <= mapGraphics.size(); i++)
-		{
-			if(typeOfTileAnimations[i]==1)
-			tileSprites[i].SetColor(sf::Color(255,255,255,235));
-		}
-	}
-	else if(clockCounter == period*3)
 	{
 		for(unsigned int i = 1; i <= mapGraphics.size(); i++)
 		{
@@ -333,10 +309,33 @@ void Maps::animate()
 			tileSprites[i].SetColor(sf::Color(255,255,255,255));
 		}
 	}
-	else if(clockCounter == period*4)
+	
+	if(clockCounter > 0 && clockCounter <= period)
+	{
+		int change = clockCounter / 5;
+		for(unsigned int i = 1; i <= mapGraphics.size(); i++)
+		{
+			if(typeOfTileAnimations[i]==1)
+			tileSprites[i].SetColor(sf::Color(255,255,255,255 - change));
+		}
+	}
+
+	if(clockCounter > period && clockCounter < 2*period)
+	{
+		int change = (2*period - clockCounter)/ 5;
+		for(unsigned int i = 1; i <= mapGraphics.size(); i++)
+		{
+			if(typeOfTileAnimations[i]==1)
+			tileSprites[i].SetColor(sf::Color(255,255,255,255 - change));
+		}
+	}
+
+	if(clockCounter == 2*period)
 	{
 		clockCounter = 0;
 	}
+
+	clockCounter++;
 }
 
 void Maps::createTiles()

@@ -109,6 +109,7 @@ void Number::Colliding(bool minusCollision,bool plusCollision)
 }
 void Number::Display(sf::RenderWindow *window)
 {
+	depth = -mySprite.GetPosition().y;
 	window->Draw( mySprite );
 	if ( isMinus )
 	{

@@ -19,7 +19,13 @@ private:
 	int weaponType;
 	int numberOfWeapons;
 	float myDistanceToMouse;
-	float vel;	
+	float vel;
+	float speed;
+
+	sf::Key::Code keyUp;
+	sf::Key::Code keyDown;
+	sf::Key::Code keyLeft;
+	sf::Key::Code keyRight;
 
 	enum State{
 	UP,

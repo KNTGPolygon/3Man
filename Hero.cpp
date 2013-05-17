@@ -2,6 +2,7 @@
 #include "Hero.h"
 #include "Functions.h"
 #include "ImageManager.h"
+#include <cmath>
 #include <iostream>
 #include "Collision/BoxMask.h"
 //-------------------------------- Hero
@@ -10,6 +11,7 @@ Hero::Hero(const sf::Input &_steering,float velocity)
 {
 	ANIMATION_TYPE = STAY;
 
+	speed = 2;
 	depth = 0;
 
 	MyTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Player.PNG" );
@@ -42,6 +44,17 @@ Hero::Hero(const sf::Input &_steering,float velocity)
 	weapon[2] = new Weapon("Derivative",Derivative);
 	weapon[3] = new Weapon("Integral",Integral);
 	std::cout<<"Hero constructor online\n";
+
+	keyUp = sf::Key::W;
+	keyDown = sf::Key::S;
+	keyLeft = sf::Key::A;
+	keyRight = sf::Key::D;
+
+	for ( int i = 0; i <= 360; i+=5 )
+	{
+		std::cout << "sin(" << i << ") = " << sin((double)i * PI/180) << std::endl;
+	}
+
 }
 
 Hero::~Hero(void)
@@ -63,22 +76,59 @@ void Hero::GetEvent(int mapPixelatedSize)
 {
 		ANIMATION_TYPE = STAY;
 
-		if( steering.IsKeyDown( sf::Key::A ) && myPosition.x>0 ){
-		ANIMATION_TYPE = LEFT;
-				Me.Move( -vel, 0 );
+		int dir = 0;
+		int sp = 0;
+
+		if( steering.IsKeyDown(keyUp) )
+		{
+			dir = 270;
+			sp = speed;
+			ANIMATION_TYPE = UP;
 		}
-		if( steering.IsKeyDown( sf::Key::D ) && myPosition.x<(mapPixelatedSize-20)){
-		ANIMATION_TYPE = RIGHT;
-				Me.Move( + vel, 0 );
+		if( steering.IsKeyDown(keyDown) )
+		{
+			dir = 90;
+			sp = speed;
+			ANIMATION_TYPE = DOWN;
 		}
-		if( steering.IsKeyDown( sf::Key::W )&& myPosition.y>0 ){
-		ANIMATION_TYPE = UP;		
-			    Me.Move( 0,- vel );
+		if( steering.IsKeyDown(keyLeft) )
+		{
+			dir = 180;
+			sp = speed;
+			ANIMATION_TYPE = LEFT;
 		}
-		if( steering.IsKeyDown( sf::Key::S ) && myPosition.y<(mapPixelatedSize-20)){
-		ANIMATION_TYPE = DOWN;
-			    Me.Move( 0,+ vel );
+		if( steering.IsKeyDown(keyRight) )
+		{
+			dir = 0;
+			sp = speed;
+			ANIMATION_TYPE = RIGHT;
 		}
+		if( steering.IsKeyDown(keyUp) && steering.IsKeyDown(keyLeft) )
+		{
+			dir = 225;
+			sp = speed;
+			ANIMATION_TYPE = UP;
+		}
+		if( steering.IsKeyDown(keyUp) && steering.IsKeyDown(keyRight) )
+		{
+			dir = 315;
+			sp = speed;
+			ANIMATION_TYPE = UP;
+		}
+		if( steering.IsKeyDown(keyDown) && steering.IsKeyDown(keyLeft) )
+		{
+			dir = 135;
+			sp = speed;
+			ANIMATION_TYPE = DOWN;
+		}
+		if( steering.IsKeyDown(keyDown) && steering.IsKeyDown(keyRight) )
+		{
+			dir = 45;
+			sp = speed;
+			ANIMATION_TYPE = DOWN;
+		}
+
+		Me.Move( sp*cos((double)dir*(PI/180)), sp*sin((double)dir*(PI/180)) );
 		
 		if( steering.IsKeyDown(sf::Key::Num1) )weaponType=0;
 		if( steering.IsKeyDown(sf::Key::Num2) )weaponType=1;

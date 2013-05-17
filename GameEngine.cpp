@@ -15,7 +15,7 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	lastTime = 0;
 	mainMenu = true;
 	fpsFlag = true;
-	devmode = true;
+	devmode = false;
 
 	strMouse.SetPosition(10.0,150.0);
 	strMouse.SetScale(0.5,0.5);

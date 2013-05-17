@@ -64,7 +64,8 @@ void GameState::Display()
 	pirate->Display(&GameEngine::getInstance()->getWindow());
 	seven->Display(&GameEngine::getInstance()->getWindow());
 	for( int i = 0; i < NUM_OF_ENEMIES ; i++)
-		numbers[i]->Display(&GameEngine::getInstance()->getWindow());
+		//numbers[i]->Display(&GameEngine::getInstance()->getWindow());
+		GameEngine::getInstance()->AddToRenderQueue((Drawable*)numbers[i]);
 	
 	hero->SetCamera(&GameEngine::getInstance()->getView(),&GameEngine::getInstance()->getWindow());
 	

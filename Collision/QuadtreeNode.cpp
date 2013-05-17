@@ -85,7 +85,7 @@ void QuadtreeNode::Add( SpriteExt* spr )
 				}
 	}
 
-	std::cout << "subNodes = " << subNodes << std::endl;
+	//std::cout << "subNodes = " << subNodes << std::endl;
 
 }
 

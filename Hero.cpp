@@ -50,11 +50,6 @@ Hero::Hero(const sf::Input &_steering,float velocity)
 	keyLeft = sf::Key::A;
 	keyRight = sf::Key::D;
 
-	for ( int i = 0; i <= 360; i+=5 )
-	{
-		std::cout << "sin(" << i << ") = " << sin((double)i * PI/180) << std::endl;
-	}
-
 }
 
 Hero::~Hero(void)

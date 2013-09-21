@@ -1,7 +1,7 @@
 #include "State.h"
 #include "Hero.h"
 #include "Maps.h"
-#include "Tree.h"
+#include "Levels/Wall.h"
 #include "Enemy.h"
 #include "Number.h"
 #include "Collision/QuadtreeNode.h"
@@ -14,7 +14,7 @@ class GameState : public State
 private:
 	Hero* hero;
 	Maps* map;
-	Tree* tree[20];
+	Wall* wall[10];
 	Enemy* pirate;
 	Number *seven;
 	Number **numbers;

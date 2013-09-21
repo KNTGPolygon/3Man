@@ -2,7 +2,7 @@
 
 GameEngine::GameEngine(void):steering(window.GetInput())
 {	
-	window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "3Game");
+	window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Integrator");
 
 	States[GAME] = new GameState();
 	States[MAINMENU] = new MainMenuState();

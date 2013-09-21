@@ -25,26 +25,16 @@ void GameState::Init()
 	numbers[3] = new Number(sf::Vector2i(310,330),-4);
 	numbers[4] = new Number(sf::Vector2i(250,340),-5);
 
-	tree[0] = new Tree(391,320);
-	tree[1] = new Tree(179,28);
-	tree[2] = new Tree(270,361);
-	tree[3] = new Tree(464,122);
-	tree[4] = new Tree(39,119);
-	tree[5] = new Tree(312,56);
-	tree[6] = new Tree(84,324);
-	tree[7] = new Tree(42,208);
-	tree[8] = new Tree(420,259);
-	tree[9] = new Tree(272,110);
-	tree[10] = new Tree(299,482);
-	tree[11] = new Tree(54,342);
-	tree[12] = new Tree(326,140);
-	tree[13] = new Tree(94,389);
-	tree[14] = new Tree(370,41);
-	tree[15] = new Tree(182,261);
-	tree[16] = new Tree(361,362);
-	tree[17] = new Tree(290,132);
-	tree[18] = new Tree(224,255);
-	tree[19] = new Tree(254,264);
+	wall[0] = new Wall(100, 100);
+	wall[1] = new Wall(132, 100);
+	wall[2] = new Wall(164, 100);
+	wall[3] = new Wall(196, 100);
+	wall[4] = new Wall(196, 116);
+	wall[5] = new Wall(196, 132);
+	wall[6] = new Wall(228, 132);
+	wall[7] = new Wall(260, 132);
+	wall[8] = new Wall(292, 132);
+	wall[9] = new Wall(324, 132);
 
 }
 
@@ -53,8 +43,9 @@ void GameState::Display()
 	GameEngine::getInstance()->FlushRenderQueue();
 
 	GameEngine::getInstance()->AddToRenderQueue((Drawable*)hero);
-	for ( int i = 0; i < 20; i++ )
-		GameEngine::getInstance()->AddToRenderQueue((Drawable*)tree[i]);
+
+	for ( int i = 0; i < 10; i++ )
+		GameEngine::getInstance()->AddToRenderQueue(wall[i]);
 
 	for ( int i = 0; i < numberOfObjects; i++ )
 		GameEngine::getInstance()->AddToRenderQueue((Drawable*)arrayOfObjects[i]);
@@ -91,8 +82,9 @@ void GameState::EventHandling()
 		}
 	seven->SetHeroPosition(hero->GetPosition());
 	seven->AI();
-	for ( int i = 0; i < 20; i++ )
-		tree[i]->Update();
+
+	for ( int i = 0; i < 10; i++ )
+		wall[i]->Update();
 
 	for ( int i = 0; i < numberOfObjects; i++ )
 		arrayOfObjects[i]->Update();
@@ -113,8 +105,8 @@ void GameState::Cleanup()
 	delete map;
 	delete pirate;
 	delete seven;
-	for ( int i = 0; i < 20; i++ )
-		delete tree[i];
+	for ( int i = 0; i < 10; i++ )
+		delete wall[i];
 	for ( int i = 0; i < NUM_OF_ENEMIES; i++ )
 		delete numbers[i];
 

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include "Util.h"
+#include "Functions.h"
 
 Weapon::Weapon(std::string weaponName,WeaponType weaponType , int BulletFireLimit,float RepeatRate)
 :bulletFireLimit(BulletFireLimit), repeatRate(RepeatRate)
@@ -47,25 +47,30 @@ void Weapon::Logic(bool FiringLocked, sf::Vector2i target)
 	if( active == true )
 	{
 
-	if(FiringLocked && fired == true)
+	if( FiringLocked && fired == true)
 	{
-		if(repetition.GetElapsedTime()>repeatRate)
+		if( repetition.GetElapsedTime() > repeatRate )
 		{
 			repetition.Reset();
+			std::cout<<"repetition reset\n";
 			destenation.x = target.x - (int)fireFromPosition.x;
 			destenation.y = target.y - (int)fireFromPosition.y;
 			distanceFromMouse=sqrt((float)(destenation.x)*(destenation.x)+(float)(destenation.y)*(destenation.y));
 			
-			if(missle[ReturnFirstAvailable(missle,bulletFireLimit)]->inMove == false){
-			missle[ReturnFirstAvailable(missle,bulletFireLimit)]->StartPosition(fireFromPosition);
-			missle[ReturnFirstAvailable(missle,bulletFireLimit)]->SetTarget(destenation,distanceFromMouse);
-			missle[ReturnFirstAvailable(missle,bulletFireLimit)]->inMove = true;
+			if( missle[ReturnFirstAvailable(missle,bulletFireLimit)]->inMove == false )
+			{
+				missle[ReturnFirstAvailable(missle,bulletFireLimit)]->StartPosition(fireFromPosition);
+				missle[ReturnFirstAvailable(missle,bulletFireLimit)]->SetTarget(destenation,distanceFromMouse);
+				missle[ReturnFirstAvailable(missle,bulletFireLimit)]->inMove = true;
 			}
 		}
 	
 	}
-		if(FiringLocked && fired == false)
+		if( FiringLocked && fired == false)
 	{
+		if( repetition.GetElapsedTime() > repeatRate )
+		{
+		//std::cout<<"repetition reset\n";
 		repetition.Reset();
 		destenation.x = target.x - (int)fireFromPosition.x;
 		destenation.y = target.y - (int)fireFromPosition.y;
@@ -74,9 +79,9 @@ void Weapon::Logic(bool FiringLocked, sf::Vector2i target)
 		missle[0]->SetTarget(destenation,distanceFromMouse);
 		missle[0]->inMove = true;
 		fired = true;
+		}
 	}
 
-		
 	fired = false;
 	active = false;
 	}

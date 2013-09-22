@@ -1,6 +1,6 @@
 #pragma once
 #include "Drawable.h" 
-#include "Util.h"
+#include "Functions.h"
 #include "SpriteExt.h"
 #include "ImageManager.h"
 #include "Collision/BoxMask.h"

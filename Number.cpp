@@ -23,6 +23,7 @@ Number::Number(sf::Vector2i Position,int Value, bool RandomPathMode
 	mySprite.SetImage( myTexture );
 	mySprite.SetPosition((float) Position.x ,(float) Position.y );
 	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
+	mySprite.setType( "enemy" );
 	
 	startPosition = Position;
 	target = Position;
@@ -72,6 +73,8 @@ void Number::SetImage(int Value)
 }
 void Number::Colliding(bool minusCollision,bool plusCollision)
 {
+	//DetectCollision(SpriteExt*, std::string);
+	GameEngine::getInstance()->DetectCollision(&mySprite,"Plus");
 	if(minusCollision)
 	{
 		if( value > 0 && value < 9)

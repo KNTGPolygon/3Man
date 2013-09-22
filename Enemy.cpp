@@ -12,7 +12,7 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	mySprite.SetImage( myTexture );
 	mySprite.SetPosition((float) myPosition.x ,(float) myPosition.y );
 	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
-	
+	mySprite.setType( "enemy" );
 	startPosition = Position;
 	target = Position;
 	MovementVector.x = MovementVector.y = 150;

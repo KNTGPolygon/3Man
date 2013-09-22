@@ -11,6 +11,7 @@
 class Missle
 {
 private:
+	bool colisionWithiObiect;
 	float angle;
 	float currentDistance;		 //Chwilowa odleg�o�� od strzelaj�cego
 	float range;				 //Zasi�g pocisku

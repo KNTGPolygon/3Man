@@ -52,14 +52,14 @@ GameEngine::~GameEngine(void)
 
 void GameEngine::Display()
 {
-		strMouse.SetText("X = "+int2str(steering.GetMouseX())+" Y = "+int2str(steering.GetMouseY()));
+		strMouse.SetText("X = "+Util::int2str(steering.GetMouseX())+" Y = "+Util::int2str(steering.GetMouseY()));
 		window.Draw( strMouse);
 		
 		if(fpsFlag == true)
 		{
 			currentTime = time.GetElapsedTime();	
-			strFps.SetText("FPS = "+int2str((int)(1/(currentTime-lastTime))));
-			strFrameTime.SetText("Frame time = "+flo2str(window.GetFrameTime()));
+			strFps.SetText("FPS = "+Util::int2str((int)(1/(currentTime-lastTime))));
+			strFrameTime.SetText("Frame time = "+Util::flo2str(window.GetFrameTime()));
 			window.Draw( strFps );
 			window.Draw( strFrameTime );
 			lastTime = currentTime;	

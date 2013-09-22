@@ -7,7 +7,7 @@
 #include <vector>
 #include <cmath>
 #include "Drawable.h"
-#include "Functions.h"
+#include "Util.h"
 #include "State.h"
 #include "GameState.h"
 #include "MainMenuState.h"

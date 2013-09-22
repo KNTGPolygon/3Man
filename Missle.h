@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
 #include "ImageManager.h"
-#include "Functions.h"
+#include "Util.h"
 #include "SpriteExt.h"
 #ifndef MISSLE_H
 #define MISSLE_H

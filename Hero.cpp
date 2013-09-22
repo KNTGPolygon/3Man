@@ -1,8 +1,7 @@
 #include "GameEngine.h"
 #include "Hero.h"
-#include "Functions.h"
+#include "Util.h"
 #include "ImageManager.h"
-#include <cmath>
 #include <iostream>
 #include "Collision/BoxMask.h"
 //-------------------------------- Hero
@@ -27,10 +26,7 @@ Hero::Hero(const sf::Input &_steering,float velocity)
 	Me.SetCenter(18,25);
 	Me.setType("hero");
 
-	//Me.setBoxMask(sf::IntRect(0,26,SPRITE_SIZE,SPRITE_SIZE)); //ustawia maske kolizji na prostakat
-	Me.setCircleMask(Me.GetCenter().x,Me.GetCenter().y,30);
-
-	//GameEngine::getInstance()->AddToCollisionList(&Me);
+	Me.setBoxMask(sf::IntRect(0,26,SPRITE_SIZE,SPRITE_SIZE)); //ustawia maske kolizji na prostakat
 
 	animate = new Animate*[4];
 	animate[0] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),3,15);   //DOWN
@@ -123,7 +119,7 @@ void Hero::GetEvent(int mapPixelatedSize)
 			ANIMATION_TYPE = DOWN;
 		}
 
-		Me.Move( sp*cos((double)dir*(PI/180)), sp*sin((double)dir*(PI/180)) );
+		Me.Move( Util::lengthdir_x(sp, dir), Util::lengthdir_y(sp, dir) );
 		
 		if( steering.IsKeyDown(sf::Key::Num1) )weaponType=0;
 		if( steering.IsKeyDown(sf::Key::Num2) )weaponType=1;
@@ -145,7 +141,7 @@ void Hero::GetEvent(int mapPixelatedSize)
 void Hero::Display(sf::RenderWindow *window)
 {
 	strMyPosition.SetPosition(Me.GetPosition());
-	strMyPosition.SetText("Sx = "+int2str((int)myPosition.x)+" Sy = "+int2str((int)myPosition.y));
+	strMyPosition.SetText("Sx = "+Util::int2str((int)myPosition.x)+" Sy = "+Util::int2str((int)myPosition.y));
 	
 	for(int i = 0 ; i < 4 ; i++)
 	weapon[i]->Display( window );
@@ -169,19 +165,17 @@ void Hero::Display(sf::RenderWindow *window)
 			break;	
 	}
 	
-	//std::vector<SpriteExt*> list = GameEngine::getInstance()->getCollisionList();
-
 	window->Draw( strMyPosition );
 
 	if(GameEngine::getInstance()->devmode)
 	{
 		if ( GameEngine::getInstance()->DetectCollision(&Me) )
-			((CircleMask*)Me.getCollisionMask())->Display(window,
+			((BoxMask*)Me.getCollisionMask())->Display(window,
 													   sf::Vector2f(Me.GetPosition().x-Me.GetCenter().x,
 																	Me.GetPosition().y-Me.GetCenter().y),
 													   sf::Color(255, 0, 0));
 		else
-			((CircleMask*)Me.getCollisionMask())->Display(window,
+			((BoxMask*)Me.getCollisionMask())->Display(window,
 													   sf::Vector2f(Me.GetPosition().x-Me.GetCenter().x,
 																	Me.GetPosition().y-Me.GetCenter().y));
 	}

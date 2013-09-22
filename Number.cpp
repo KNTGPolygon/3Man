@@ -16,7 +16,7 @@ Number::Number(sf::Vector2i Position,int Value, bool RandomPathMode
 		sign = sf::Shape::Rectangle(0.0,0.0,10.0,4.0,sf::Color(0,0,0));
 		sign.SetCenter(sign.GetPosition().x/2,sign.GetPosition().y/2);
 	}
-	myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+int2str( abs( value ) ) + ".PNG" );
+	myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+Util::int2str( abs( value ) ) + ".PNG" );
 	myTexture.SetSmooth( false );
 	myTexture.CreateMaskFromColor(sf::Color(255,0,255));
 
@@ -62,7 +62,7 @@ Number::~Number(void)
 }
 void Number::SetImage(int Value)
 {
-			myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+int2str( abs( Value ) ) + ".PNG" );
+			myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+Util::int2str( abs( Value ) ) + ".PNG" );
 			myTexture.SetSmooth( false );
 			myTexture.CreateMaskFromColor(sf::Color(255,0,255));
 

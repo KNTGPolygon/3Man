@@ -2,7 +2,7 @@
 //#include <SFML/Graphics.hpp>
 #include "Drawable.h"
 #include <string>
-#include "Functions.h"
+#include "Util.h"
 
 class InputBox : public Drawable
 {

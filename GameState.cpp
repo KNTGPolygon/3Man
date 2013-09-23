@@ -1,4 +1,5 @@
 #include "GameState.h"
+#include "Cursor.h"
 
 GameState::GameState():State()
 {
@@ -7,6 +8,8 @@ GameState::GameState():State()
 
 void GameState::Init()
 {
+	GameEngine::getInstance()->getCursor().setType(CROSSHAIR);
+
 	hero = new Hero(GameEngine::getInstance()->getSteering(),2);
 	hero->PutScreenSize(GameEngine::SCREEN_WIDTH, GameEngine::SCREEN_HEIGHT);
 
@@ -64,7 +67,6 @@ void GameState::Display()
 
 	if(GameEngine::getInstance()->devmode)
 		GameEngine::getInstance()->DisplayCollisionQuadtree();
-
 }
 
 void GameState::EventHandling()

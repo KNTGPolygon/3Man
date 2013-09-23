@@ -1,4 +1,5 @@
 #include "EditorState.h"
+#include <iostream>
 
 EditorState::EditorState():State()
 {
@@ -7,6 +8,7 @@ EditorState::EditorState():State()
 
 void EditorState::Init()
 {
+	GameEngine::getInstance()->getCursor().setType(ARROW);
 	
 	mapCreator = new MapCreator(GameEngine::getInstance()->getSteering());
 	mapCreator->GetScreenSize(GameEngine::SCREEN_WIDTH, GameEngine::SCREEN_HEIGHT);

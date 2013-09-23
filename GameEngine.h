@@ -14,7 +14,7 @@
 #include "EditorState.h"
 #include "SpriteExt.h"
 #include "Collision/BoxMask.h"
-
+#include "Cursor.h"
 
 #ifndef GAME_ENGINE_H
 #define GAME_ENGINE_H
@@ -37,6 +37,7 @@ public:
 	static const int SCREEN_WIDTH  = 800;
 	static const int SCREEN_HEIGHT = 600;
 	bool devmode;
+
 private:
 
 	bool windowIsOpen;
@@ -50,6 +51,8 @@ private:
 	sf::RenderWindow window; 
 	sf::View View;
 	
+	Cursor cursor;
+
 	std::map<STATE, State*> States;
 	STATE currentState;
 	STATE nextState;
@@ -92,6 +95,8 @@ public:
 	sf::View& getView();
 	const sf::Input& getSteering();
 	sf::Event& getEvent();
+
+	Cursor& getCursor();
 
 	static bool Collision( SpriteExt*, SpriteExt* );
 	void AddToCollisionQuadtree(SpriteExt*);

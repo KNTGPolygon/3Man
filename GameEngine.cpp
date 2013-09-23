@@ -3,6 +3,9 @@
 GameEngine::GameEngine(void):steering(window.GetInput())
 {	
 	window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Integrator");
+	window.SetFramerateLimit(60);
+	window.ShowMouseCursor(false);
+	window.SetView(window.GetDefaultView());
 
 	States[GAME] = new GameState();
 	States[MAINMENU] = new MainMenuState();
@@ -64,6 +67,8 @@ void GameEngine::Display()
 			window.Draw( strFrameTime );
 			lastTime = currentTime;	
 		}
+
+		GameEngine::getInstance()->getCursor().Display(&GameEngine::getInstance()->getWindow());
 }
 
 void GameEngine::ChangeState( STATE state )
@@ -94,7 +99,6 @@ const sf::Input& GameEngine::getSteering()
 
 bool GameEngine::run()
 {
-	window.SetFramerateLimit(100);
 	window.Clear();
 	
 	ChangeState(MAINMENU);
@@ -280,6 +284,11 @@ sf::View& GameEngine::getView()
 sf::Event& GameEngine::getEvent()
 {
 	return event;
+}
+
+Cursor& GameEngine::getCursor()
+{
+	return cursor;
 }
 
 void deleteObj(void *obj)

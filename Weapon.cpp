@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include "Functions.h"
+#include "Util.h"
 
 Weapon::Weapon(std::string weaponName,WeaponType weaponType , int BulletFireLimit,float RepeatRate)
 :bulletFireLimit(BulletFireLimit), repeatRate(RepeatRate)

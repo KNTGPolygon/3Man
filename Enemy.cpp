@@ -30,6 +30,7 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	}
 	inMove		  = false;
 	targetReached = false;
+	attacking	  = false;
 	pathNumber	  = 0;
 	escapeRange = 300;
 	pullRange = PullRange;
@@ -43,21 +44,26 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	path->push_back(sf::Vector2i(300,100));
 
 	mySprite.setCircleMask(20,20,20);
+
+	myWeapon = new Weapon(YellowBall);
+	myWeapon->PutScreenSize(GameEngine::getInstance()->SCREEN_WIDTH,GameEngine::getInstance()->SCREEN_HEIGHT );
 }
 
 Enemy::~Enemy(void)
 {
+	delete myWeapon;
 }
-
 void Enemy::UpdateCollision()
 {
-	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
+ 	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
 }
 
 void Enemy::Logic(sf::Vector2i Target)
 {
 	if(GoToPosition( Target ) ){
-
+		if ( GameEngine::getInstance()->DetectCollision( &mySprite, "wall" ) )
+			mySprite.Move(-velocity*shiftVector);
+		else
 		mySprite.Move(velocity*shiftVector);
 
 		myPosition.x =(int) mySprite.GetPosition().x;
@@ -73,11 +79,14 @@ void Enemy::AI()
 	switch( myAI )
 	{
 	case PATHWALK: //   ---  PATHWALK ---
+	
+	attacking = false;
 
 		if( distanceFromHero < pullRange )
 		{
 			myAI = FOLLOW;
-			std::cout<<"Following...\n";
+			std::cout<<"Following...\n"
+				;
 			break;
 		}
 
@@ -114,6 +123,7 @@ void Enemy::AI()
 		break;
 	case FOLLOW:	
 			Logic( heroPosition );
+			myAI = COMBAT;
 			if( distanceFromHero > escapeRange )
 			{
 			myAI = pathMode;
@@ -122,9 +132,13 @@ void Enemy::AI()
 
 		break;
 	case COMBAT:
+		attacking = true;
+		myWeapon->active = true;
+		myWeapon->SetFiringPosition( sf::Vector2f( (float)myPosition.x, (float)myPosition.y) );
+		myAI = FOLLOW;
 		break;
 	case RANDOM_PATHWALK: //   ---  RANDOM_PATHWALK ---
-		
+		myWeapon->active = false;
 		if( distanceFromHero < pullRange )
 		{
 			myAI = FOLLOW;
@@ -156,6 +170,8 @@ void Enemy::AI()
 	default:
 		break;
 	}
+
+	myWeapon->Logic(attacking,heroPosition);
 }
 
 int Enemy::GoToPosition(sf::Vector2i Destination)
@@ -188,6 +204,7 @@ void Enemy::SetStartPosition(sf::Vector2f Position)
 void Enemy::Display(sf::RenderWindow *window)
 {
 	window->Draw( mySprite );
+	myWeapon->Display( window );
 
 	if(GameEngine::getInstance()->devmode)
 	{

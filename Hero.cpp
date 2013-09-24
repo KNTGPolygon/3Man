@@ -23,7 +23,7 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 	Me.SetSubRect(sf::IntRect(0,0,SPRITE_SIZE,SPRITE_SIZE));
 	Me.SetPosition( 350, 425 );
 	Me.SetCenter(18,25);
-	Me.setType("hero");
+	Me.setType("Hero");
 
 	Me.setBoxMask(sf::IntRect(0,26,SPRITE_SIZE,SPRITE_SIZE)); //ustawia maske kolizji na prostakat
 
@@ -34,10 +34,10 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 	animate[3] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),3,15,3); //UP
 	
 	weapon = new Weapon*[numberOfWeapons];	
-	weapon[0] = new Weapon("Plus",Plus);
-	weapon[1] = new Weapon("Minus",Minus);
-	weapon[2] = new Weapon("Derivative",Derivative);
-	weapon[3] = new Weapon("Integral",Integral);
+	weapon[0] = new Weapon(Plus);
+	weapon[1] = new Weapon(Minus);
+	weapon[2] = new Weapon(Derivative);
+	weapon[3] = new Weapon(Integral);
 	std::cout<<"Hero constructor online\n";
 
 	keyUp = sf::Key::W;
@@ -126,14 +126,18 @@ void Hero::GetEvent(int mapPixelatedSize)
 		if( steering.IsKeyDown(sf::Key::Num4) )weaponType=3;
 
 		weapon[weaponType]->active = true;
+		
+		sf::Vector2f mouse_coords = GameEngine::getInstance()->getWindow().ConvertCoords(
+		steering.GetMouseX(), steering.GetMouseY(), &GameEngine::getInstance()->getView() );
 
-		sf::Vector2f mouse_coords = GameEngine::getInstance()->getWindow().ConvertCoords( steering.GetMouseX(),
-																						  steering.GetMouseY(),
-																						  &GameEngine::getInstance()->getView() );
 		for(int i = 0; i < 4 ; i++)
 		{
 		weapon[i]->SetFiringPosition(Me.GetPosition());
-		weapon[i]->Logic(steering.IsMouseButtonDown(sf::Mouse::Left), sf::Vector2i( (int)mouse_coords.x, (int)mouse_coords.y ));
+		/*weapon[i]->Logic(steering.IsMouseButtonDown(sf::Mouse::Left),
+		sf::Vector2i(steering.GetMouseX()  - SCREEN_WIDTH/2 + (int)Me.GetPosition().x,
+		steering.GetMouseY()  - SCREEN_HEIGHT/2 + (int)Me.GetPosition().y )); */
+		weapon[i]->Logic( steering.IsMouseButtonDown(sf::Mouse::Left),
+						  sf::Vector2i( (int)mouse_coords.x, (int)mouse_coords.y ));
 		weapon[i]->active = false;
 		}
 
@@ -187,7 +191,6 @@ void Hero::SetCamera(sf::View *View, sf::RenderWindow *window)
 	View->SetCenter(myPosition);
 	window->SetView(*View);
 }
-
 void Hero::UpdateCollision()
 {
 	GameEngine::getInstance()->AddToCollisionQuadtree(&Me);
@@ -195,6 +198,7 @@ void Hero::UpdateCollision()
 
 void Hero::UpdatePosition()
 {
+	 GameEngine::getInstance()->AddToCollisionQuadtree(&Me);
 	 myPosition     = Me.GetPosition();
 	 for(int i = 0 ; i < 4 ; i++)
 	 animate[i]->Update(Me.GetPosition());

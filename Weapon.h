@@ -9,24 +9,29 @@
 		Integral,
 		Derivative,
 		Minus,
-		Plus
+		Plus,
+		YellowBall
 	};
 
 class Weapon : public Drawable
 {
 private:
+
+	int SCREEN_WIDTH;
+	int SCREEN_HEIGHT;
+	int bulletFireLimit;
+	int bulletLeft;
+
+	float cooldown;
+	float distanceFromMouse;
+
 	double damage;
 	double range;
 	double speed;
 	double error;
 	double repeatRate;
-
-	int bulletFireLimit;
-	int bulletLeft;
-
-	float cooldown;
-			 //Cz�stotliwo�� strza��w przy wci�ni�tym spu�cie
-	float distanceFromMouse;
+	
+	std::string missleColider;
 	std::string directory;
 
 	sf::Vector2i destenation;
@@ -34,13 +39,11 @@ private:
 	sf::Clock repetition;
 	Missle **missle;
 
-	int SCREEN_WIDTH;
-	int SCREEN_HEIGHT;
-	bool Load(std::string WeaponName);
+	
 public:
 	bool fired;
 	bool active;
-	Weapon(std::string weaponName, WeaponType weaponType = Integral ,int BulletFireLimit = 5,float RepeatRate = 0.25);
+	Weapon(WeaponType weaponType = Integral ,int BulletFireLimit = 5,float RepeatRate = 0.25);
 	~Weapon(void);
 	
     int ReturnFirstAvailable(Missle **missle,int MissleAmount );

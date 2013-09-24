@@ -18,6 +18,8 @@ private:
 	float velocity;				 //Pr�dko�� pocisku
 	float distanceFromTarget;	 // Odleg�o�� od celu ( kliku myszki )
 	
+	std::string missleColider;
+
 	sf::Image myTexture;
 	SpriteExt mySprite;
 
@@ -29,9 +31,10 @@ public:
 	float ReturnAngle();
 	void Logic();
 	void Display(sf::RenderWindow *window);
-	Missle(std::string fileName,float Range = 10,float Velocity = 1);
+	Missle(std::string fileName,std::string _missleColider = "enemy" ,float Range = 10,float Velocity = 1);
 	~Missle(void);
 	void SetTarget(sf::Vector2i DesignatedPosition,float DistanceFromMouseClick );
+	void SetMissleColider( std::string _missleColider );
 	void StartPosition(sf::Vector2f Position);
 };
 #endif

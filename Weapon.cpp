@@ -5,19 +5,17 @@
 #include <cstdlib>
 #include "Util.h"
 
-Weapon::Weapon(std::string weaponName,WeaponType weaponType , int BulletFireLimit,float RepeatRate)
+Weapon::Weapon(WeaponType weaponType , int BulletFireLimit,float RepeatRate)
 :bulletFireLimit(BulletFireLimit), repeatRate(RepeatRate)
 {
 	directory = "Integral.PNG";
+	missleColider = "enemy";
 	damage = 1;
 	range = 1;
 	speed = 1;
 
 	SCREEN_WIDTH  = 800; 
 	SCREEN_HEIGHT = 600;
-
-	//if(!Load(weaponName))
-	//	std::cout<<"Loading weapon problem detected !\n";
 
 	if(!SetWeapon(weaponType))
 		std::cout<<"Wrong weapon type \n";
@@ -26,7 +24,7 @@ Weapon::Weapon(std::string weaponName,WeaponType weaponType , int BulletFireLimi
 
 	for(int i=0;i<bulletFireLimit;i++)
 	{
-		missle[i] = new Missle(directory,(float)range,(float)speed);
+		missle[i] = new Missle(directory,missleColider,(float)range,(float)speed);
 		//std::cout<<" Missle["<<i<<"] Loaded \n"; //dla celow testowych
 	}
 	
@@ -122,66 +120,6 @@ void Weapon::PutScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT)
 	SCREEN_WIDTH = _SCREEN_WIDTH; 
 	SCREEN_HEIGHT = _SCREEN_HEIGHT;
 }
-bool Weapon::Load(std::string WeaponName)
-{
-	std::ifstream dataSet("Data/WeaponData.txt");
-	std::string str;
-	bool WeaponFound = false;
-		 if (!dataSet) {
-        std::cerr << "Nie uda�o si� za�adowa� pliku " <<" WeaponData.txt "<< "\n";
-		return 0;
-				 }
-		 if(dataSet.good() == true)
-		 {
-		  while( !dataSet.eof() )
-			{		
-				 dataSet >> str;
-					if(str == WeaponName)
-					{
-					std::cout <<"weapon name : "<< str << "\n";
-					WeaponFound = true;
-
-						 dataSet >> str; 
-						 if(dataSet.eof())break;
-						 directory = str;
-						 std::cout <<"directory : "<<str<<"\n";
-						 
-						 dataSet >> str;
-						 if(dataSet.eof())break;
-						 damage = atof(str.c_str());
-						 std::cout <<"damage : "<<damage<<"\n";		
-
-						 dataSet >> str;
-						 if(dataSet.eof())break;
-						 range = atof(str.c_str());
-						 std::cout <<"range : "<<str<<"\n";
-
-						 dataSet >> str;
-						 if(dataSet.eof())break;
-						 speed = atof(str.c_str());
-						 std::cout <<"speed : "<<str<<"\n";
-
-						 dataSet >> str;
-						 if(dataSet.eof())break;
-						 repeatRate = atof(str.c_str());
-						 std::cout <<"reload : "<<str<<"\n";
-						 
-						  dataSet >> str;
-						 if(dataSet.eof())break;
-						 bulletFireLimit = atoi(str.c_str());
-						 std::cout <<"bulletLimit : "<<str<<"\n";
-
-						 dataSet >> str;
-						 if(dataSet.eof())break;
-						 error = atof(str.c_str());
-						 std::cout <<"error : "<<str<<"\n";
-					}			   
-			}
-		  std::cout <<"#--------------------#\n";
-			dataSet.close();
-		 }
-	return 1;
-}
 int Weapon::SetWeapon(WeaponType Weapon)
 {
 	switch(Weapon)
@@ -222,9 +160,18 @@ int Weapon::SetWeapon(WeaponType Weapon)
 		bulletFireLimit = 5;
 		error = 10.0;
 		break;
+	case YellowBall:
+		directory = "YellowDeathBall.PNG";
+		missleColider = "Hero";
+		damage = 5;
+		range = 300;
+		speed = 5.0;
+		repeatRate = 0.25;
+		bulletFireLimit = 5;
+		error = 10.0;
 	default:
-		return 1;
+		return 0;
 		break;
 	}
-	return 0;
+	return 1;
 }

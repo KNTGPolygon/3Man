@@ -1,8 +1,8 @@
 #include "Missle.h"
 #include "GameEngine.h"
 
-Missle::Missle(std::string fileName, float Range ,float Velocity )
-:range(Range), velocity(Velocity)
+Missle::Missle(std::string fileName, std::string _missleColider, float Range ,float Velocity )
+:range(Range), velocity(Velocity),missleColider(_missleColider)
 {
 	myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Weapons/"+fileName );
 	myTexture.CreateMaskFromColor(sf::Color(255,0,255));
@@ -78,13 +78,17 @@ void Missle::Display(sf::RenderWindow *window)
 			((CircleMask*)mySprite.getCollisionMask())->Display(window,
 													   sf::Vector2f(mySprite.GetPosition().x-mySprite.GetCenter().x,
 																	mySprite.GetPosition().y-mySprite.GetCenter().y));
-		if( GameEngine::getInstance()->DetectCollision(&mySprite,"enemy") ) 
+		if( GameEngine::getInstance()->DetectCollision(&mySprite,missleColider) ) 
 		{
 			colisionWithiObiect = true;
 		}
 		
 	}
 	
+}
+void Missle::SetMissleColider( std::string _missleColider )
+{
+	missleColider = _missleColider;
 }
 float Missle::ReturnAngle()
 {

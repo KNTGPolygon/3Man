@@ -1,12 +1,14 @@
 #pragma once
+#include <math.h>
+#include <vector>
+#include <iostream>
+
 #include "Drawable.h" 
 #include "Util.h"
 #include "SpriteExt.h"
 #include "ImageManager.h"
 #include "Collision/BoxMask.h"
-#include <math.h>
-#include <vector>
-#include <iostream>
+#include "Weapon.h"
 
 class Enemy : public Drawable
 {
@@ -14,6 +16,7 @@ protected:
 	bool inMove;
 	bool targetReached;
 	bool gotHit;
+	bool attacking;
 
 	int pathNumber;
 	int waitTime;
@@ -53,7 +56,8 @@ protected:
 	sf::Vector2i MovementVector; //obszar generowania randomowej sciezki
 	sf::Vector2f shiftVector;
 	void RandomPathWalk();
-
+	
+	Weapon *myWeapon;
 	
 public:
 

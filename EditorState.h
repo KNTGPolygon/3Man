@@ -20,6 +20,7 @@ public:
 	EditorState();
 	void Init();
 	void Display();
+	void UpdateSystem();
 	void EventHandling();
 	void GetEvents();
 	void Cleanup();

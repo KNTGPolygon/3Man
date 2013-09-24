@@ -41,25 +41,35 @@ void GameState::Init()
 
 }
 
+void GameState::UpdateSystem()
+{
+	GameEngine::getInstance()->ClearCollisionQuadtree();
+	hero->UpdateCollision();
+	pirate->UpdateCollision();
+	for( int i = 0; i < NUM_OF_ENEMIES ; i++)
+		numbers[i]->UpdateCollision();
+	for ( int i = 0; i < 10; i++ )
+		wall[i]->UpdateCollision();
+}
+
 void GameState::Display()
 {
 	GameEngine::getInstance()->FlushRenderQueue();
 
-	GameEngine::getInstance()->AddToRenderQueue((Drawable*)hero);
+	GameEngine::getInstance()->AddToRenderQueue(hero);
 
 	for ( int i = 0; i < 10; i++ )
 		GameEngine::getInstance()->AddToRenderQueue(wall[i]);
 
 	for ( int i = 0; i < numberOfObjects; i++ )
-		GameEngine::getInstance()->AddToRenderQueue((Drawable*)arrayOfObjects[i]);
+		GameEngine::getInstance()->AddToRenderQueue(arrayOfObjects[i]);
 
 
 	map->showMap(&GameEngine::getInstance()->getWindow(), hero->GetPosition());
 	pirate->Display(&GameEngine::getInstance()->getWindow());
 	seven->Display(&GameEngine::getInstance()->getWindow());
 	for( int i = 0; i < NUM_OF_ENEMIES ; i++)
-		//numbers[i]->Display(&GameEngine::getInstance()->getWindow());
-		GameEngine::getInstance()->AddToRenderQueue((Drawable*)numbers[i]);
+		GameEngine::getInstance()->AddToRenderQueue(numbers[i]);
 	
 	hero->SetCamera(&GameEngine::getInstance()->getView(),&GameEngine::getInstance()->getWindow());
 	
@@ -71,8 +81,6 @@ void GameState::Display()
 
 void GameState::EventHandling()
 {
-	GameEngine::getInstance()->ClearCollisionQuadtree();
-
 	hero->UpdatePosition();
 	hero->GetEvent(mapPixelatedSize);
 	pirate->SetHeroPosition(hero->GetPosition());

@@ -59,6 +59,7 @@ public:
 
 	void Display(sf::RenderWindow *window);
 	void Logic(sf::Vector2i Target);
+	void UpdateCollision();
 	int GoToPosition(sf::Vector2i Destination);
 	
 	void AI();

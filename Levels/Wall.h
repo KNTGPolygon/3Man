@@ -14,6 +14,7 @@ public:
 	Wall(float, float);
 	void Update();
 	void Display(sf::RenderWindow*);
+	void UpdateCollision();
 };
 
 #endif /* WALL_H_ */

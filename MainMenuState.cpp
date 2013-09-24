@@ -48,6 +48,10 @@ void MainMenuState::Init()
 	init = 1;
 }
 
+void MainMenuState::UpdateSystem()
+{
+}
+
 void MainMenuState::Display()
 {
 	mapEditor->Display( &GameEngine::getInstance()->getWindow() );

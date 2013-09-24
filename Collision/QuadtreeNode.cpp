@@ -71,10 +71,10 @@ void QuadtreeNode::Add( SpriteExt* spr )
 
 	objects.push_back(spr);
 
-	if ( subNodes == NULL && objects.size() > NODE_CAPACITY && std::min(width/2, height/2) >= MIN_SIZE )
+	if ( subNodes == NULL && objects.size() > NODE_CAPACITY && (unsigned int)std::min(width/2, height/2) >= MIN_SIZE )
 	{
 		SubDivide();
-		for ( int j = 0; j < objects.size(); j++ )
+		for ( unsigned int j = 0; j < objects.size(); j++ )
 			for ( int i = 0; i < 4; i++ )
 				if ( subNodes[i]->Contains(objects[j]) )
 				{
@@ -91,7 +91,7 @@ void QuadtreeNode::Add( SpriteExt* spr )
 
 bool QuadtreeNode::Collide(SpriteExt* spr)
 {
-	for ( int i = 0; i < objects.size(); i++ )
+	for ( unsigned int i = 0; i < objects.size(); i++ )
 		if ( objects[i] != spr && GameEngine::Collision(spr,objects[i]) )
 			return true;
 
@@ -106,7 +106,7 @@ bool QuadtreeNode::Collide(SpriteExt* spr)
 
 bool QuadtreeNode::Collide(SpriteExt* spr, std::string type)
 {
-	for ( int i = 0; i < objects.size(); i++ )
+	for ( unsigned int i = 0; i < objects.size(); i++ )
 		if ( objects[i] != spr && objects[i]->getType() == type && GameEngine::Collision(spr,objects[i]) )
 			return true;
 
@@ -121,7 +121,7 @@ bool QuadtreeNode::Collide(SpriteExt* spr, std::string type)
 
 void QuadtreeNode::Collide(SpriteExt* spr, std::vector<SpriteExt*>& results)
 {
-	for ( int i = 0; i < objects.size(); i++ )
+	for ( unsigned int i = 0; i < objects.size(); i++ )
 		if ( objects[i] != spr && GameEngine::Collision(spr,objects[i]) )
 			results.push_back(objects[i]);
 
@@ -132,7 +132,7 @@ void QuadtreeNode::Collide(SpriteExt* spr, std::vector<SpriteExt*>& results)
 
 void QuadtreeNode::Collide(SpriteExt* spr, std::vector<SpriteExt*>& results, std::string type)
 {
-	for ( int i = 0; i < objects.size(); i++ )
+	for ( unsigned int i = 0; i < objects.size(); i++ )
 		if ( objects[i] != spr && objects[i]->getType() == type && GameEngine::Collision(spr,objects[i]) )
 			results.push_back(objects[i]);
 

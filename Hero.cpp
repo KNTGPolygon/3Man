@@ -187,9 +187,14 @@ void Hero::SetCamera(sf::View *View, sf::RenderWindow *window)
 	View->SetCenter(myPosition);
 	window->SetView(*View);
 }
+
+void Hero::UpdateCollision()
+{
+	GameEngine::getInstance()->AddToCollisionQuadtree(&Me);
+}
+
 void Hero::UpdatePosition()
 {
-	 GameEngine::getInstance()->AddToCollisionQuadtree(&Me);
 	 myPosition     = Me.GetPosition();
 	 for(int i = 0 ; i < 4 ; i++)
 	 animate[i]->Update(Me.GetPosition());

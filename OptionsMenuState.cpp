@@ -43,6 +43,10 @@ void OptionsMenuState::Init()
 	init = 1;
 }
 
+void OptionsMenuState::UpdateSystem()
+{
+}
+
 void OptionsMenuState::Display()
 {
 	sounds->Display(&GameEngine::getInstance()->getWindow());

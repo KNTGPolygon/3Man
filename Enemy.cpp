@@ -48,10 +48,14 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 Enemy::~Enemy(void)
 {
 }
-void Enemy::Logic(sf::Vector2i Target)
+
+void Enemy::UpdateCollision()
 {
 	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
+}
 
+void Enemy::Logic(sf::Vector2i Target)
+{
 	if(GoToPosition( Target ) ){
 
 		mySprite.Move(velocity*shiftVector);

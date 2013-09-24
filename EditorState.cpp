@@ -1,5 +1,4 @@
 #include "EditorState.h"
-#include <iostream>
 
 EditorState::EditorState():State()
 {
@@ -25,6 +24,10 @@ void EditorState::Init()
 
 	init = 1;
 	state = SET_MAP_SIZE;
+}
+
+void EditorState::UpdateSystem()
+{
 }
 
 void EditorState::Display()

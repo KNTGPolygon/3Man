@@ -108,6 +108,7 @@ bool GameEngine::run()
 	{
 		SwitchState();
 
+		getCurrentState()->UpdateSystem();
 		getCurrentState()->EventHandling();
 		
 		while(window.GetEvent(event))

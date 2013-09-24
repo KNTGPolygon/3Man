@@ -12,8 +12,8 @@ private:
 	int y;
 	int width;
 	int height;
-	static const int NODE_CAPACITY = 3; // maksymalna liczba obiektow w jednej komorce przed podzialem
-	static const int MIN_SIZE = 32; // minimalna dlugosc krawedzi komorki podzialu
+	static const unsigned int NODE_CAPACITY = 3; // maksymalna liczba obiektow w jednej komorce przed podzialem
+	static const unsigned int MIN_SIZE = 32; // minimalna dlugosc krawedzi komorki podzialu
 	QuadtreeNode** subNodes;
 	std::vector<SpriteExt*> objects;
 public:

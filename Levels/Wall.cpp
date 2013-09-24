@@ -15,9 +15,13 @@ Wall::Wall(float x, float y)
 	sprite.setType("wall");
 }
 
-void Wall::Update()
+void Wall::UpdateCollision()
 {
 	GameEngine::getInstance()->AddToCollisionQuadtree(&sprite);
+}
+
+void Wall::Update()
+{
 	depth = -sprite.GetPosition().y;
 }
 

@@ -46,7 +46,7 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	mySprite.setCircleMask(20,20,20);
 
 	myWeapon = new Weapon(YellowBall);
-	myWeapon->PutScreenSize(GameEngine::getInstance()->SCREEN_WIDTH,GameEngine::getInstance()->SCREEN_HEIGHT );
+	myWeapon->PutScreenSize(GameEngine::SCREEN_WIDTH,GameEngine::SCREEN_HEIGHT );
 }
 
 Enemy::~Enemy(void)

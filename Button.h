@@ -16,7 +16,7 @@ private:
 	const sf::Input &steering;
 public:
 	bool pressed;
-
+	bool singlePressed;
 	Button(const sf::Input &_steering,sf::Vector2f _position,sf::Vector2f _size,sf::Color _color,std::string _text);
 	void SetPosition(sf::Vector2f newPosition);
 	~Button(void);

@@ -52,7 +52,6 @@ void Weapon::Logic(bool FiringLocked, sf::Vector2i target)
 		if( repetition.GetElapsedTime() > repeatRate )
 		{
 			repetition.Reset();
-			std::cout<<"repetition reset\n";
 			destenation.x = target.x - (int)fireFromPosition.x;
 			destenation.y = target.y - (int)fireFromPosition.y;
 			distanceFromMouse=sqrt((float)(destenation.x)*(destenation.x)+(float)(destenation.y)*(destenation.y));
@@ -70,7 +69,6 @@ void Weapon::Logic(bool FiringLocked, sf::Vector2i target)
 	{
 		if( repetition.GetElapsedTime() > repeatRate )
 		{
-		//std::cout<<"repetition reset\n";
 		repetition.Reset();
 		destenation.x = target.x - (int)fireFromPosition.x;
 		destenation.y = target.y - (int)fireFromPosition.y;

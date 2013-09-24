@@ -18,7 +18,10 @@ public:
 	~TextBox(void);
 	void SetPosition(sf::Vector2f newPosition);
 	void SetText(std::string Text);
+	void SetTextPosition(sf::Vector2f newPosition);
 	void SetFontSize(float FontSize);
 	void SetTextColor(sf::Color Color);
+	sf::Vector2f GetTextBoxPosition();
+	sf::String GetText();
 	void Display(sf::RenderWindow *window);
 };

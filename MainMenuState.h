@@ -12,6 +12,7 @@ private:
 	Button* gameStart;
 	Button* mapEditor;
 	Button* exit;
+	Button* options;
 	InputBox* inputBox;
 
 public:

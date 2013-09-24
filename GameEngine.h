@@ -6,20 +6,22 @@
 #include <queue>
 #include <vector>
 #include <cmath>
+#include "Cursor.h"
 #include "Drawable.h"
 #include "Util.h"
 #include "State.h"
 #include "GameState.h"
 #include "MainMenuState.h"
+#include "OptionsMenuState.h"
 #include "EditorState.h"
 #include "SpriteExt.h"
 #include "Collision/BoxMask.h"
-#include "Cursor.h"
+
 
 #ifndef GAME_ENGINE_H
 #define GAME_ENGINE_H
 
-enum STATE { MAINMENU, EDITOR, GAME, NOSTATE };
+enum STATE { MAINMENU, OPTIONSMENU, EDITOR, GAME, NOSTATE };
 
 class CompareDrawable
 {
@@ -37,7 +39,6 @@ public:
 	static const int SCREEN_WIDTH  = 800;
 	static const int SCREEN_HEIGHT = 600;
 	bool devmode;
-
 private:
 
 	bool windowIsOpen;
@@ -50,9 +51,9 @@ private:
 	sf::Event event;
 	sf::RenderWindow window; 
 	sf::View View;
-	
-	Cursor cursor;
 
+	Cursor cursor;
+	
 	std::map<STATE, State*> States;
 	STATE currentState;
 	STATE nextState;
@@ -95,8 +96,8 @@ public:
 	sf::View& getView();
 	const sf::Input& getSteering();
 	sf::Event& getEvent();
-
 	Cursor& getCursor();
+	sf::Music& getMusic();
 
 	static bool Collision( SpriteExt*, SpriteExt* );
 	void AddToCollisionQuadtree(SpriteExt*);

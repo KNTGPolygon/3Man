@@ -13,14 +13,18 @@ class Hero : public Drawable
 public:
 	static const int SPRITE_SIZE  = 42; // 42 bo szerokosc tekstury
 private:
+
 	bool fire;
+
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
 	int weaponType;
 	int numberOfWeapons;
+
 	float myDistanceToMouse;
-	float vel;
-	float speed;
+	float velocity;
+	float currentVelocity;
+	float direction;
 
 	sf::Key::Code keyUp;
 	sf::Key::Code keyDown;
@@ -47,7 +51,7 @@ private:
 const sf::Input &steering;//Interakcja z otoczeniem
 
 public:
-	Hero(const sf::Input &_steering,float velocity = 1); //Konstruktor Bohatera
+	Hero(const sf::Input &_steering,float _velocity = 2); //Konstruktor Bohatera
 	~Hero(void);
 
 	sf::Vector2f get_position(){return myPosition;}

@@ -3,12 +3,14 @@
 GameEngine::GameEngine(void):steering(window.GetInput())
 {	
 	window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Integrator");
+
 	window.SetFramerateLimit(60);
 	window.ShowMouseCursor(false);
 	window.SetView(window.GetDefaultView());
 
 	States[GAME] = new GameState();
 	States[MAINMENU] = new MainMenuState();
+	States[OPTIONSMENU] = new OptionsMenuState();
 	States[EDITOR] = new EditorState();
 	currentState = NOSTATE;
 	nextState = NOSTATE;
@@ -42,7 +44,7 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	soundtrack.SetVolume( 75.f );
 	soundtrack.SetLoop( true );
 	soundtrack.Play();
-
+	//soundtrack.ge
 }
 
 GameEngine::~GameEngine(void)
@@ -67,7 +69,6 @@ void GameEngine::Display()
 			window.Draw( strFrameTime );
 			lastTime = currentTime;	
 		}
-
 		GameEngine::getInstance()->getCursor().Display(&GameEngine::getInstance()->getWindow());
 }
 
@@ -166,14 +167,14 @@ bool GameEngine::Collision( SpriteExt* sprite1, SpriteExt* sprite2 )
 
 	if ( mask1->getType() == BOX && mask2->getType() == BOX )
 	{
-		int Ax1 = sprite1->GetPosition().x-sprite1->GetCenter().x+((BoxMask*)mask1)->getRect().Left;
-		int Ax2 = sprite1->GetPosition().x-sprite1->GetCenter().x+((BoxMask*)mask1)->getRect().Right;
-		int Ay1 = sprite1->GetPosition().y-sprite1->GetCenter().y+((BoxMask*)mask1)->getRect().Top;
-		int Ay2 = sprite1->GetPosition().y-sprite1->GetCenter().y+((BoxMask*)mask1)->getRect().Bottom;
-		int Bx1 = sprite2->GetPosition().x-sprite2->GetCenter().x+((BoxMask*)mask2)->getRect().Left;
-		int Bx2 = sprite2->GetPosition().x-sprite2->GetCenter().x+((BoxMask*)mask2)->getRect().Right;
-		int By1 = sprite2->GetPosition().y-sprite2->GetCenter().y+((BoxMask*)mask2)->getRect().Top;
-		int By2 = sprite2->GetPosition().y-sprite2->GetCenter().y+((BoxMask*)mask2)->getRect().Bottom;
+		int Ax1 = (int)( sprite1->GetPosition().x-sprite1->GetCenter().x+((BoxMask*)mask1)->getRect().Left );
+		int Ax2 = (int)( sprite1->GetPosition().x-sprite1->GetCenter().x+((BoxMask*)mask1)->getRect().Right );
+		int Ay1 = (int)( sprite1->GetPosition().y-sprite1->GetCenter().y+((BoxMask*)mask1)->getRect().Top );
+		int Ay2 = (int)( sprite1->GetPosition().y-sprite1->GetCenter().y+((BoxMask*)mask1)->getRect().Bottom );
+		int Bx1 = (int)( sprite2->GetPosition().x-sprite2->GetCenter().x+((BoxMask*)mask2)->getRect().Left );
+		int Bx2 = (int)( sprite2->GetPosition().x-sprite2->GetCenter().x+((BoxMask*)mask2)->getRect().Right );
+		int By1 = (int)( sprite2->GetPosition().y-sprite2->GetCenter().y+((BoxMask*)mask2)->getRect().Top );
+		int By2 = (int)( sprite2->GetPosition().y-sprite2->GetCenter().y+((BoxMask*)mask2)->getRect().Bottom );
 
 		if ( Ax1 <= Bx2 && Ax2 >= Bx1 && Ay1 <= By2 && Ay2 >= By1 )
 			return true;
@@ -182,10 +183,10 @@ bool GameEngine::Collision( SpriteExt* sprite1, SpriteExt* sprite2 )
 
 	if ( mask1->getType() == CIRCLE && mask2->getType() == CIRCLE )
 	{
-		int x1 = sprite1->GetPosition().x-sprite1->GetCenter().x+((CircleMask*)mask1)->getX();
-		int y1 = sprite1->GetPosition().y-sprite1->GetCenter().y+((CircleMask*)mask1)->getY();
-		int x2 = sprite2->GetPosition().x-sprite2->GetCenter().x+((CircleMask*)mask2)->getX();
-		int y2 = sprite2->GetPosition().y-sprite2->GetCenter().y+((CircleMask*)mask2)->getY();
+		int x1 = (int)( sprite1->GetPosition().x-sprite1->GetCenter().x+((CircleMask*)mask1)->getX() );
+		int y1 = (int)( sprite1->GetPosition().y-sprite1->GetCenter().y+((CircleMask*)mask1)->getY() );
+		int x2 = (int)( sprite2->GetPosition().x-sprite2->GetCenter().x+((CircleMask*)mask2)->getX() );
+		int y2 = (int)( sprite2->GetPosition().y-sprite2->GetCenter().y+((CircleMask*)mask2)->getY() );
 		int r1 = ((CircleMask*)mask1)->getRadius();
 		int r2 = ((CircleMask*)mask2)->getRadius();
 
@@ -205,13 +206,13 @@ bool GameEngine::Collision( SpriteExt* sprite1, SpriteExt* sprite2 )
 			mask2 = sprite2->getCollisionMask();
 		}
 
-		int x1 = sprite1->GetPosition().x-sprite1->GetCenter().x+((BoxMask*)mask1)->getRect().Left;
-		int x2 = sprite1->GetPosition().x-sprite1->GetCenter().x+((BoxMask*)mask1)->getRect().Right;
-		int y1 = sprite1->GetPosition().y-sprite1->GetCenter().y+((BoxMask*)mask1)->getRect().Top;
-		int y2 = sprite1->GetPosition().y-sprite1->GetCenter().y+((BoxMask*)mask1)->getRect().Bottom;
+		int x1 = (int)( sprite1->GetPosition().x-sprite1->GetCenter().x+((BoxMask*)mask1)->getRect().Left );
+		int x2 = (int)( sprite1->GetPosition().x-sprite1->GetCenter().x+((BoxMask*)mask1)->getRect().Right );
+		int y1 = (int)( sprite1->GetPosition().y-sprite1->GetCenter().y+((BoxMask*)mask1)->getRect().Top );
+		int y2 = (int)( sprite1->GetPosition().y-sprite1->GetCenter().y+((BoxMask*)mask1)->getRect().Bottom );
 
-		int cx = sprite2->GetPosition().x-sprite2->GetCenter().x+((CircleMask*)mask2)->getX();
-		int cy = sprite2->GetPosition().y-sprite2->GetCenter().y+((CircleMask*)mask2)->getY();
+		int cx = (int)( sprite2->GetPosition().x-sprite2->GetCenter().x+((CircleMask*)mask2)->getX() );
+		int cy = (int)( sprite2->GetPosition().y-sprite2->GetCenter().y+((CircleMask*)mask2)->getY() );
 		int r = ((CircleMask*)mask2)->getRadius();
 
 		if ( cx >= x1 && cx <= x2 && cy >= y1 && cy <= y2 )
@@ -285,12 +286,14 @@ sf::Event& GameEngine::getEvent()
 {
 	return event;
 }
-
+sf::Music& GameEngine::getMusic()
+{
+	return soundtrack;
+}
 Cursor& GameEngine::getCursor()
 {
 	return cursor;
 }
-
 void deleteObj(void *obj)
 {
 	if (obj != NULL)
@@ -299,7 +302,6 @@ void deleteObj(void *obj)
 		obj = NULL;
 	}
 }
-
 GameEngine* GameEngine::engine = NULL;
 GameEngine* GameEngine::getInstance(void)
 {

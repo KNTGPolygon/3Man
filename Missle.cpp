@@ -10,7 +10,7 @@ Missle::Missle(std::string fileName, float Range ,float Velocity )
 	mySprite.SetImage(myTexture);
 	mySprite.SetPosition(0,0);
 	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
-	mySprite.setCircleMask(mySprite.GetCenter().x, mySprite.GetCenter().y, 4);
+	mySprite.setCircleMask((int)mySprite.GetCenter().x, (int)mySprite.GetCenter().y, 4);
 	mySprite.setType("missile");
 
 	angle = 0;
@@ -34,9 +34,9 @@ void Missle::Logic()
 	if(currentDistance < range)
 	{
 		if(targetPosition.x > 0)
-		angle = 90+ asin ( ( ( (-targetPosition.y)/distanceFromTarget))) * (180.0 / PI);
+		angle = (float)( 90 + asin ( ( ( (-targetPosition.y)/distanceFromTarget))) * (180.0 / PI) );
 		else
-		angle = 90+ asin ( ( ( (+targetPosition.y)/distanceFromTarget))) * (180.0 / PI);
+		angle = (float)( 90 + asin ( ( ( (+targetPosition.y)/distanceFromTarget))) * (180.0 / PI) );
 		mySprite.SetRotation(angle );
 
 		mySprite.Move(velocity * (targetPosition.x)/distanceFromTarget, velocity * (targetPosition.y  ) / distanceFromTarget);		
@@ -81,7 +81,6 @@ void Missle::Display(sf::RenderWindow *window)
 		if( GameEngine::getInstance()->DetectCollision(&mySprite,"enemy") ) 
 		{
 			colisionWithiObiect = true;
-			std::cout<<"Wykryto kolizje z enemy w display\n";
 		}
 		
 	}

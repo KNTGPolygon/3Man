@@ -29,11 +29,22 @@ void TextBox::SetText(std::string Text)
 {
 	text.SetText(Text);
 }
+void TextBox::SetTextPosition( sf::Vector2f newPosition )
+{
+	text.SetPosition( newPosition );
+}
 void TextBox::SetPosition(sf::Vector2f newPosition)
 {
 	box.SetPosition(newPosition);
 }
-
+sf::Vector2f TextBox::GetTextBoxPosition()
+{
+	return position;
+}
+sf::String TextBox::GetText()
+{
+	return text;
+}
 void TextBox::Display(sf::RenderWindow *window)
 {
 	window->Draw( box );

@@ -12,12 +12,10 @@ Button::Button(const sf::Input &_steering,sf::Vector2f _position,sf::Vector2f _s
 	text.SetCenter(text.GetRect().GetWidth() /2,text.GetRect().GetHeight()/2);
 	text.SetPosition(box.GetPosition().x + size.x/2,box.GetPosition().y + size.y/2);
 	//text.SetCenter((text.GetRect().GetWidth() - size.x)/2, (text.GetRect().GetHeight() + size.y)/2);
-
-
+	singlePressed = false;
 }
 
 Button::~Button(void)
-
 {
 }
 void Button::SetPosition(sf::Vector2f newPosition)
@@ -32,10 +30,19 @@ void Button::GetEvent()
 	  && ( steering.GetMouseY() < ( size.y + position.y) && steering.GetMouseY() > (position.y) ))
 	{
 		box.SetColor(sf::Color(255,255,255));
-		if(steering.IsMouseButtonDown(sf::Mouse::Left))
+		if( steering.IsMouseButtonDown(sf::Mouse::Left) )
 		{
+		if( pressed == false )
+			singlePressed = true;
+		else 
+			singlePressed = false;
 		pressed = true;
+		} else
+		{
+			pressed = false;
+			singlePressed = false;
 		}
+
 	}
 }
 void Button::Display(sf::RenderWindow *window)

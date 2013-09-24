@@ -5,12 +5,11 @@
 #include <iostream>
 #include "Collision/BoxMask.h"
 //-------------------------------- Hero
-Hero::Hero(const sf::Input &_steering,float velocity)
-	:steering(_steering),vel(velocity),weaponType(0) , numberOfWeapons(4)
+Hero::Hero(const sf::Input &_steering,float _velocity)
+	:steering(_steering),velocity(_velocity),weaponType(0) , numberOfWeapons(4)
 {
 	ANIMATION_TYPE = STAY;
 
-	speed = 2;
 	depth = 0;
 
 	MyTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Player.PNG" );
@@ -67,59 +66,59 @@ void Hero::GetEvent(int mapPixelatedSize)
 {
 		ANIMATION_TYPE = STAY;
 
-		int dir = 0;
-		int sp = 0;
+		direction = 0;
+		currentVelocity = 0;
 
 		if( steering.IsKeyDown(keyUp) )
 		{
-			dir = 270;
-			sp = speed;
+			direction = 270;
+			currentVelocity = velocity;
 			ANIMATION_TYPE = UP;
 		}
 		if( steering.IsKeyDown(keyDown) )
 		{
-			dir = 90;
-			sp = speed;
+			direction = 90;
+			currentVelocity = velocity;
 			ANIMATION_TYPE = DOWN;
 		}
 		if( steering.IsKeyDown(keyLeft) )
 		{
-			dir = 180;
-			sp = speed;
+			direction = 180;
+			currentVelocity = velocity;
 			ANIMATION_TYPE = LEFT;
 		}
 		if( steering.IsKeyDown(keyRight) )
 		{
-			dir = 0;
-			sp = speed;
+			direction = 0;
+			currentVelocity = velocity;
 			ANIMATION_TYPE = RIGHT;
 		}
 		if( steering.IsKeyDown(keyUp) && steering.IsKeyDown(keyLeft) )
 		{
-			dir = 225;
-			sp = speed;
+			direction = 225;
+			currentVelocity = velocity;
 			ANIMATION_TYPE = UP;
 		}
 		if( steering.IsKeyDown(keyUp) && steering.IsKeyDown(keyRight) )
 		{
-			dir = 315;
-			sp = speed;
+			direction = 315;
+			currentVelocity = velocity;
 			ANIMATION_TYPE = UP;
 		}
 		if( steering.IsKeyDown(keyDown) && steering.IsKeyDown(keyLeft) )
 		{
-			dir = 135;
-			sp = speed;
+			direction = 135;
+			currentVelocity = velocity;
 			ANIMATION_TYPE = DOWN;
 		}
 		if( steering.IsKeyDown(keyDown) && steering.IsKeyDown(keyRight) )
 		{
-			dir = 45;
-			sp = speed;
+			direction = 45;
+			currentVelocity = velocity;
 			ANIMATION_TYPE = DOWN;
 		}
 
-		Me.Move( Util::lengthdir_x(sp, dir), Util::lengthdir_y(sp, dir) );
+		Me.Move( Util::lengthdir_x( currentVelocity, direction), Util::lengthdir_y(currentVelocity, direction) );
 		
 		if( steering.IsKeyDown(sf::Key::Num1) )weaponType=0;
 		if( steering.IsKeyDown(sf::Key::Num2) )weaponType=1;
@@ -193,7 +192,7 @@ void Hero::UpdatePosition()
 	 myPosition     = Me.GetPosition();
 	 for(int i = 0 ; i < 4 ; i++)
 	 animate[i]->Update(Me.GetPosition());
-	 depth = -Me.GetPosition().y;
+	 depth = (int)( -Me.GetPosition().y );
 }
 sf::Vector2f Hero::GetPosition()
 {

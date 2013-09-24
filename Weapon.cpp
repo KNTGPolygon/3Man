@@ -39,6 +39,13 @@ Weapon::~Weapon(void)
 		delete missle[i];
 	delete[] missle;
 }
+void Weapon::UpdateCollision()
+{
+ 	for(int i=0;i<bulletFireLimit;i++)
+	{
+		missle[i]->UpdateCollision();
+	}
+}
 void Weapon::Logic(bool FiringLocked, sf::Vector2i target)
 {	
 				//FiringLocked - if weapon is firing constantly

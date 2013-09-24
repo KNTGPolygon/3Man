@@ -56,6 +56,7 @@ Enemy::~Enemy(void)
 void Enemy::UpdateCollision()
 {
  	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
+	myWeapon->UpdateCollision();
 }
 
 void Enemy::Logic(sf::Vector2i Target)

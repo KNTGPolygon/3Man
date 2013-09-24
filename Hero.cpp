@@ -194,6 +194,10 @@ void Hero::SetCamera(sf::View *View, sf::RenderWindow *window)
 void Hero::UpdateCollision()
 {
 	GameEngine::getInstance()->AddToCollisionQuadtree(&Me);
+	for(int i = 0; i < 4 ; i++)
+	{
+		weapon[i]->UpdateCollision();
+	}
 }
 
 void Hero::UpdatePosition()

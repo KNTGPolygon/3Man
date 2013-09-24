@@ -30,6 +30,7 @@ public:
 	bool inMove;
 	float ReturnAngle();
 	void Logic();
+	void UpdateCollision();
 	void Display(sf::RenderWindow *window);
 	Missle(std::string fileName,std::string _missleColider = "enemy" ,float Range = 10,float Velocity = 1);
 	~Missle(void);

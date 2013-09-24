@@ -21,16 +21,26 @@ Missle::Missle(std::string fileName, std::string _missleColider, float Range ,fl
 Missle::~Missle(void)
 {
 }
+void Missle::UpdateCollision()
+{
+ 	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
+}
 void Missle::Logic()
 {
 	inMove = false;
+	colisionWithiObiect = false;
 
 	currentPosition = mySprite.GetPosition();
 	currentDistance = sqrt((startPosition.x-currentPosition.x)*(startPosition.x-currentPosition.x)
 						 + (startPosition.y-currentPosition.y)*(startPosition.y-currentPosition.y));
 	
-	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
+	//GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
 
+	if( GameEngine::getInstance()->DetectCollision(&mySprite,missleColider) ) 
+	{
+		colisionWithiObiect = true;
+	}
+		
 	if(currentDistance < range)
 	{
 		if(targetPosition.x > 0)
@@ -64,7 +74,6 @@ void Missle::Display(sf::RenderWindow *window)
 {
 	if(inMove != false)			//ukrywanie po skonczonym biegu
 	window->Draw( mySprite );
-	colisionWithiObiect = false;
 	if(GameEngine::getInstance()->devmode)
 	{
 		if ( GameEngine::getInstance()->DetectCollision(&mySprite) )
@@ -78,11 +87,6 @@ void Missle::Display(sf::RenderWindow *window)
 			((CircleMask*)mySprite.getCollisionMask())->Display(window,
 													   sf::Vector2f(mySprite.GetPosition().x-mySprite.GetCenter().x,
 																	mySprite.GetPosition().y-mySprite.GetCenter().y));
-		if( GameEngine::getInstance()->DetectCollision(&mySprite,missleColider) ) 
-		{
-			colisionWithiObiect = true;
-		}
-		
 	}
 	
 }

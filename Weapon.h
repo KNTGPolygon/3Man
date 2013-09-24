@@ -51,6 +51,7 @@ public:
 	void WeaponFiring();
 	void Display(sf::RenderWindow *window);
 	void Logic(bool FiringLocked = false, sf::Vector2i target = sf::Vector2i(0,0));
+	void UpdateCollision();
 	void SetFiringPosition(sf::Vector2f Position);
 	void SetTargetPosition(sf::Vector2f Position);
 	void PutScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);

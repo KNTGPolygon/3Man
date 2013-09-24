@@ -50,6 +50,7 @@ void GameState::UpdateSystem()
 		numbers[i]->UpdateCollision();
 	for ( int i = 0; i < 10; i++ )
 		wall[i]->UpdateCollision();
+
 }
 
 void GameState::Display()

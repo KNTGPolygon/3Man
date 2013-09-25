@@ -32,6 +32,7 @@ void EditorState::UpdateSystem()
 
 void EditorState::Display()
 {
+	GameEngine::getInstance()->SetDefaultView();
 	if(state == SET_MAP_SIZE)
 		{
 			inputBox->Display(&GameEngine::getInstance()->getWindow());
@@ -46,16 +47,15 @@ void EditorState::Display()
 
 void EditorState::EventHandling()
 {
+	GameEngine::getInstance()->SetDefaultView();
 	if(state == MAIN)
 	{
 		mapCreator->GetSteeringEvent();
 	}
-
 }
 
 void EditorState::GetEvents()
 {
-
 	sf::Event event = GameEngine::getInstance()->getEvent();
 		if(state==SET_MAP_SIZE)
 			{

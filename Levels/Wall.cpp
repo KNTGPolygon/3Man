@@ -11,7 +11,7 @@ Wall::Wall(float x, float y)
     sprite.SetSubRect(sf::IntRect(0,0,32,48));
 	sprite.SetPosition( x, y );
 	sprite.SetCenter(0,16);
-	sprite.setBoxMask(sf::IntRect(0,32,32,48));
+	sprite.setBoxMask(sf::IntRect(1,33,31,48));
 	sprite.setType("wall");
 }
 

@@ -67,9 +67,7 @@ private:
 
 	const sf::Input & steering ;
 	
-	sf::String strMouse;
 	sf::String strFps;
-	sf::String strFrameTime;
 
 	sf::SoundBuffer soundBuffer;
 	sf::Music soundtrack;
@@ -98,6 +96,8 @@ public:
 	sf::Event& getEvent();
 	Cursor& getCursor();
 	sf::Music& getMusic();
+	void SetDefaultView(); // menusy oraz interfejs
+	void SetGameView(); // mapa i elementy gry
 
 	static bool Collision( SpriteExt*, SpriteExt* );
 	void AddToCollisionQuadtree(SpriteExt*);

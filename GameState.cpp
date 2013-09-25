@@ -55,6 +55,7 @@ void GameState::UpdateSystem()
 
 void GameState::Display()
 {
+	GameEngine::getInstance()->SetGameView();
 	GameEngine::getInstance()->FlushRenderQueue();
 
 	GameEngine::getInstance()->AddToRenderQueue(hero);
@@ -65,10 +66,9 @@ void GameState::Display()
 	for ( int i = 0; i < numberOfObjects; i++ )
 		GameEngine::getInstance()->AddToRenderQueue(arrayOfObjects[i]);
 
-
 	map->showMap(&GameEngine::getInstance()->getWindow(), hero->GetPosition());
-	pirate->Display(&GameEngine::getInstance()->getWindow());
-	seven->Display(&GameEngine::getInstance()->getWindow());
+	GameEngine::getInstance()->AddToRenderQueue(pirate);
+	GameEngine::getInstance()->AddToRenderQueue(seven);
 	for( int i = 0; i < NUM_OF_ENEMIES ; i++)
 		GameEngine::getInstance()->AddToRenderQueue(numbers[i]);
 	
@@ -82,6 +82,7 @@ void GameState::Display()
 
 void GameState::EventHandling()
 {
+	GameEngine::getInstance()->SetGameView();
 	hero->UpdatePosition();
 	hero->GetEvent(mapPixelatedSize);
 	pirate->SetHeroPosition(hero->GetPosition());

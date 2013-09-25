@@ -7,8 +7,6 @@ OptionsMenuState::OptionsMenuState():State()
 
 void OptionsMenuState::Init()
 {
-	GameEngine::getInstance()->getWindow().SetView( GameEngine::getInstance()->getWindow().GetDefaultView() );
-	
 	music =    new Button(GameEngine::getInstance()->getSteering(),
 			       sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -50.0),
 			       (float)(GameEngine::SCREEN_HEIGHT/2 - 100.0)),
@@ -49,6 +47,7 @@ void OptionsMenuState::UpdateSystem()
 
 void OptionsMenuState::Display()
 {
+	GameEngine::getInstance()->SetDefaultView();
 	sounds->Display(&GameEngine::getInstance()->getWindow());
 	music->Display(&GameEngine::getInstance()->getWindow());
 	mainMenu->Display(&GameEngine::getInstance()->getWindow());
@@ -58,6 +57,7 @@ void OptionsMenuState::Display()
 
 void OptionsMenuState::EventHandling()
 {
+	GameEngine::getInstance()->SetDefaultView();
 	music->GetEvent();
 	sounds->GetEvent();
 	mainMenu->GetEvent();

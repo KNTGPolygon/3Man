@@ -16,7 +16,7 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 	MyTexture.CreateMaskFromColor(sf::Color(255,0,255));
 	MyTexture.SetSmooth(false);
 	strMyPosition.SetScale(0.5,0.5);
-	strMyPosition.SetPosition(0,0);
+	strMyPosition.SetPosition(5,70);
 
 	Me.SetImage( MyTexture );
     Me.SetScale( 1, 1 ); 
@@ -138,9 +138,8 @@ void Hero::GetEvent(int mapPixelatedSize)
 }
 void Hero::Display(sf::RenderWindow *window)
 {
-	strMyPosition.SetPosition(Me.GetPosition());
-	strMyPosition.SetText("Sx = "+Util::int2str((int)myPosition.x)+" Sy = "+Util::int2str((int)myPosition.y));
-	
+	strMyPosition.SetText( "Hero: " + Util::int2str((int)myPosition.x) + ", " + Util::int2str((int)myPosition.y) );
+
 	for(int i = 0 ; i < 4 ; i++)
 	weapon[i]->Display( window );
 	
@@ -163,7 +162,9 @@ void Hero::Display(sf::RenderWindow *window)
 			break;	
 	}
 	
+	GameEngine::getInstance()->SetDefaultView();
 	window->Draw( strMyPosition );
+	GameEngine::getInstance()->SetGameView();
 
 	if(GameEngine::getInstance()->devmode)
 	{
@@ -181,9 +182,7 @@ void Hero::Display(sf::RenderWindow *window)
 }
 void Hero::SetCamera(sf::View *View, sf::RenderWindow *window)
 {
-	View->SetHalfSize((float)SCREEN_WIDTH/2,(float)SCREEN_HEIGHT/2); 
 	View->SetCenter(myPosition);
-	window->SetView(*View);
 }
 void Hero::UpdateCollision()
 {

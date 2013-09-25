@@ -7,6 +7,7 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	window.SetFramerateLimit(60);
 	window.ShowMouseCursor(false);
 	window.SetView(window.GetDefaultView());
+	View.SetFromRect( sf::Rect<float>(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT) );
 
 	States[GAME] = new GameState();
 	States[MAINMENU] = new MainMenuState();
@@ -22,15 +23,8 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	fpsFlag = true;
 	devmode = false;
 
-	strMouse.SetPosition(10.0,150.0);
-	strMouse.SetScale(0.5,0.5);
-	strMouse.SetText("Pozycja myszki");
-	strFps.SetPosition(10.0,50.0);
+	strFps.SetPosition(5,5);
 	strFps.SetScale(0.5,0.5);
-	strFps.SetText("FPS : ");
-	strFrameTime.SetPosition(10.0,100.0);
-	strFrameTime.SetScale(0.5,0.5);
-	strFrameTime.SetText("Frame time : ");
 
 	windowIsOpen = window.IsOpened();
 		
@@ -57,19 +51,17 @@ GameEngine::~GameEngine(void)
 
 void GameEngine::Display()
 {
-		strMouse.SetText( "X = " + Util::int2str( GetMouseCoords().x ) + " Y = " + Util::int2str(GetMouseCoords().y ) );
-		window.Draw( strMouse );
-		
-		if(fpsFlag == true)
-		{
-			currentTime = time.GetElapsedTime();	
-			strFps.SetText("FPS = "+Util::int2str((int)(1/(currentTime-lastTime))));
-			strFrameTime.SetText("Frame time = "+Util::flo2str(window.GetFrameTime()));
-			window.Draw( strFps );
-			window.Draw( strFrameTime );
-			lastTime = currentTime;	
-		}
-		cursor.Display(&window);
+	window.SetView(window.GetDefaultView());
+	if(fpsFlag == true)
+	{
+		currentTime = time.GetElapsedTime();
+		strFps.SetText("FPS = " + Util::int2str((int)(1/(currentTime-lastTime))) +
+					   "\nFrame time = " + Util::flo2str(window.GetFrameTime()) +
+					   "\nMouse: " + Util::int2str( GetMouseCoords().x ) + ", " + Util::int2str(GetMouseCoords().y ));
+		window.Draw( strFps );
+		lastTime = currentTime;
+	}
+	cursor.Display(&window);
 }
 
 void GameEngine::ChangeState( STATE state )
@@ -283,6 +275,16 @@ sf::View& GameEngine::getView()
 	return View;
 }
 
+void GameEngine::SetDefaultView()
+{
+	window.SetView(window.GetDefaultView());
+}
+
+void GameEngine::SetGameView()
+{
+	window.SetView(View);
+}
+
 sf::Event& GameEngine::getEvent()
 {
 	return event;
@@ -301,7 +303,7 @@ sf::Vector2f GameEngine::GetMouseCoords()
 	int mouse_x = steering.GetMouseX();
 	int mouse_y = steering.GetMouseY();
 
-	return window.ConvertCoords( mouse_x, mouse_y, &View );
+	return window.ConvertCoords( mouse_x, mouse_y, &window.GetView() );
 }
 
 GameEngine* GameEngine::engine = NULL;

@@ -7,13 +7,7 @@ MainMenuState::MainMenuState():State()
 
 void MainMenuState::Init()
 {
-	GameEngine::getInstance()->getView().SetHalfSize((float)GameEngine::SCREEN_WIDTH/2,(float)GameEngine::SCREEN_HEIGHT/2);
-	GameEngine::getInstance()->getView().SetCenter((float)GameEngine::SCREEN_WIDTH/2,(float)GameEngine::SCREEN_HEIGHT/2);
-	GameEngine::getInstance()->getWindow().SetView(GameEngine::getInstance()->getView());
- 	
 	GameEngine::getInstance()->getCursor().setType(ARROW);
-
-
 	
 	mapEditor = new Button(GameEngine::getInstance()->getSteering(),
 			       sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -50.0),
@@ -54,6 +48,7 @@ void MainMenuState::UpdateSystem()
 
 void MainMenuState::Display()
 {
+	GameEngine::getInstance()->SetDefaultView();
 	mapEditor->Display( &GameEngine::getInstance()->getWindow() );
 	gameStart->Display( &GameEngine::getInstance()->getWindow() );
 	options->Display( &GameEngine::getInstance()->getWindow() );
@@ -63,6 +58,7 @@ void MainMenuState::Display()
 
 void MainMenuState::EventHandling()
 {
+	GameEngine::getInstance()->SetDefaultView();
 	gameStart->GetEvent();
 	mapEditor->GetEvent();
 	options->GetEvent();

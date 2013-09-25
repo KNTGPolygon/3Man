@@ -25,10 +25,7 @@ Cursor::Cursor()
 
 void Cursor::Display(sf::RenderWindow* window)
 {
-	int mouse_x = GameEngine::getInstance()->getSteering().GetMouseX();
-	int mouse_y = GameEngine::getInstance()->getSteering().GetMouseY();
-
-	sprite->SetPosition( window->ConvertCoords( mouse_x, mouse_y, &GameEngine::getInstance()->getView() ) );
+	sprite->SetPosition( GameEngine::getInstance()->GetMouseCoords() );
 	window->Draw(*sprite);
 }
 

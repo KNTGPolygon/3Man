@@ -108,6 +108,8 @@ public:
 	void ClearCollisionQuadtree();
 	void DisplayCollisionQuadtree();
 
+	sf::Vector2f GetMouseCoords();
+
 private:
 	static GameEngine * engine;
 };

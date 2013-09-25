@@ -1,4 +1,5 @@
 #include "Button.h"
+#include "GameEngine.h"
 
 Button::Button(const sf::Input &_steering,sf::Vector2f _position,sf::Vector2f _size,sf::Color _color,std::string _text)
 : color(_color), position(_position), size(_size), steering(_steering), pressed(false)
@@ -26,8 +27,8 @@ void Button::GetEvent()
 {
 		box.SetColor(color);
 
-	if(  ( steering.GetMouseX() < ( size.x + position.x) && steering.GetMouseX() > (position.x) )
-	  && ( steering.GetMouseY() < ( size.y + position.y) && steering.GetMouseY() > (position.y) ))
+	if(  ( (GameEngine::getInstance()->GetMouseCoords().x) < ( size.x + position.x) && (GameEngine::getInstance()->GetMouseCoords().x) > (position.x) )
+	  && ( (GameEngine::getInstance()->GetMouseCoords().y) < ( size.y + position.y) && (GameEngine::getInstance()->GetMouseCoords().y) > (position.y) ))
 	{
 		box.SetColor(sf::Color(255,255,255));
 		if( steering.IsMouseButtonDown(sf::Mouse::Left) )

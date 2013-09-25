@@ -57,8 +57,8 @@ GameEngine::~GameEngine(void)
 
 void GameEngine::Display()
 {
-		strMouse.SetText("X = "+Util::int2str(steering.GetMouseX())+" Y = "+Util::int2str(steering.GetMouseY()));
-		window.Draw( strMouse);
+		strMouse.SetText( "X = " + Util::int2str( GetMouseCoords().x ) + " Y = " + Util::int2str(GetMouseCoords().y ) );
+		window.Draw( strMouse );
 		
 		if(fpsFlag == true)
 		{
@@ -69,7 +69,7 @@ void GameEngine::Display()
 			window.Draw( strFrameTime );
 			lastTime = currentTime;	
 		}
-		GameEngine::getInstance()->getCursor().Display(&GameEngine::getInstance()->getWindow());
+		cursor.Display(&window);
 }
 
 void GameEngine::ChangeState( STATE state )
@@ -294,6 +294,14 @@ sf::Music& GameEngine::getMusic()
 Cursor& GameEngine::getCursor()
 {
 	return cursor;
+}
+
+sf::Vector2f GameEngine::GetMouseCoords()
+{
+	int mouse_x = steering.GetMouseX();
+	int mouse_y = steering.GetMouseY();
+
+	return window.ConvertCoords( mouse_x, mouse_y, &View );
 }
 
 GameEngine* GameEngine::engine = NULL;

@@ -126,18 +126,12 @@ void Hero::GetEvent(int mapPixelatedSize)
 		if( steering.IsKeyDown(sf::Key::Num4) )weaponType=3;
 
 		weapon[weaponType]->active = true;
-		
-		sf::Vector2f mouse_coords = GameEngine::getInstance()->getWindow().ConvertCoords(
-		steering.GetMouseX(), steering.GetMouseY(), &GameEngine::getInstance()->getView() );
 
 		for(int i = 0; i < 4 ; i++)
 		{
 		weapon[i]->SetFiringPosition(Me.GetPosition());
-		/*weapon[i]->Logic(steering.IsMouseButtonDown(sf::Mouse::Left),
-		sf::Vector2i(steering.GetMouseX()  - SCREEN_WIDTH/2 + (int)Me.GetPosition().x,
-		steering.GetMouseY()  - SCREEN_HEIGHT/2 + (int)Me.GetPosition().y )); */
 		weapon[i]->Logic( steering.IsMouseButtonDown(sf::Mouse::Left),
-						  sf::Vector2i( (int)mouse_coords.x, (int)mouse_coords.y ));
+						  sf::Vector2i( (int)(GameEngine::getInstance()->GetMouseCoords().x), (int)(GameEngine::getInstance()->GetMouseCoords().y) ));
 		weapon[i]->active = false;
 		}
 

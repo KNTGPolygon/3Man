@@ -1,5 +1,5 @@
 #include "InputBox.h"
-
+#include "GameEngine.h"
 
 InputBox::InputBox(const sf::Input &_steering,sf::Vector2f _position, std::string defaultInboxText, sf::Vector2f _size):
 position(_position), size(_size), steering(_steering)
@@ -30,8 +30,8 @@ InputBox::~InputBox(void)
 }
 void InputBox::HandleEvent(sf::Event event)
 {
-	if(  ( steering.GetMouseX() < ( size.x + position.x) && steering.GetMouseX() > (position.x) )
-	  && ( steering.GetMouseY() < ( size.y + position.y) && steering.GetMouseY() > (position.y) ))
+	if(  ( (GameEngine::getInstance()->GetMouseCoords().x) < ( size.x + position.x) && (GameEngine::getInstance()->GetMouseCoords().x) > (position.x) )
+	  && ( (GameEngine::getInstance()->GetMouseCoords().y) < ( size.y + position.y) && (GameEngine::getInstance()->GetMouseCoords().y) > (position.y) ))
 	{
 		if(steering.IsMouseButtonDown(sf::Mouse::Left))
 		{

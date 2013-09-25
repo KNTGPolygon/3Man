@@ -12,6 +12,7 @@ class Hero : public Drawable
 {
 public:
 	static const int SPRITE_SIZE  = 42; // 42 bo szerokosc tekstury
+	static sf::Vector2f myPosition;	//hero position
 private:
 
 	bool fire;
@@ -42,7 +43,6 @@ private:
 
 	Animate **animate;
 	Weapon **weapon;
-	sf::Vector2f myPosition;	//hero position
 	SpriteExt Me;
 
 	sf::Image MyTexture;			
@@ -57,11 +57,13 @@ public:
 	sf::Vector2f get_position(){return myPosition;}
 
 	void Display(sf::RenderWindow *window);
+	void UpdateSystem();
+	void EventHandling();
 
 	void Logic();
 	void Move();
 	void Shoot();
-	void GetEvent(int mapPixelatedSize);
+	void GetEvent();
 	sf::Vector2f GetPosition();
 	void UpdatePosition();
 	void PutScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);

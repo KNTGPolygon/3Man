@@ -5,6 +5,9 @@
 #include <iostream>
 #include "Collision/BoxMask.h"
 //-------------------------------- Hero
+
+sf::Vector2f Hero::myPosition;
+
 Hero::Hero(const sf::Input &_steering,float _velocity)
 	: weaponType(0), numberOfWeapons(4), velocity(_velocity), steering(_steering)
 {
@@ -62,7 +65,7 @@ Hero::~Hero(void)
 void Hero::Shoot()
 {
 }
-void Hero::GetEvent(int mapPixelatedSize)
+void Hero::GetEvent()
 {
 		ANIMATION_TYPE = STAY;
 
@@ -136,6 +139,13 @@ void Hero::GetEvent(int mapPixelatedSize)
 		}
 
 }
+
+void Hero::EventHandling()
+{
+	UpdatePosition();
+	GetEvent();
+}
+
 void Hero::Display(sf::RenderWindow *window)
 {
 	strMyPosition.SetText( "Hero: " + Util::int2str((int)myPosition.x) + ", " + Util::int2str((int)myPosition.y) );
@@ -191,6 +201,11 @@ void Hero::UpdateCollision()
 	{
 		weapon[i]->UpdateCollision();
 	}
+}
+
+void Hero::UpdateSystem()
+{
+	UpdateCollision();
 }
 
 void Hero::UpdatePosition()

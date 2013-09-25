@@ -12,9 +12,9 @@ private:
 	SpriteExt sprite;
 public:
 	Wall(float, float);
-	void Update();
 	void Display(sf::RenderWindow*);
-	void UpdateCollision();
+	void EventHandling();
+	void UpdateSystem();
 };
 
 #endif /* WALL_H_ */

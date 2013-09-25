@@ -2,7 +2,7 @@
 
 GameEngine::GameEngine(void):steering(window.GetInput())
 {	
-	window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Integrator");
+	window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Integrator", sf::Style::Close);
 
 	window.SetFramerateLimit(60);
 	window.ShowMouseCursor(false);
@@ -28,7 +28,7 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 
 	windowIsOpen = window.IsOpened();
 		
-	collisionQuadtree = new QuadtreeNode(0,0,600,600);
+	collisionQuadtree = new QuadtreeNode(0,0,640,640);
 		
 	if (!soundtrack.OpenFromFile("Data/Music/Aurora_down.ogg"))
 	{
@@ -51,16 +51,18 @@ GameEngine::~GameEngine(void)
 
 void GameEngine::Display()
 {
-	window.SetView(window.GetDefaultView());
 	if(fpsFlag == true)
 	{
 		currentTime = time.GetElapsedTime();
+		SetGameView();
 		strFps.SetText("FPS = " + Util::int2str((int)(1/(currentTime-lastTime))) +
 					   "\nFrame time = " + Util::flo2str(window.GetFrameTime()) +
 					   "\nMouse: " + Util::int2str( GetMouseCoords().x ) + ", " + Util::int2str(GetMouseCoords().y ));
+		SetDefaultView();
 		window.Draw( strFps );
 		lastTime = currentTime;
 	}
+	SetDefaultView();
 	cursor.Display(&window);
 }
 

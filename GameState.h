@@ -12,6 +12,7 @@
 class GameState : public State
 {
 private:
+	std::vector<Drawable*> DrawableEntityList;
 	Hero* hero;
 	Maps* map;
 	Wall* wall[10];

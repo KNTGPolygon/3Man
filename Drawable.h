@@ -17,6 +17,9 @@ public:
 	Drawable();
 	virtual ~Drawable();
 	virtual void Display(sf::RenderWindow*);
+	virtual void UpdateSystem();
+	virtual void EventHandling();
+	virtual void GetEvents();
 	void setDepth(int);
 	int getDepth();
 };

@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Hero.h"
 #include "GameEngine.h"
 
 Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
@@ -57,6 +58,17 @@ void Enemy::UpdateCollision()
 {
  	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
 	myWeapon->UpdateCollision();
+}
+
+void Enemy::UpdateSystem()
+{
+	UpdateCollision();
+}
+
+void Enemy::EventHandling()
+{
+	SetHeroPosition(Hero::myPosition);
+	AI();
 }
 
 void Enemy::Logic(sf::Vector2i Target)

@@ -62,6 +62,8 @@ protected:
 public:
 
 	void Display(sf::RenderWindow *window);
+	void UpdateSystem();
+	void EventHandling();
 	void Logic(sf::Vector2i Target);
 	void UpdateCollision();
 	int GoToPosition(sf::Vector2i Destination);

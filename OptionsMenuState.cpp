@@ -97,8 +97,7 @@ void OptionsMenuState::GetEvents()
 	sf::Event event = GameEngine::getInstance()->getEvent();
 	if ((event.Type == sf::Event::KeyPressed) && (event.Key.Code == sf::Key::Escape))
 	{
-		GameEngine::getInstance()->getWindow().Close();
-		GameEngine::getInstance()->SwitchWindowIsOpen( false );
+		GameEngine::getInstance()->ChangeState(MAINMENU);
 	}
 }
 

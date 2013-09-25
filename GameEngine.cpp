@@ -295,14 +295,7 @@ Cursor& GameEngine::getCursor()
 {
 	return cursor;
 }
-void deleteObj(void *obj)
-{
-	if (obj != NULL)
-	{
-		delete obj;
-		obj = NULL;
-	}
-}
+
 GameEngine* GameEngine::engine = NULL;
 GameEngine* GameEngine::getInstance(void)
 {

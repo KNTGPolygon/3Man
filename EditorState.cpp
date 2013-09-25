@@ -82,6 +82,8 @@ void EditorState::Cleanup()
 {
 	if (state == MAIN)
 		delete mapCreator;
+	delete textBox;
+	delete inputBox;
 	init = 0;
 }
 

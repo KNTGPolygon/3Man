@@ -3,7 +3,7 @@
 
 Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	float Velocity , float PullRange)
-:myPosition(Position) ,velocity(Velocity),pullRange(PullRange)
+: velocity(Velocity),pullRange(PullRange), myPosition(Position)
 {
 	myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+fileName );
 	myTexture.SetSmooth( false );

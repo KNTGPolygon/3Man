@@ -1,7 +1,7 @@
 #include "TextBox.h"
 
 TextBox::TextBox(sf::Vector2f _position,sf::Vector2f _size,sf::Color _color,std::string _text)
-:position(_position), size(_size),color(_color)
+: color(_color), position(_position), size(_size)
 {
 	box   = sf::Shape::Rectangle(0,0,size.x,size.y,color);
 	box.SetPosition(position);

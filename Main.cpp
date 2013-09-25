@@ -7,7 +7,6 @@ int main(void)
 {
 	GameEngine *engine = GameEngine::getInstance();
 	engine->run();
-	deleteObj(engine);
-
+	delete engine;
 	return 0;
 }

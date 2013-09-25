@@ -6,7 +6,7 @@
 #include "Collision/BoxMask.h"
 //-------------------------------- Hero
 Hero::Hero(const sf::Input &_steering,float _velocity)
-	:steering(_steering),velocity(_velocity),weaponType(0) , numberOfWeapons(4)
+	: weaponType(0), numberOfWeapons(4), velocity(_velocity), steering(_steering)
 {
 	ANIMATION_TYPE = STAY;
 

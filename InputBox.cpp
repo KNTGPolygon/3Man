@@ -2,7 +2,7 @@
 
 
 InputBox::InputBox(const sf::Input &_steering,sf::Vector2f _position, std::string defaultInboxText, sf::Vector2f _size):
-steering(_steering),position(_position),size(_size)
+position(_position), size(_size), steering(_steering)
 {
 	textSize = 20.0;
 	box		= sf::Shape::Rectangle(0,0,size.x,size.y,sf::Color(125,125,125));

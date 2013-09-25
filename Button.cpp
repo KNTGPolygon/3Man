@@ -1,7 +1,7 @@
 #include "Button.h"
 
 Button::Button(const sf::Input &_steering,sf::Vector2f _position,sf::Vector2f _size,sf::Color _color,std::string _text)
-: steering(_steering), position(_position), size(_size),pressed(false),color(_color)
+: color(_color), position(_position), size(_size), steering(_steering), pressed(false)
 {
 
 	box   = sf::Shape::Rectangle(0,0,size.x,size.y,color);

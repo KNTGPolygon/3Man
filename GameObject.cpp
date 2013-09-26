@@ -15,12 +15,15 @@ GameObject::GameObject(float x, float y, int _type, std::string imageFilePath)
 	type = _type;
 	myTexture = ImageManager::getInstance()->loadImage(imageFilePath.c_str());
 	myTexture.CreateMaskFromColor(sf::Color(255,0,255));
+	myTexture.SetSmooth(false);
+
+	int textureHeight = myTexture.GetHeight();
+
 	mySprite.SetImage(myTexture);
     mySprite.SetScale( 1, 1 );
-	mySprite.SetSubRect(sf::IntRect(0,0,32,32));
 	mySprite.SetPosition( x, y );
 	mySprite.SetCenter(0,0);
-	mySprite.setBoxMask(sf::IntRect(2,24,30,30));
+	mySprite.setBoxMask(sf::IntRect(2, textureHeight - 8 ,30,textureHeight));
 	mySprite.setType("sth");
 
 	//GameEngine::getInstance()->AddToCollisionList(&mySprite);

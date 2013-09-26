@@ -8,10 +8,10 @@ Wall::Wall(float x, float y)
 	image.SetSmooth(false);
 	sprite.SetImage(image);
     sprite.SetScale( 1, 1 );
-    sprite.SetSubRect(sf::IntRect(0,0,32,48));
+    sprite.SetSubRect(sf::IntRect(0,0,32,64));
 	sprite.SetPosition( x, y );
-	sprite.SetCenter(0,16);
-	sprite.setBoxMask(sf::IntRect(1,33,31,48));
+	sprite.SetCenter(0,32);
+	sprite.setBoxMask(sf::IntRect(1,33,31,64));
 	sprite.setType("wall");
 }
 

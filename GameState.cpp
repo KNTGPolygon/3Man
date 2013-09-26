@@ -34,7 +34,7 @@ void GameState::Init()
 	wall[1] = new Wall(132, 100);
 	wall[2] = new Wall(164, 100);
 	wall[3] = new Wall(196, 100);
-	wall[4] = new Wall(196, 116);
+	wall[4] = new Wall(300, 200);
 	wall[5] = new Wall(196, 132);
 	wall[6] = new Wall(228, 132);
 	wall[7] = new Wall(260, 132);

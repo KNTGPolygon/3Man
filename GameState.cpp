@@ -44,6 +44,8 @@ void GameState::Init()
 	DrawableEntityList.push_back(hero);
 	DrawableEntityList.push_back(pirate);
 	DrawableEntityList.push_back(seven);
+	for( int i = 0; i < numberOfObjects ; i++ )
+		DrawableEntityList.push_back( arrayOfObjects[i] );
 	for( int i = 0; i < NUM_OF_ENEMIES ; i++)
 		DrawableEntityList.push_back(numbers[i]);
 	for ( int i = 0; i < 10; i++ )

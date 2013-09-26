@@ -570,7 +570,7 @@ void MapCreator::toolboxManagement(sf::Vector2i toolboxClickPosition)
 			if(toolboxRectangles[rectangleCheckIterator].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
 			{
 				unsigned int tempCheck = rectangleCheckIterator + (toolboxFirstFieldNumber - 1);
-				if(tempCheck >= 1 && tempCheck < tileSprites.size())
+				if(tempCheck >= 1 && tempCheck < objectSprites.size())
 				{
 					chosenObjectFromToolbox = tempCheck;
 				}

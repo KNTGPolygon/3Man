@@ -4,6 +4,8 @@ MapCreator::MapCreator(const sf::Input &_steering)
 	:steering(_steering)
 {
 
+	toolboxMenuState = SUBMENU_CHOICE;
+
 	for(int i = 0; i < 10; i++)
 	{
 		hotKeys[i] = 0;
@@ -12,29 +14,27 @@ MapCreator::MapCreator(const sf::Input &_steering)
 
 	//loading images from files, creating sprites
 	LoadTileGraphics();
-	blackHorizontalImage = new sf::Image();
-	blackVerticalImage = new sf::Image();
 
-	blackHorizontalImage->Create(800,120,sf::Color(0,0,0,255));
-	blackVerticalImage->Create(120,800,sf::Color(0,0,0,255));
-
-	blackHorizontalSprite = new sf::Sprite();
-	blackVerticalSprite = new sf::Sprite();
-
-	blackHorizontalSprite->SetImage(*blackHorizontalImage);
-	blackVerticalSprite->SetImage(*blackVerticalImage);
+	blackBackgroundShape = sf::Shape::Rectangle(-64,-20,800,40, sf::Color(0,0,0,255));
 	
 	chosenTileFromToolbox = 0;
 	chosenObjectFromToolbox = 0;
 	
-	sampleSpriteSize = tileSprites.at(1).GetSize();
-
 	//setting default value of camera
 	cameraPosition.x = 350;
 	cameraPosition.y = 200;
 
 	toolboxFirstFieldNumber = 1;
-	verticalToolboxFirstFieldNumber = 1;
+
+	whichSubmenuButtonAnimate = -1;
+	//creating rectangles for buttons in main toolbar-menu
+	submenuButtonRectangles[0] = sf::IntRect(30,20,130,120);
+	submenuButtonRectangles[1] = sf::IntRect(150,20,250,120);
+	submenuButtonRectangles[2] = sf::IntRect(270,20,370,120);
+	submenuButtonRectangles[3] = sf::IntRect(390,20,490,120);
+
+	//creating rectangle for return button
+	submenuReturnButtonRectangle = sf::IntRect(695, 20, 755, 120);
 
 }
 
@@ -76,13 +76,13 @@ void MapCreator::Display(sf::RenderWindow *window)
 	unsigned int firstFieldX = 0;
 	unsigned int firstFieldY = 0;
 
-	firstFieldX = (unsigned int)(((cameraPosition.x - 400)>0?(cameraPosition.x-400):0)/sampleSpriteSize.x);
-	firstFieldY = (unsigned int)(((cameraPosition.y - 240)>0?(cameraPosition.y-240):0)/sampleSpriteSize.y);
+	firstFieldX = (unsigned int)(((cameraPosition.x - 400)>0?(cameraPosition.x-400):0)/32);
+	firstFieldY = (unsigned int)(((cameraPosition.y - 240)>0?(cameraPosition.y-240):0)/32);
 
-	//drawing createdMap graphical representation
+	//----------------------------- MAP DISPLAY (TILES & OBJECTS)  ------------------------------------------
 	for(unsigned int row = firstFieldY; row < ((noOfTilesVisible.y + firstFieldY - 8)>Size? Size:(noOfTilesVisible.y + firstFieldY - 8)); row++)
 	{
-		for(unsigned int col = firstFieldX; col < ((noOfTilesVisible.x + firstFieldX - 1)>Size? Size:(noOfTilesVisible.x + firstFieldX - 1)); col++)
+		for(unsigned int col = firstFieldX; col < ((noOfTilesVisible.x + firstFieldX + 2)>Size? Size:(noOfTilesVisible.x + firstFieldX + 2)); col++)
 		{
 			//drawing current field together with its frame
 			sf::Vector2i temp = createdMap[row][col].getPosition();
@@ -94,7 +94,7 @@ void MapCreator::Display(sf::RenderWindow *window)
 	
 			for(unsigned int row = firstFieldY*2; row < ((noOfTilesVisible.y + firstFieldY - 8)*2 >Size*2? Size*2 :(noOfTilesVisible.y + firstFieldY - 8)*2); row++)
 				{
-					for(unsigned int col = firstFieldX*2; col < ((noOfTilesVisible.x + firstFieldX - 1)*2 >Size*2? Size*2:(noOfTilesVisible.x + firstFieldX - 1)*2); col++)
+					for(unsigned int col = firstFieldX*2; col < ((noOfTilesVisible.x + firstFieldX + 1)*2 >Size*2? Size*2:(noOfTilesVisible.x + firstFieldX + 1)*2); col++)
 					{
 						if(mapObjects[row][col].getType() > 0)
 						{
@@ -106,76 +106,113 @@ void MapCreator::Display(sf::RenderWindow *window)
 					}
 				}
 
-			//checking whether there are 8 more sprites to draw in horizontal toolbox, else get number of last field
-			int lastField;
-			if(toolboxFirstFieldNumber + 8 > tileSprites.size())
-			{
-				lastField = tileSprites.size();
-			}
-			else
-			{
-				lastField = toolboxFirstFieldNumber + 8;
-			}
 
-			//setting positions of black toolbox-fields
-			blackHorizontalSprite->SetPosition(cameraPosition.x-400, cameraPosition.y-300);
-			blackVerticalSprite->SetPosition(cameraPosition.x+280, cameraPosition.y - 300);
+				//Drawing black toolbox field
+				window->Draw(blackBackgroundShape);
 
-			//drawing black toolbox-fields
-			window->Draw(*blackHorizontalSprite);
-			window->Draw(*blackVerticalSprite);
-
-			for(int toolboxIterator = toolboxFirstFieldNumber;toolboxIterator < lastField; toolboxIterator ++ )
+		//----------------------------- MAIN EDITOR MENU DISPLAY ------------------------------------------
+			if(toolboxMenuState == SUBMENU_CHOICE)
 			{
-				tileSprites.at(toolboxIterator).SetPosition(-380 + cameraPosition.x + (toolboxIterator-toolboxFirstFieldNumber)*96, -280 + cameraPosition.y);
-				//toolbox has full sized field-sprites
-				tileSprites.at(toolboxIterator).SetScale(1,1);
-				window->Draw(tileSprites.at(toolboxIterator));
-				//changing sprites size to default for map-drawing
-				tileSprites.at(toolboxIterator).SetScale(0.5,0.5);
+				//counting camera's position according to default,beginning point to draw submenu buttons in the right place
+				int deltaCamPosX = cameraPosition.x - 350;
+				int deltaCamPosY = cameraPosition.y - 200;
+
+				submenuButtonSprite[0]->SetPosition(-20 + deltaCamPosX,-80 + deltaCamPosY);			
+				submenuButtonSprite[1]->SetPosition(100 + deltaCamPosX,-80 + deltaCamPosY);
+				submenuButtonSprite[2]->SetPosition(220 + deltaCamPosX,-80 + deltaCamPosY);
+				submenuButtonSprite[3]->SetPosition(340 + deltaCamPosX,-80 + deltaCamPosY);
+				window->Draw(*submenuButtonSprite[0]);
+				window->Draw(*submenuButtonSprite[1]);
+				window->Draw(*submenuButtonSprite[2]);
+				window->Draw(*submenuButtonSprite[3]);
+
+				if(whichSubmenuButtonAnimate != -1)
+				{
+					submenuButtonSprite[4]->SetPosition(submenuButtonSprite[whichSubmenuButtonAnimate]->GetPosition());
+					window->Draw(*submenuButtonSprite[4]);
+					whichSubmenuButtonAnimate = -1;
+
+				}
 			}
+	//----------------------------- GROUNDS DISPLAY ------------------------------------------
+			else if (toolboxMenuState == GROUNDS)
+			{
+
+				//checking whether there are 7 more sprites to draw in horizontal toolbox, else get number of last field
+				int lastField;
+				if(toolboxFirstFieldNumber + 7 > tileSprites.size())
+				{
+					lastField = tileSprites.size();
+				}
+				else
+				{
+					lastField = toolboxFirstFieldNumber + 7;
+				}
+
+				for(int toolboxIterator = toolboxFirstFieldNumber;toolboxIterator < lastField; toolboxIterator ++ )
+				{
+					tileSprites.at(toolboxIterator).SetPosition(-380 + cameraPosition.x + (toolboxIterator-toolboxFirstFieldNumber)*96, -280 + cameraPosition.y);
+					//toolbox has full sized field-sprites
+					tileSprites.at(toolboxIterator).SetScale(1,1);
+					window->Draw(tileSprites.at(toolboxIterator));
+					//changing sprites size to default for map-drawing
+					tileSprites.at(toolboxIterator).SetScale(0.5,0.5);
+				}
 		
 
-			if(chosenTileFromToolbox - toolboxFirstFieldNumber + 1 > 0 )
-			{
-				tileSprites.at(0).SetPosition(-380 + cameraPosition.x + (chosenTileFromToolbox - toolboxFirstFieldNumber)*96, -280 + cameraPosition.y);
-				tileSprites.at(0).SetScale(1,1);
-				window->Draw(tileSprites.at(0));
-				tileSprites.at(0).SetScale(0.5,0.5);	
+				if(chosenTileFromToolbox - toolboxFirstFieldNumber + 1 > 0 )
+				{
+					tileSprites.at(0).SetPosition(-380 + cameraPosition.x + (chosenTileFromToolbox - toolboxFirstFieldNumber)*96, -280 + cameraPosition.y);
+					tileSprites.at(0).SetScale(1,1);
+					window->Draw(tileSprites.at(0));
+					tileSprites.at(0).SetScale(0.5,0.5);	
+				}
+
 			}
 
-
-			//--------------------
-
-			if(verticalToolboxFirstFieldNumber + 5 > objectSprites.size())
+			//----------------------------- OBJECTS DISPLAY ------------------------------------------
+			else if (toolboxMenuState == OBJECTS)
 			{
-				lastField = objectSprites.size();
-			}
-			else
-			{
-				lastField = verticalToolboxFirstFieldNumber + 5;
-			}
 
+				int lastField;
+				if(toolboxFirstFieldNumber + 7 > objectSprites.size())
+				{
+					lastField = objectSprites.size();
+				}
+				else
+				{
+					lastField = toolboxFirstFieldNumber + 7;
+				}
+
+				for(int toolboxIterator = toolboxFirstFieldNumber;toolboxIterator < lastField; toolboxIterator ++ )
+				{
+					objectSprites.at(toolboxIterator).SetPosition(-380 + cameraPosition.x + (toolboxIterator-toolboxFirstFieldNumber)*96, -280 + cameraPosition.y);
+					objectSprites.at(toolboxIterator).SetScale(2,2);
+					window->Draw(objectSprites.at(toolboxIterator));
+					//changing sprites size to default for map-drawing
+					objectSprites.at(toolboxIterator).SetScale(0.5,0.5);
+				}
 		
-			for(int toolboxIterator = verticalToolboxFirstFieldNumber;toolboxIterator < lastField; toolboxIterator ++ )
-			{	
-		
-				objectSprites.at(toolboxIterator).SetPosition(300 + cameraPosition.x , -270 + cameraPosition.y + (toolboxIterator - verticalToolboxFirstFieldNumber + 1)*96);
-				objectSprites.at(toolboxIterator).SetScale(2,2);
-				window->Draw(objectSprites.at(toolboxIterator));
-				objectSprites.at(toolboxIterator).SetScale(0.5,0.5);
+
+				if(chosenObjectFromToolbox - toolboxFirstFieldNumber + 1 > 0 )
+				{
+					tileSprites.at(0).SetPosition(-380 + cameraPosition.x + (chosenObjectFromToolbox - toolboxFirstFieldNumber)*96, -280 + cameraPosition.y);
+					tileSprites.at(0).SetScale(1,1);
+					window->Draw(tileSprites.at(0));
+					tileSprites.at(0).SetScale(0.5,0.5);	
+				}
 
 			}
 
-			if(chosenObjectFromToolbox - verticalToolboxFirstFieldNumber + 1 > 0)
+
+			//-------------------- ANIMATING MAIN MENU BUTTONS ------------------------------------
+			if(toolboxMenuState != SUBMENU_CHOICE)
 			{
-				tileSprites.at(0).SetPosition(300 + cameraPosition.x, -270 + cameraPosition.y  + (chosenObjectFromToolbox - verticalToolboxFirstFieldNumber + 1)*96);
-				tileSprites.at(0).SetScale(1,1);
-				window->Draw(tileSprites.at(0));
-				tileSprites.at(0).SetScale(0.5,0.5);
+				submenuButtonSprite[5]->SetPosition(-380 + cameraPosition.x + 7 * 96, -280 + cameraPosition.y);
+				window->Draw(*submenuButtonSprite[5]);
 			}
+
 			
-
 
 }
 
@@ -247,6 +284,18 @@ bool MapCreator::LoadTileGraphics()
 		objectGraphics[i].CreateMaskFromColor(sf::Color(255,0,255));
 	}
 
+	submenuButtonImage[0] = imgmng->loadImage("Data/Textures/Buttons/Tiles.bmp");
+	submenuButtonImage[1] = imgmng->loadImage("Data/Textures/Buttons/Objects.bmp");
+	submenuButtonImage[2] = imgmng->loadImage("Data/Textures/Buttons/Enemies.bmp");
+	submenuButtonImage[3] = imgmng->loadImage("Data/Textures/Buttons/Save.bmp");
+	submenuButtonImage[4] = imgmng->loadImage("Data/Textures/Buttons/ButtonFocus.bmp");
+	submenuButtonImage[5] = imgmng->loadImage("Data/Textures/Buttons/Back.bmp");
+
+	for(int i = 0; i < 6; i++)
+	{
+		submenuButtonImage[i].CreateMaskFromColor(sf::Color (255,0,255));
+	}
+
 	//here sprites are created
 	CreateSprites();
 	return 1;
@@ -270,6 +319,13 @@ void MapCreator::CreateSprites()
 		objectSprites.push_back(spr);
 	}
 
+	for(int i = 0; i < 6; i++)
+	{
+	submenuButtonSprite[i] = new sf::Sprite();
+	submenuButtonSprite[i]->SetImage(submenuButtonImage[i]);
+	submenuButtonSprite[i]->SetScale(1,1);
+	}
+
 }
 
 void MapCreator::GetSteeringEvent()
@@ -278,43 +334,75 @@ void MapCreator::GetSteeringEvent()
 	if( steering.IsKeyDown( sf::Key::Right ) ){
 				
 		cameraPosition.x += 20;
+		blackBackgroundShape.Move(20,0);
 		}
 
 	if( steering.IsKeyDown( sf::Key::Left ) && cameraPosition.x > 360 ){
 				
 		cameraPosition.x -= 20;
+		blackBackgroundShape.Move(-20,0);
 		}
 
 	if( steering.IsKeyDown( sf::Key::Up ) && cameraPosition.y > 200 ){
 				
 		cameraPosition.y -= 20;
+		blackBackgroundShape.Move(0,-20);
 		}
 
 	if( steering.IsKeyDown( sf::Key::Down ) ){
 				
 		cameraPosition.y += 20;
+		blackBackgroundShape.Move(0,20);
 		}
 
-	
+
+		//!!!!!!!!!!!!!
+	int mousePositionX = steering.GetMouseX();
+	int mousePositionY = steering.GetMouseY();
+
+	if(mousePositionY < 120 && toolboxMenuState == SUBMENU_CHOICE)
+	{
+		if(submenuButtonRectangles[0].Contains(steering.GetMouseX(), steering.GetMouseY()))
+		{
+			whichSubmenuButtonAnimate = 0;
+		}
+
+		else if(submenuButtonRectangles[1].Contains(steering.GetMouseX(), steering.GetMouseY()))
+		{
+			whichSubmenuButtonAnimate = 1;
+		}
+
+		else if(submenuButtonRectangles[2].Contains(steering.GetMouseX(), steering.GetMouseY()))
+		{
+			whichSubmenuButtonAnimate = 2;
+		}
+
+		else if(submenuButtonRectangles[3].Contains(steering.GetMouseX(), steering.GetMouseY()))
+		{
+			whichSubmenuButtonAnimate = 3;
+		}
+	}
 
 	if(steering.IsMouseButtonDown(sf::Mouse::Left))
 	{
 		
 
-		if(steering.GetMouseY() > 150 && steering.GetMouseX() < 680 && steering.IsKeyDown(sf::Key::LControl))
+		if(toolboxMenuState == OBJECTS && mousePositionY > 150 && mousePositionX)
 		{
 			sf::Vector2i mousePos;
 			mousePos.x = steering.GetMouseX();
 			mousePos.y = steering.GetMouseY();
 			changingObjectInMap(mousePos);
 		}
-		else if(steering.GetMouseY() > 150 && steering.GetMouseX() < 680)
+		else if(toolboxMenuState == GROUNDS && mousePositionY > 150 && mousePositionX)
 		{
 			sf::Vector2i mousePos;
 			mousePos.x = steering.GetMouseX();
 			mousePos.y = steering.GetMouseY();
 			changingSpriteInMap(mousePos);
 		}
+
+		
 
 	}
 
@@ -354,10 +442,6 @@ void MapCreator::GetEvent(sf::Event& event)
 
 		if(lControlPressed == true)
 		{
-			if(event.Key.Code == sf::Key::S)
-				{
-					saveMap("Test");
-				}
 
 			if((event.Key.Code >= sf::Key::Num0) && (event.Key.Code <= sf::Key::Num9))
 				{
@@ -393,17 +477,6 @@ void MapCreator::GetEvent(sf::Event& event)
 			toolboxFirstFieldNumber ++;
 		}
 
-		if(event.Key.Code == sf::Key::S)
-		{
-			if(verticalToolboxFirstFieldNumber > 1)
-			verticalToolboxFirstFieldNumber --;
-		}
-
-		if(event.Key.Code == sf::Key::W)
-		{
-			if(verticalToolboxFirstFieldNumber < objectSprites.size())
-			verticalToolboxFirstFieldNumber ++;
-		}
 	}
 
 	
@@ -419,7 +492,7 @@ void MapCreator::GetEvent(sf::Event& event)
 			mousePos.x = steering.GetMouseX();
 			mousePos.y = steering.GetMouseY();
 
-		if(mousePos.y < 100 || mousePos.x > 700)
+		if(mousePos.y < 120)
 		{
 			toolboxManagement(mousePos);
 		}
@@ -441,52 +514,78 @@ void MapCreator::GetScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT)
 	SCREEN_WIDTH  = _SCREEN_WIDTH;
 	SCREEN_HEIGHT = _SCREEN_HEIGHT;
 
-	noOfTilesVisible.x = (int)(SCREEN_WIDTH/sampleSpriteSize.x);
-	noOfTilesVisible.y = (int)(SCREEN_WIDTH/sampleSpriteSize.y);
+	noOfTilesVisible.x = (int)(SCREEN_WIDTH/32);
+	noOfTilesVisible.y = (int)(SCREEN_WIDTH/32);
 
-	int numberOfToolboxRectangles = (int)((SCREEN_WIDTH-20)/96);
-	int numberOfToolboxVerticalRectangles = (int)((SCREEN_HEIGHT-160)/80);
+	int numberOfToolboxRectangles = (int)((SCREEN_WIDTH-20)/96) - 1;
 
 	for(int rectangleCreator = 1; rectangleCreator <= numberOfToolboxRectangles ; rectangleCreator ++)
 	{
 		toolboxRectangles[rectangleCreator] = sf::IntRect (20 + (rectangleCreator - 1)*96 , 20, 84 + (rectangleCreator - 1)*96 , 84);
 	}
 
-	for(int rectangleCreator = 1; rectangleCreator <= numberOfToolboxVerticalRectangles ; rectangleCreator ++)
-	{
-		toolboxVerticalRectangles[rectangleCreator] = sf::IntRect (700, 125 + (rectangleCreator - 1)*96, 764 , 189 + (rectangleCreator - 1)*96);
-	}
-
 }
 
 void MapCreator::toolboxManagement(sf::Vector2i toolboxClickPosition)
 {
-	if(toolboxClickPosition.y < 100)
-	for(unsigned int rectangleCheckIterator = 1; rectangleCheckIterator <= toolboxRectangles.size(); rectangleCheckIterator++)
+	if(toolboxMenuState == SUBMENU_CHOICE)
 	{
-		if(toolboxRectangles[rectangleCheckIterator].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
+		if(submenuButtonRectangles[0].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
 		{
-			unsigned int tempCheck = rectangleCheckIterator + (toolboxFirstFieldNumber - 1);
-			if(tempCheck >= 1 && tempCheck < tileSprites.size())
+			toolboxMenuState = GROUNDS;
+		}
+		else if(submenuButtonRectangles[1].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
+		{
+			toolboxMenuState = OBJECTS;
+		}
+		else if(submenuButtonRectangles[2].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
+		{
+			toolboxMenuState = ENEMIES;
+		}
+		else if(submenuButtonRectangles[3].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
+		{
+			saveMap("Test");
+		}
+	}
+
+	else if (toolboxMenuState == GROUNDS)
+	{
+		for(unsigned int rectangleCheckIterator = 1; rectangleCheckIterator <= toolboxRectangles.size(); rectangleCheckIterator++)
+		{
+			if(toolboxRectangles[rectangleCheckIterator].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
 			{
-				chosenTileFromToolbox = tempCheck;
+				unsigned int tempCheck = rectangleCheckIterator + (toolboxFirstFieldNumber - 1);
+				if(tempCheck >= 1 && tempCheck < tileSprites.size())
+				{
+					chosenTileFromToolbox = tempCheck;
+				}
 			}
 		}
 	}
 
-	if(toolboxClickPosition.x > 700)
-	for(unsigned int rectangleCheckIterator = 1; rectangleCheckIterator <= toolboxVerticalRectangles.size(); rectangleCheckIterator++)
+	else if (toolboxMenuState == OBJECTS)
 	{
-		if(toolboxVerticalRectangles[rectangleCheckIterator].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
+		for(unsigned int rectangleCheckIterator = 1; rectangleCheckIterator <= toolboxRectangles.size(); rectangleCheckIterator++)
 		{
-			unsigned int tempCheck = rectangleCheckIterator + (verticalToolboxFirstFieldNumber - 1);
-			
-			if(tempCheck >= 1 && tempCheck < objectSprites.size())
+			if(toolboxRectangles[rectangleCheckIterator].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
 			{
-				chosenObjectFromToolbox = tempCheck;	
+				unsigned int tempCheck = rectangleCheckIterator + (toolboxFirstFieldNumber - 1);
+				if(tempCheck >= 1 && tempCheck < tileSprites.size())
+				{
+					chosenObjectFromToolbox = tempCheck;
+				}
 			}
 		}
 	}
+
+	if(toolboxMenuState != SUBMENU_CHOICE)
+	{
+		if(submenuReturnButtonRectangle.Contains(toolboxClickPosition.x, toolboxClickPosition.y))
+		{
+			toolboxMenuState = SUBMENU_CHOICE;
+		}
+	}
+
 }
 
 
@@ -528,12 +627,13 @@ MapCreator::~MapCreator()
 	for(unsigned int i = 0; i < Size; ++i)
     delete mapObjects[i];
 	delete mapObjects;
+
+	for(int i = 0; i < 6; i++)
+	{
+		delete submenuButtonSprite[i];
 	}
 
-	 delete blackHorizontalImage;
-	 delete blackHorizontalSprite;
-	 delete blackVerticalImage;
-	 delete blackVerticalSprite;
+	}
 
 }
 

@@ -15,15 +15,16 @@
 #define MAP_CREATOR_H
 
 enum CreatorStates {SET_MAP_SIZE, MAIN};
+enum ToolboxMenuState {SUBMENU_CHOICE, GROUNDS, OBJECTS, ENEMIES};
 
 class MapCreator{
 
 private:
 	unsigned int Size;
 	unsigned int toolboxFirstFieldNumber;
-	unsigned int verticalToolboxFirstFieldNumber;
 	bool lControlPressed;
 
+	ToolboxMenuState toolboxMenuState;
 	int hotKeys[10];
 	int chosenTileFromToolbox;
 	int chosenObjectFromToolbox;
@@ -39,19 +40,22 @@ private:
 	std::map <int, sf::Image> objectGraphics;
 	std::vector <sf::Sprite> objectSprites;
 
+	int whichSubmenuButtonAnimate;
+	sf::Image submenuButtonImage [6];
+	sf::Sprite *submenuButtonSprite [6];
+	//rectangles for main toolbox-menu
+	sf::IntRect submenuButtonRectangles [4];
+	//rectangle for return-button in submenus
+	sf::IntRect submenuReturnButtonRectangle;
+
 	 Tile ** createdMap;
 	 MapObject ** mapObjects;
 
-	 sf::Image *blackHorizontalImage;
-	 sf::Sprite *blackHorizontalSprite;
-	 sf::Image *blackVerticalImage;
-	 sf::Sprite *blackVerticalSprite;
+	 sf::Shape blackBackgroundShape;
 
-	 sf::Vector2f sampleSpriteSize;
 	 sf::Vector2i noOfTilesVisible;
 
 	std::map <int, sf::IntRect> toolboxRectangles;
-	std::map <int, sf::IntRect> toolboxVerticalRectangles;
 
 	const sf::Input &steering;
 
@@ -59,7 +63,9 @@ public:
 	MapCreator(const sf::Input &_steering);
 	void Run();
 	bool LoadTileGraphics();
+
 	void Display(sf::RenderWindow *window);
+
 	void CreateSprites();
 	void toolboxManagement(sf::Vector2i toolboxClickPosition);
 	void changingSpriteInMap(sf::Vector2i mapClickPosition);

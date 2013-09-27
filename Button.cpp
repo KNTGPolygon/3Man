@@ -1,5 +1,6 @@
 #include "Button.h"
 #include "GameEngine.h"
+#include "Sfx/SoundPlayer.h"
 
 Button::Button(const sf::Input &_steering,sf::Vector2f _position,sf::Vector2f _size,sf::Color _color,std::string _text)
 : color(_color), position(_position), size(_size), steering(_steering), pressed(false)
@@ -45,6 +46,8 @@ void Button::GetEvent()
 		}
 
 	}
+	if ( singlePressed )
+		SoundPlayer::getInstance()->Play(Snd::MenuSelect);
 }
 void Button::Display(sf::RenderWindow *window)
 {

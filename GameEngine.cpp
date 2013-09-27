@@ -1,4 +1,5 @@
 #include "GameEngine.h"
+#include "Sfx/SoundPlayer.h"
 
 GameEngine::GameEngine(void):steering(window.GetInput())
 {	
@@ -30,6 +31,8 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 		
 	collisionQuadtree = new QuadtreeNode(0,0,640,640);
 		
+	sounds = true;
+
 	if (!soundtrack.OpenFromFile("Data/Music/Aurora_down.ogg"))
 	{
     // Error...
@@ -38,7 +41,8 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	soundtrack.SetVolume( 75.f );
 	soundtrack.SetLoop( true );
 	soundtrack.Play();
-	//soundtrack.ge
+
+	SoundPlayer::getInstance();
 }
 
 GameEngine::~GameEngine(void)
@@ -275,6 +279,16 @@ sf::RenderWindow& GameEngine::getWindow()
 sf::View& GameEngine::getView()
 {
 	return View;
+}
+
+bool GameEngine::Sounds()
+{
+	return sounds;
+}
+
+void GameEngine::SetSounds(bool state)
+{
+	sounds = state;
 }
 
 void GameEngine::SetDefaultView()

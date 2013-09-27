@@ -2,6 +2,7 @@
 #ifndef HERO_H
 #define HERO_H
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Drawable.h"
 #include "Weapon.h"
 #include "Animate.h"
@@ -46,7 +47,7 @@ private:
 	SpriteExt Me;
 
 	sf::Image MyTexture;			
-	sf::String strMyPosition;	
+	sf::String strMyPosition;
 
 const sf::Input &steering;//Interakcja z otoczeniem
 

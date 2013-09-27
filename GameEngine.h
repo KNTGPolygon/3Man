@@ -48,6 +48,8 @@ private:
 	float lastTime;
 	float currentTime;
 
+	bool sounds;
+
 	sf::Event event;
 	sf::RenderWindow window; 
 	sf::View View;
@@ -96,6 +98,8 @@ public:
 	sf::Event& getEvent();
 	Cursor& getCursor();
 	sf::Music& getMusic();
+	void SetSounds(bool);
+	bool Sounds();
 	void SetDefaultView(); // menusy oraz interfejs
 	void SetGameView(); // mapa i elementy gry
 

@@ -33,10 +33,10 @@ void OptionsMenuState::Init()
 				   sf::Vector2f((float)(50),(float)(50)) );
 	
 	
-	musicTextBox->SetText( "Tak" );
+	musicTextBox->SetText( GameEngine::getInstance()->getMusic().GetStatus() == sf::Sound::Playing ? "Tak" : "Nie" );
 	musicTextBox->SetTextPosition( sf::Vector2f( musicTextBox->GetTextBoxPosition().x + 10 ,musicTextBox->GetTextBoxPosition().y + 15 ) );
 
-	soundTextBox->SetText( "Nie" );
+	soundTextBox->SetText( GameEngine::getInstance()->Sounds() ? "Tak" : "Nie" );
 	soundTextBox->SetTextPosition( sf::Vector2f( soundTextBox->GetTextBoxPosition().x + 10 ,soundTextBox->GetTextBoxPosition().y + 15 ) );
 	init = 1;
 }
@@ -86,9 +86,14 @@ void OptionsMenuState::EventHandling()
 		std::string temp = soundTextBox->GetText().GetText();	
 		if( temp == "Nie" )
 		{
-			soundTextBox->SetText("NIE!");
+			GameEngine::getInstance()->SetSounds(true);
+			soundTextBox->SetText("Tak");
 		}
-		else soundTextBox->SetText("Nie");
+		else
+		{
+			GameEngine::getInstance()->SetSounds(false);
+			soundTextBox->SetText("Nie");
+		}
 	}
 }
 

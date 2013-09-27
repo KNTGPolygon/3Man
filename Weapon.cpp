@@ -70,7 +70,7 @@ void Weapon::Logic(bool FiringLocked, sf::Vector2i target)
 		}
 	
 	}
-		if( FiringLocked && fired == false)
+	if( FiringLocked && fired == false)
 	{
 		if( repetition.GetElapsedTime() > repeatRate )
 		{

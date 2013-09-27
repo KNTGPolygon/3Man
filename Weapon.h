@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Drawable.h"
 #include "Missle.h"
 #ifndef WEAPON_H
@@ -38,7 +39,6 @@ private:
 	sf::Vector2f fireFromPosition;
 	sf::Clock repetition;
 	Missle **missle;
-
 	
 public:
 	bool fired;

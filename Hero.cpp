@@ -121,8 +121,14 @@ void Hero::GetEvent()
 			ANIMATION_TYPE = DOWN;
 		}
 
-		Me.Move( Util::lengthdir_x( currentVelocity, direction), Util::lengthdir_y(currentVelocity, direction) );
+		float xstep = Util::lengthdir_x( currentVelocity, direction );
+		float ystep = Util::lengthdir_y( currentVelocity, direction );
+
+		Me.Move( xstep, ystep );
 		
+		if ( GameEngine::getInstance()->DetectCollision(&Me, "wall") )
+			Me.Move( -xstep, -ystep );
+
 		if( steering.IsKeyDown(sf::Key::Num1) )weaponType=0;
 		if( steering.IsKeyDown(sf::Key::Num2) )weaponType=1;
 		if( steering.IsKeyDown(sf::Key::Num3) )weaponType=2;
@@ -137,7 +143,6 @@ void Hero::GetEvent()
 						  sf::Vector2i( (int)(GameEngine::getInstance()->GetMouseCoords().x), (int)(GameEngine::getInstance()->GetMouseCoords().y) ));
 		weapon[i]->active = false;
 		}
-
 }
 
 void Hero::EventHandling()

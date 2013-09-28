@@ -1,5 +1,6 @@
 #include "Missle.h"
 #include "GameEngine.h"
+#include "Sfx/SoundPlayer.h"
 
 Missle::Missle(std::string fileName, std::string _missleColider, float Range ,float Velocity )
 :range(Range), velocity(Velocity),missleColider(_missleColider)
@@ -14,7 +15,7 @@ Missle::Missle(std::string fileName, std::string _missleColider, float Range ,fl
 	mySprite.setType("missile");
 
 	angle = 0;
-	inMove   = false;	
+	inMove   = false;
 	colisionWithiObiect = false;
 }
 
@@ -33,14 +34,16 @@ void Missle::Logic()
 	currentPosition = mySprite.GetPosition();
 	currentDistance = sqrt((startPosition.x-currentPosition.x)*(startPosition.x-currentPosition.x)
 						 + (startPosition.y-currentPosition.y)*(startPosition.y-currentPosition.y));
-	
+
 	//GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
 
-	if( GameEngine::getInstance()->DetectCollision(&mySprite,missleColider) ) 
+	if( GameEngine::getInstance()->DetectCollision(&mySprite,missleColider) )
 	{
 		colisionWithiObiect = true;
+		if ( missleColider == "enemy" )
+            SoundPlayer::getInstance()->Play(Snd::EnemyDeath);
 	}
-		
+
 	if(currentDistance < range)
 	{
 		if(targetPosition.x > 0)
@@ -49,7 +52,7 @@ void Missle::Logic()
 		angle = (float)( 90 + asin ( ( ( (+targetPosition.y)/distanceFromTarget))) * (180.0 / PI) );
 		mySprite.SetRotation(angle );
 
-		mySprite.Move(velocity * (targetPosition.x)/distanceFromTarget, velocity * (targetPosition.y  ) / distanceFromTarget);		
+		mySprite.Move(velocity * (targetPosition.x)/distanceFromTarget, velocity * (targetPosition.y  ) / distanceFromTarget);
 		if ( !colisionWithiObiect ) inMove = true;
 
 	}
@@ -88,7 +91,7 @@ void Missle::Display(sf::RenderWindow *window)
 													   sf::Vector2f(mySprite.GetPosition().x-mySprite.GetCenter().x,
 																	mySprite.GetPosition().y-mySprite.GetCenter().y));
 	}
-	
+
 }
 void Missle::SetMissleColider( std::string _missleColider )
 {

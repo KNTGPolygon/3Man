@@ -71,7 +71,7 @@ public:
 	void changingSpriteInMap(sf::Vector2i mapClickPosition);
 	void changingObjectInMap(sf::Vector2i mapClickPosition);
 
-	void initializeMapArrays (int Size);
+	void initializeMapArrays (unsigned int Size);
 
 	void GetSteeringEvent();
 	void GetEvent(sf::Event&);

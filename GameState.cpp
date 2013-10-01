@@ -27,7 +27,7 @@ void GameState::Init()
 														   GameEngine::getInstance()->GetGridSize().y );
 
 	float t = 32.0f;
-	DrawableEntityList.push_back(new Wall(3*t, 3*t));
+	/*DrawableEntityList.push_back(new Wall(3*t, 3*t));
 	DrawableEntityList.push_back(new Wall(4*t, 3*t));
 	DrawableEntityList.push_back(new Wall(5*t, 3*t));
 	DrawableEntityList.push_back(new Wall(6*t, 3*t));
@@ -75,7 +75,7 @@ void GameState::Init()
 	DrawableEntityList.push_back(new Wall(14*t, 12*t));
 	DrawableEntityList.push_back(new Wall(14*t, 13*t));
 	DrawableEntityList.push_back(new Wall(14*t, 14*t));
-	DrawableEntityList.push_back(new Wall(14*t, 15*t));
+	DrawableEntityList.push_back(new Wall(14*t, 15*t));*/
 	
 	DrawableEntityList.push_back(hero);
 	DrawableEntityList.push_back(pirate);
@@ -94,7 +94,7 @@ void GameState::UpdateSystem()
 
 	if ( GameEngine::getInstance()->getSteering().IsKeyDown( sf::Key::J ) )
 	{
-		pirate->SetAIState( Enemy::State::FOLLOW );		
+		pirate->SetAIState( Enemy::FOLLOW );
 	}	
 
 	GameEngine::getInstance()->ClearCollisionQuadtree();

@@ -232,6 +232,7 @@ void PathFinder::Initialization(std::vector<sf::Vector3i> objectList, int _gridX
 int PathFinder::FindPath(int pathfinderID, sf::Vector2i _start, sf::Vector2i _target)
 {
 	int thisPointID;
+	int counter;
 	sf::Vector2i thisPoint;
 
 	start  = sf::Vector2i( _start.x / gridCellSize   , _start.y / gridCellSize ); //stare
@@ -263,7 +264,7 @@ int PathFinder::FindPath(int pathfinderID, sf::Vector2i _start, sf::Vector2i _ta
 	cell[ start.x ][ start.y ].FCost = 0;
 	cell[ start.x ][ start.y ].parent = sf::Vector2i( 0 , 0 );
 
-	int counter = 0;
+	counter = 0;
 	do{
 		if( openList->size != 0 )
 		{

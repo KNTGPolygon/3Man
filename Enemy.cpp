@@ -151,7 +151,7 @@ void Enemy::AI()
 				pathSearched = true;			
 				
 			}
-			if( pathStatus == PathFinder::PATH_STATE::FOUND )
+			if( pathStatus == PathFinder::FOUND )
 			{
 				if( iterator != pathfinderPath.size() )
 				{

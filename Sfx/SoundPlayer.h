@@ -20,8 +20,8 @@ class SoundPlayer
 {
 private:
 	static SoundPlayer* INSTANCE;
-	std::string paths[6];
-	sf::Sound sounds[6];
+	std::string paths[7];
+	sf::Sound sounds[7];
 
 public:
 	SoundPlayer();

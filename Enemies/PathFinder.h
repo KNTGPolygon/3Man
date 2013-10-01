@@ -38,7 +38,7 @@ public:
 class PathFinder
 {
 public:
-	static enum PATH_STATE{NOTFINISHED = 0, NOTSTARTED = 0, UNWALKABLE = 0, WALKABLE = 1, FOUND = 1, NONEXISTENT = 2};
+	enum PATH_STATE{NOTFINISHED = 0, NOTSTARTED = 0, UNWALKABLE = 0, WALKABLE = 1, FOUND = 1, NONEXISTENT = 2};
 	bool loaded;
 private:
 	int gridXSize;

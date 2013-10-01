@@ -38,7 +38,7 @@ MapCreator::MapCreator(const sf::Input &_steering)
 
 }
 
-void MapCreator::initializeMapArrays (int Size)
+void MapCreator::initializeMapArrays (unsigned int Size)
 {
 	//defining size of map
 	this->Size = Size;
@@ -114,13 +114,13 @@ void MapCreator::Display(sf::RenderWindow *window)
 			if(toolboxMenuState == SUBMENU_CHOICE)
 			{
 				//counting camera's position according to default,beginning point to draw submenu buttons in the right place
-				int deltaCamPosX = cameraPosition.x - 350;
-				int deltaCamPosY = cameraPosition.y - 200;
+				int deltaCamPosX = (int)(cameraPosition.x - 350);
+				int deltaCamPosY = (int)(cameraPosition.y - 200);
 
-				submenuButtonSprite[0]->SetPosition(-20 + deltaCamPosX,-80 + deltaCamPosY);			
-				submenuButtonSprite[1]->SetPosition(100 + deltaCamPosX,-80 + deltaCamPosY);
-				submenuButtonSprite[2]->SetPosition(220 + deltaCamPosX,-80 + deltaCamPosY);
-				submenuButtonSprite[3]->SetPosition(340 + deltaCamPosX,-80 + deltaCamPosY);
+				submenuButtonSprite[0]->SetPosition((float)(-20 + deltaCamPosX),(float)(-80 + deltaCamPosY));			
+				submenuButtonSprite[1]->SetPosition((float)(100 + deltaCamPosX),(float)(-80 + deltaCamPosY));
+				submenuButtonSprite[2]->SetPosition((float)(220 + deltaCamPosX),(float)(-80 + deltaCamPosY));
+				submenuButtonSprite[3]->SetPosition((float)(340 + deltaCamPosX),(float)(-80 + deltaCamPosY));
 				window->Draw(*submenuButtonSprite[0]);
 				window->Draw(*submenuButtonSprite[1]);
 				window->Draw(*submenuButtonSprite[2]);

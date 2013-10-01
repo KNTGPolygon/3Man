@@ -40,7 +40,7 @@ Maps::Maps(const std::string& filename)
 
 	//creating dynamic two-dimensional array (tiles created with default constructor, each with type = -1)
 	map_data = new Tile*[Size];
-	for(int i = 0; i < Size; ++i)
+	for(unsigned int i = 0; i < Size; ++i)
     map_data[i] = new Tile[Size];
 
 	//creating temporary array for map objects (for storing loaded data)
@@ -141,7 +141,6 @@ Maps::Maps(const std::string& filename)
 					
 				 std::istringstream iss(stringRepresentingFileLine);
 				 std::string sub;
-				 int passageRight;
 
 				 looping = true;
 				 int tileType;
@@ -189,7 +188,7 @@ Maps::Maps(const std::string& filename)
 				 looping = true;
 						do
 						{
-							if(colNumber >= 2*Size)
+							if((unsigned int)colNumber >= 2*Size)
 							{
 								break;
 							}
@@ -218,15 +217,15 @@ Maps::Maps(const std::string& filename)
 			   counter = 1;
 			   sf::Vector2i position;
 			   
-			   for(int i = 0; i < 2*Size ; i++)
+			   for(unsigned int i = 0; i < 2*Size ; i++)
 			   {
-				   for(int j = 0; j < 2 * Size; j++)
+				   for(unsigned int j = 0; j < 2 * Size; j++)
 				   {
 					   if(tempConstructorObjects[i][j].getType() > 0)
 					   {
 						   position = tempConstructorObjects[i][j].getPosition();
-						   int addressNumber = tempConstructorObjects[i][j].getType();
-						  reducedTempConstructorObjects[counter] = new GameObject(position.x, position.y, addressNumber,tempAddressesArray[addressNumber]);
+						   unsigned int addressNumber = tempConstructorObjects[i][j].getType();
+						  reducedTempConstructorObjects[counter] = new GameObject((float)position.x, (float)position.y, addressNumber,tempAddressesArray[addressNumber]);
 						  counter++;
 					   }
 
@@ -236,7 +235,7 @@ Maps::Maps(const std::string& filename)
 
 			   std::cout << " Created tempConstructorObjects! " << std::endl;
 
-			    for(int i = 0; i < 2*Size ; i++)
+			    for(unsigned int i = 0; i < 2*Size ; i++)
 			   {
 					delete [] tempConstructorObjects[i];
 			   }
@@ -246,14 +245,14 @@ Maps::Maps(const std::string& filename)
 				mapGameObjects = new GameObject*[reducedTempConstructorObjects.size()];
 
 				sf::Vector2f pos;
-				for(int i = 0; i < reducedTempConstructorObjects.size(); i++)
+				for(unsigned int i = 0; i < reducedTempConstructorObjects.size(); i++)
 				{
 					pos = reducedTempConstructorObjects[i+1]->GetPosition();
 					int type = reducedTempConstructorObjects[i+1]->getType();
 					mapGameObjects[i] = new GameObject(pos.x, pos.y, type, tempAddressesArray[type]);//reducedTempConstructorObjects[i+1];
 				}
 
-				for(int i = 0; i < reducedTempConstructorObjects.size(); i++)
+				for(unsigned int i = 0; i < reducedTempConstructorObjects.size(); i++)
 				{
 					delete reducedTempConstructorObjects[i+1];
 				}
@@ -281,8 +280,8 @@ void Maps::showMap(sf::RenderWindow *window, sf::Vector2f heroPosition)
 
 	leftTopFieldVisible.x = (leftTopFieldVisible.x >= 0)? leftTopFieldVisible.x : 0;
 	leftTopFieldVisible.y = (leftTopFieldVisible.y >= 0)? leftTopFieldVisible.y : 0;
-	rightBotFieldVisible.x = (rightBotFieldVisible.x <= Size)? rightBotFieldVisible.x : Size;
-	rightBotFieldVisible.y = (rightBotFieldVisible.y <= Size)? rightBotFieldVisible.y : Size;
+	rightBotFieldVisible.x = (rightBotFieldVisible.x <= (int)Size)? rightBotFieldVisible.x : Size;
+	rightBotFieldVisible.y = (rightBotFieldVisible.y <= (int)Size)? rightBotFieldVisible.y : Size;
 
 	for(unsigned int row = (unsigned int)leftTopFieldVisible.y; row < (unsigned int)rightBotFieldVisible.y; row ++)
 	{
@@ -364,7 +363,7 @@ void Maps::createTiles()
 
 Maps::~Maps()
 {
-	for(int i = 0; i < Size; i++)
+	for(unsigned int i = 0; i < Size; i++)
 	{
 		delete []map_data [i];
 	}

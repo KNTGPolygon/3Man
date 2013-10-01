@@ -1,5 +1,7 @@
 #include "Maps.h"
+#include "GameEngine.h"
 #include <fstream>
+#include <vector>
 
 Maps::Maps(const std::string& filename)
 {
@@ -216,6 +218,8 @@ Maps::Maps(const std::string& filename)
 			   std::map<const int, GameObject*> reducedTempConstructorObjects;
 			   counter = 1;
 			   sf::Vector2i position;
+			   std::vector< sf::Vector3i > objects;
+			   sf::Vector3i tempVector;
 			   
 			   for(unsigned int i = 0; i < 2*Size ; i++)
 			   {
@@ -223,6 +227,10 @@ Maps::Maps(const std::string& filename)
 				   {
 					   if(tempConstructorObjects[i][j].getType() > 0)
 					   {
+						 tempVector.x = i;
+						 tempVector.y = j;
+						 tempVector.z = tempConstructorObjects[i][j].getType();
+						 objects.push_back( tempVector );
 						   position = tempConstructorObjects[i][j].getPosition();
 						   unsigned int addressNumber = tempConstructorObjects[i][j].getType();
 						  reducedTempConstructorObjects[counter] = new GameObject((float)position.x, (float)position.y, addressNumber,tempAddressesArray[addressNumber]);
@@ -232,7 +240,7 @@ Maps::Maps(const std::string& filename)
 					   
 				   }
 			   }
-
+			   GameEngine::getInstance()->SetMapObjectsGrid( objects, 2*Size );
 			   std::cout << " Created tempConstructorObjects! " << std::endl;
 
 			    for(unsigned int i = 0; i < 2*Size ; i++)

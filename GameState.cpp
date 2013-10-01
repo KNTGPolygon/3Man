@@ -9,7 +9,7 @@ GameState::GameState():State()
 void GameState::Init()
 {
 	GameEngine::getInstance()->getCursor().setType(CROSSHAIR);
-
+	GameEngine::getInstance()->pathfinder->SetNumberOfMobs( 0 );
 	DrawableEntityList.clear();
 
 	hero = new Hero(GameEngine::getInstance()->getSteering(),2);
@@ -20,15 +20,11 @@ void GameState::Init()
 	arrayOfObjects = map->getMapGameObjects();
 	mapPixelatedSize = map->getSize() * 64;
 
-	pirate = new Enemy(sf::Vector2i(400,300));
-	seven  = new Number(sf::Vector2i(300,300),7);
-	numbers = new Number*[NUM_OF_ENEMIES];
-
-	numbers[0] = new Number(sf::Vector2i(330,300),-1);
-	numbers[1] = new Number(sf::Vector2i(300,310),-2);
-	numbers[2] = new Number(sf::Vector2i(350,320),-3);
-	numbers[3] = new Number(sf::Vector2i(310,330),-4);
-	numbers[4] = new Number(sf::Vector2i(250,340),-5);
+	pirate = new Enemy(sf::Vector2i(100,100));
+	
+	GameEngine::getInstance()->pathfinder->Initialization( GameEngine::getInstance()->GetObjects(),
+														   GameEngine::getInstance()->GetGridSize().x,
+														   GameEngine::getInstance()->GetGridSize().y );
 
 	float t = 32.0f;
 	DrawableEntityList.push_back(new Wall(3*t, 3*t));
@@ -80,24 +76,31 @@ void GameState::Init()
 	DrawableEntityList.push_back(new Wall(14*t, 13*t));
 	DrawableEntityList.push_back(new Wall(14*t, 14*t));
 	DrawableEntityList.push_back(new Wall(14*t, 15*t));
-
-
+	
 	DrawableEntityList.push_back(hero);
 	DrawableEntityList.push_back(pirate);
-	DrawableEntityList.push_back(seven);
 	for( int i = 0; i < numberOfObjects ; i++ )
 		DrawableEntityList.push_back( arrayOfObjects[i] );
-	for( int i = 0; i < NUM_OF_ENEMIES ; i++)
-		DrawableEntityList.push_back(numbers[i]);
 	std::cout << "DEL size: " << DrawableEntityList.size() << std::endl;
 
+	counter = 0;
+	lastPath[0] = sf::Vector2i(64,100);
+	iterator = 0;
 }
 
 void GameState::UpdateSystem()
 {
+
+
+	if ( GameEngine::getInstance()->getSteering().IsKeyDown( sf::Key::J ) )
+	{
+		pirate->SetAIState( Enemy::State::FOLLOW );		
+	}	
+
 	GameEngine::getInstance()->ClearCollisionQuadtree();
 	for ( unsigned int i = 0; i < DrawableEntityList.size(); i++ )
 		DrawableEntityList[i]->UpdateSystem();
+	counter++;
 }
 
 void GameState::Display()
@@ -138,6 +141,8 @@ void GameState::Cleanup()
 {
 	for ( unsigned int i = 0; i < DrawableEntityList.size(); i++ )
 		delete DrawableEntityList[i];
-
+	//delete GameEngine::getInstance()->pathfinder;
+	//if( GameEngine::getInstance()->pathfinder != NULL )
+	//	GameEngine::getInstance()->pathfinder = NULL;
 	init = 0;
 }

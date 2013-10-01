@@ -16,7 +16,7 @@
 #include "EditorState.h"
 #include "SpriteExt.h"
 #include "Collision/BoxMask.h"
-
+#include "Enemies/PathFinder.h"
 
 #ifndef GAME_ENGINE_H
 #define GAME_ENGINE_H
@@ -39,16 +39,17 @@ public:
 	static const int SCREEN_WIDTH  = 800;
 	static const int SCREEN_HEIGHT = 600;
 	bool devmode;
+	PathFinder *pathfinder;
 private:
 
+	bool sounds;
 	bool windowIsOpen;
 	bool mainMenu;
 	bool fpsFlag;
 	
+	int **mapObjectsGrid;
 	float lastTime;
 	float currentTime;
-
-	bool sounds;
 
 	sf::Event event;
 	sf::RenderWindow window; 
@@ -70,9 +71,13 @@ private:
 	const sf::Input & steering ;
 	
 	sf::String strFps;
-
+	
+	std::vector<sf::Vector3i> objectsList;
+	sf::Vector2i objectGridSize;
 	sf::SoundBuffer soundBuffer;
 	sf::Music soundtrack;
+
+
 
 	void Display();
 
@@ -100,6 +105,7 @@ public:
 	sf::Music& getMusic();
 	void SetSounds(bool);
 	bool Sounds();
+
 	void SetDefaultView(); // menusy oraz interfejs
 	void SetGameView(); // mapa i elementy gry
 
@@ -111,8 +117,11 @@ public:
 	void DetectCollision(SpriteExt*, std::vector<SpriteExt*>&, std::string);
 	void ClearCollisionQuadtree();
 	void DisplayCollisionQuadtree();
-
+	void SetMapObjectsGrid( std::vector<sf::Vector3i> objects , int gridSize );
+	int GetPointWeight( sf::Vector3i point);
 	sf::Vector2f GetMouseCoords();
+	std::vector<sf::Vector3i> GetObjects();
+	sf::Vector2i GetGridSize();
 
 private:
 	static GameEngine * engine;

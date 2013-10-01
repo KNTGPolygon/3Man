@@ -12,26 +12,8 @@
 
 class Enemy : public Drawable
 {
-protected:
-	bool inMove;
-	bool targetReached;
-	bool gotHit;
-	bool attacking;
-
-	int pathNumber;
-	int waitTime;
-	int waitTimeCounter;
-
-	float velocity;
-	float distanceFromTarget;
-
-	float pullRange;
-	float escapeRange;
-	float distanceFromHero;
-
-	std::vector<sf::Vector2i> *path;
-
-	enum State{
+public:
+		enum State{
 	UP,
 	DOWN,
 	RIGHT,
@@ -42,7 +24,26 @@ protected:
 	PATHWALK,
 	RANDOM_PATHWALK
 	};
+		bool pathSearched;
+protected:
 	
+	bool gotHit;
+	bool attacking;
+
+	int pathNumber;
+	int waitTime;
+	int waitTimeCounter;
+	int iterator;
+
+	float velocity;
+	float distanceFromTarget;
+
+	float pullRange;
+	float escapeRange;
+	float distanceFromHero;
+
+	std::vector<sf::Vector2i> *path;
+	std::vector<sf::Vector2i> pathfinderPath;
 	State pathMode;
 	State myAI;
 
@@ -55,11 +56,23 @@ protected:
 	sf::Vector2i heroPosition;
 	sf::Vector2i MovementVector; //obszar generowania randomowej sciezki
 	sf::Vector2f shiftVector;
+	sf::Vector2i oldHeroPosition;
 	void RandomPathWalk();
 	
 	Weapon *myWeapon;
 	
 public:
+	//pathFinding variables
+	int myID;
+	int pathStatus;
+
+	bool pathFinderPointReached;
+	sf::Vector2i pathFinderPoint;
+
+	bool targetReached;
+	bool inMove;
+
+
 
 	void Display(sf::RenderWindow *window);
 	void UpdateSystem();
@@ -77,4 +90,8 @@ public:
 	~Enemy(void);
 
 	void SetHeroPosition( sf::Vector2f HeroPosition );
+	void SetAIState( State _myAI );
+	void SetPosition( sf::Vector2i newPostition );
+	sf::Vector2i GetPosition();
+	State GetAIState();
 };

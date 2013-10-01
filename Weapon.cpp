@@ -70,7 +70,7 @@ void Weapon::Logic(bool FiringLocked, sf::Vector2i target)
 		}
 	
 	}
-	if( FiringLocked && fired == false)
+		if( FiringLocked && fired == false)
 	{
 		if( repetition.GetElapsedTime() > repeatRate )
 		{
@@ -177,8 +177,8 @@ int Weapon::SetWeapon(WeaponType Weapon)
 		bulletFireLimit = 5;
 		error = 10.0;
 	default:
-		return 0;
+		return 1;
 		break;
 	}
-	return 1;
+	return 0;
 }

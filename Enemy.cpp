@@ -15,10 +15,11 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
 	mySprite.setType( "enemy" );
 	startPosition = Position;
+	pathFinderPoint = Position;
 	target = Position;
 	MovementVector.x = MovementVector.y = 150;
 
-	
+	pathSearched = false;
 	if( RandomPathMode )
 	{
 	pathMode = RANDOM_PATHWALK;
@@ -29,6 +30,9 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	pathMode = PATHWALK;
 	myAI = PATHWALK;
 	}
+
+	myAI = STAY;
+
 	inMove		  = false;
 	targetReached = false;
 	attacking	  = false;
@@ -48,6 +52,9 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 
 	myWeapon = new Weapon(YellowBall);
 	myWeapon->PutScreenSize(GameEngine::SCREEN_WIDTH,GameEngine::SCREEN_HEIGHT );
+
+	pathFinderPointReached = true;
+	myID = GameEngine::getInstance()->pathfinder->AddNewMobID();
 }
 
 Enemy::~Enemy(void)
@@ -57,6 +64,7 @@ Enemy::~Enemy(void)
 void Enemy::UpdateCollision()
 {
  	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
+	
 	myWeapon->UpdateCollision();
 }
 
@@ -74,9 +82,7 @@ void Enemy::EventHandling()
 void Enemy::Logic(sf::Vector2i Target)
 {
 	if(GoToPosition( Target ) ){
-		if ( GameEngine::getInstance()->DetectCollision( &mySprite, "wall" ) )
-			mySprite.Move(-velocity*shiftVector);
-		else
+
 		mySprite.Move(velocity*shiftVector);
 
 		myPosition.x =(int) mySprite.GetPosition().x;
@@ -98,8 +104,7 @@ void Enemy::AI()
 		if( distanceFromHero < pullRange )
 		{
 			myAI = FOLLOW;
-			std::cout<<"Following...\n"
-				;
+			std::cout<<"Following...\n"	;
 			break;
 		}
 
@@ -135,27 +140,86 @@ void Enemy::AI()
 		// stop chodzenia sciezka
 		break;
 	case FOLLOW:	
-			Logic( heroPosition );
+			if( !pathSearched )
+			{
+				std::cout<<"mob"<<myID<<": Searching for path...\n";
+				pathfinderPath.resize(0);
+				iterator = 0;
+				oldHeroPosition = sf::Vector2i( (int)Hero::myPosition.x,(int)Hero::myPosition.y );
+				pathStatus = GameEngine::getInstance()->pathfinder->FindPath( myID, myPosition , oldHeroPosition );
+				pathfinderPath = GameEngine::getInstance()->pathfinder->GetPath( myID );
+				pathSearched = true;			
+				
+			}
+			if( pathStatus == PathFinder::PATH_STATE::FOUND )
+			{
+				if( iterator != pathfinderPath.size() )
+				{
+					if( targetReached == true )
+					{
+
+						pathFinderPoint = pathfinderPath[iterator];
+						pathFinderPoint.x = pathFinderPoint.x *32 + 16;
+						pathFinderPoint.y = pathFinderPoint.y *32 + 16;
+						iterator++;
+						std::cout<<"mob"<<myID<<": heading to : x = "<<pathFinderPoint.x /32<<" y = " << pathFinderPoint.y/32<<std::endl;
+						if( iterator % 5 == 0 )
+						{
+
+							if( (  oldHeroPosition.x/32 != (int)Hero::myPosition.x /32 ) && 
+								( oldHeroPosition.y/32 != (int)Hero::myPosition.y /32 )  )
+							{
+								pathSearched = false;
+							}
+						}
+					}
+					
+				}
+				else
+				{
+					std::cout<<"mob"<<myID<<": target reached!"<<std::endl;
+					myAI = STAY;
+					pathSearched = false;
+				}
+				Logic( pathFinderPoint );
+			} else
+			{
+				myAI = STAY;
+				pathSearched = false;
+				std::cout<<"No path found\n";
+			}
+			//Logic( pathFinderPoint );
+			//pathFinderPoint
+			
 			myAI = COMBAT;
-			if( distanceFromHero > escapeRange )
+			
+			/*if( distanceFromHero > escapeRange )
 			{
 			myAI = pathMode;
+			pathSearched = false;
 			std::cout<<"Returning to path...\n";
-			}
+			}*/
 
 		break;
+
 	case COMBAT:
+		//Logic( pathFinderPoint );
+		pathFinderPointReached = false;
 		attacking = true;
 		myWeapon->active = true;
 		myWeapon->SetFiringPosition( sf::Vector2f( (float)myPosition.x, (float)myPosition.y) );
+		inMove = false;
 		myAI = FOLLOW;
 		break;
+
 	case RANDOM_PATHWALK: //   ---  RANDOM_PATHWALK ---
+
 		myWeapon->active = false;
 		if( distanceFromHero < pullRange )
 		{
 			myAI = FOLLOW;
-			std::cout<<"Following...\n";
+			targetReached = true;
+			//std::cout<<"Following...\n";
 			break;
 		}
 
@@ -186,7 +250,14 @@ void Enemy::AI()
 
 	myWeapon->Logic(attacking,heroPosition);
 }
-
+Enemy::State Enemy::GetAIState()
+{
+	return myAI;
+}
+void Enemy::SetAIState( State _myAI )
+{
+	myAI = _myAI;
+}
 int Enemy::GoToPosition(sf::Vector2i Destination)
 {
 	distanceFromTarget = sqrt( pow((float)(myPosition.x - Destination.x),2) +  pow((float)(myPosition.y - Destination.y),2) );
@@ -208,12 +279,7 @@ void Enemy::GenerateRandomPath()
 	target.x = rand()%( 2 * MovementVector.x ) + ( startPosition.x - MovementVector.x );
 	target.y = rand()%( 2 * MovementVector.y ) + ( startPosition.y - MovementVector.y );
 }
-void Enemy::SetStartPosition(sf::Vector2f Position)
-{
-	mySprite.SetPosition( Position );
-	myPosition.x = (int) Position.x;
-	myPosition.y = (int) Position.y;
-}
+
 void Enemy::Display(sf::RenderWindow *window)
 {
 	window->Draw( mySprite );
@@ -230,6 +296,20 @@ void Enemy::Display(sf::RenderWindow *window)
 														 sf::Vector2f(mySprite.GetPosition().x-mySprite.GetCenter().x,
 																	  mySprite.GetPosition().y-mySprite.GetCenter().y));
 	}
+}
+void Enemy::SetStartPosition(sf::Vector2f Position)
+{
+	mySprite.SetPosition( Position );
+	myPosition.x = (int) Position.x;
+	myPosition.y = (int) Position.y;
+}
+void Enemy::SetPosition( sf::Vector2i newPosition )
+{
+	mySprite.SetPosition( (float)newPosition.x,(float)newPosition.y );
+}
+sf::Vector2i Enemy::GetPosition()
+{
+	return sf::Vector2i( (int)myPosition.x , (int)myPosition.y );
 }
 void Enemy::SetPathPoints(std::vector<sf::Vector2i> *Path)
 {

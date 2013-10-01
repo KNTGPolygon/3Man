@@ -5,6 +5,7 @@
 #include "Enemy.h"
 #include "Number.h"
 #include "Collision/QuadtreeNode.h"
+#include "Enemies/PathFinder.h"
 
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
@@ -12,13 +13,18 @@
 class GameState : public State
 {
 private:
+	int counter;
+	int path;
+	sf::Vector2i lastPath[2];
 	std::vector<Drawable*> DrawableEntityList;
 	Hero* hero;
 	Maps* map;
 	Enemy* pirate;
 	Number *seven;
 	Number **numbers;
-
+	std::vector<sf::Vector2i> foundedPath;
+	//PathFinding *pathfinding;
+	int iterator;
 	int mapPixelatedSize;
 	int numberOfObjects;
 	GameObject ** arrayOfObjects;

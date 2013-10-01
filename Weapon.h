@@ -39,6 +39,7 @@ private:
 	sf::Vector2f fireFromPosition;
 	sf::Clock repetition;
 	Missle **missle;
+
 	
 public:
 	bool fired;

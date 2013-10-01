@@ -4,7 +4,6 @@
 GameEngine::GameEngine(void):steering(window.GetInput())
 {	
 	window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Integrator", sf::Style::Close);
-
 	window.SetFramerateLimit(60);
 	window.ShowMouseCursor(false);
 	window.SetView(window.GetDefaultView());
@@ -30,9 +29,9 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	windowIsOpen = window.IsOpened();
 		
 	collisionQuadtree = new QuadtreeNode(0,0,640,640);
-		
 	sounds = true;
-
+	pathfinder = new PathFinder;
+		
 	if (!soundtrack.OpenFromFile("Data/Music/Aurora_down.ogg"))
 	{
     // Error...
@@ -41,7 +40,6 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	soundtrack.SetVolume( 75.f );
 	soundtrack.SetLoop( true );
 	soundtrack.Play();
-
 	SoundPlayer::getInstance();
 }
 
@@ -55,6 +53,7 @@ GameEngine::~GameEngine(void)
 
 void GameEngine::Display()
 {
+	//window.SetView(window.GetDefaultView());
 	if(fpsFlag == true)
 	{
 		currentTime = time.GetElapsedTime();
@@ -231,6 +230,52 @@ bool GameEngine::Collision( SpriteExt* sprite1, SpriteExt* sprite2 )
 
 	return false;
 }
+bool GameEngine::Sounds()
+{
+	return sounds;
+}
+
+void GameEngine::SetSounds(bool state)
+{
+	sounds = state;
+}
+
+
+void GameEngine::SetMapObjectsGrid( std::vector<sf::Vector3i> objects , int gridSize)
+{
+	objectsList = objects;
+	objectGridSize.x = gridSize;
+	objectGridSize.y = gridSize;
+	/*mapObjectsGrid = new int*[gridSize];
+	for( int i = 0 ; i < gridSize ; i++ )
+	mapObjectsGrid[i] = new int[gridSize];
+
+	for( int i = 0 ; i < gridSize ; i++ )
+	{
+		for( int j = 0 ; j < gridSize ; j++ )
+		mapObjectsGrid[i][j] = 1;
+	}
+	for( int i = 0 ; i < objects.size() ; i ++ )
+	{
+		mapObjectsGrid[objects[i].x][objects[i].y] = objects[i].z;
+		/*std::cout<<"objects["<<i<<"].x = "<<objects[i].x;
+		std::cout<<" | objects["<<i<<"].y = "<<objects[i].y;
+		std::cout<<" | objects["<<i<<"].z = "<<objects[i].z<<std::endl; */
+	//} */
+
+}
+int GameEngine::GetPointWeight( sf::Vector3i point )
+{
+	return mapObjectsGrid[point.x][point.y];
+}
+std::vector<sf::Vector3i> GameEngine::GetObjects()
+{
+	return objectsList;
+}
+sf::Vector2i GameEngine::GetGridSize()
+{
+	return objectGridSize;
+}
 void GameEngine::SwitchWindowIsOpen(bool WindowIsOpen)
 {
 	windowIsOpen = WindowIsOpen;
@@ -279,16 +324,6 @@ sf::RenderWindow& GameEngine::getWindow()
 sf::View& GameEngine::getView()
 {
 	return View;
-}
-
-bool GameEngine::Sounds()
-{
-	return sounds;
-}
-
-void GameEngine::SetSounds(bool state)
-{
-	sounds = state;
 }
 
 void GameEngine::SetDefaultView()

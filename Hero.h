@@ -17,6 +17,7 @@ public:
 private:
 
 	bool fire;
+	bool armor;
 
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;

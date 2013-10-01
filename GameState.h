@@ -15,7 +15,6 @@ private:
 	std::vector<Drawable*> DrawableEntityList;
 	Hero* hero;
 	Maps* map;
-	Wall* wall[10];
 	Enemy* pirate;
 	Number *seven;
 	Number **numbers;

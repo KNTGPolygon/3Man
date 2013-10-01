@@ -30,16 +30,57 @@ void GameState::Init()
 	numbers[3] = new Number(sf::Vector2i(310,330),-4);
 	numbers[4] = new Number(sf::Vector2i(250,340),-5);
 
-	wall[0] = new Wall(100, 100);
-	wall[1] = new Wall(132, 100);
-	wall[2] = new Wall(164, 100);
-	wall[3] = new Wall(196, 100);
-	wall[4] = new Wall(300, 200);
-	wall[5] = new Wall(196, 132);
-	wall[6] = new Wall(228, 132);
-	wall[7] = new Wall(260, 132);
-	wall[8] = new Wall(292, 132);
-	wall[9] = new Wall(324, 132);
+	float t = 32.0f;
+	DrawableEntityList.push_back(new Wall(3*t, 3*t));
+	DrawableEntityList.push_back(new Wall(4*t, 3*t));
+	DrawableEntityList.push_back(new Wall(5*t, 3*t));
+	DrawableEntityList.push_back(new Wall(6*t, 3*t));
+	DrawableEntityList.push_back(new Wall(10*t, 10*t));
+	DrawableEntityList.push_back(new Wall(6*t, 4*t));
+	DrawableEntityList.push_back(new Wall(7*t, 4*t));
+	DrawableEntityList.push_back(new Wall(8*t, 4*t));
+	DrawableEntityList.push_back(new Wall(9*t, 4*t));
+	DrawableEntityList.push_back(new Wall(10*t, 4*t));
+	DrawableEntityList.push_back(new Wall(8*t, 5*t));
+	DrawableEntityList.push_back(new Wall(8*t, 6*t));
+	DrawableEntityList.push_back(new Wall(8*t, 7*t));
+	DrawableEntityList.push_back(new Wall(8*t, 8*t));
+	DrawableEntityList.push_back(new Wall(7*t, 8*t));
+	DrawableEntityList.push_back(new Wall(6*t, 8*t));
+	DrawableEntityList.push_back(new Wall(6*t, 9*t));
+	DrawableEntityList.push_back(new Wall(6*t, 10*t));
+	DrawableEntityList.push_back(new Wall(6*t, 11*t));
+	DrawableEntityList.push_back(new Wall(6*t, 12*t));
+	DrawableEntityList.push_back(new Wall(6*t, 13*t));
+	DrawableEntityList.push_back(new Wall(6*t, 14*t));
+	DrawableEntityList.push_back(new Wall(6*t, 15*t));
+	DrawableEntityList.push_back(new Wall(6*t, 16*t));
+	DrawableEntityList.push_back(new Wall(6*t, 17*t));
+	DrawableEntityList.push_back(new Wall(6*t, 18*t));
+	DrawableEntityList.push_back(new Wall(11*t, 4*t));
+	DrawableEntityList.push_back(new Wall(12*t, 4*t));
+	DrawableEntityList.push_back(new Wall(13*t, 4*t));
+	DrawableEntityList.push_back(new Wall(14*t, 4*t));
+	DrawableEntityList.push_back(new Wall(15*t, 4*t));
+	DrawableEntityList.push_back(new Wall(15*t, 5*t));
+	DrawableEntityList.push_back(new Wall(15*t, 6*t));
+	DrawableEntityList.push_back(new Wall(15*t, 7*t));
+	DrawableEntityList.push_back(new Wall(15*t, 8*t));
+	DrawableEntityList.push_back(new Wall(15*t, 9*t));
+	DrawableEntityList.push_back(new Wall(15*t, 10*t));
+	DrawableEntityList.push_back(new Wall(15*t, 11*t));
+	DrawableEntityList.push_back(new Wall(15*t, 12*t));
+	DrawableEntityList.push_back(new Wall(15*t, 13*t));
+	DrawableEntityList.push_back(new Wall(15*t, 14*t));
+	DrawableEntityList.push_back(new Wall(15*t, 15*t));
+
+	DrawableEntityList.push_back(new Wall(14*t, 10*t));
+	DrawableEntityList.push_back(new Wall(14*t, 11*t));
+	DrawableEntityList.push_back(new Wall(14*t, 12*t));
+	DrawableEntityList.push_back(new Wall(14*t, 13*t));
+	DrawableEntityList.push_back(new Wall(14*t, 14*t));
+	DrawableEntityList.push_back(new Wall(14*t, 15*t));
+
 
 	DrawableEntityList.push_back(hero);
 	DrawableEntityList.push_back(pirate);
@@ -48,8 +89,6 @@ void GameState::Init()
 		DrawableEntityList.push_back( arrayOfObjects[i] );
 	for( int i = 0; i < NUM_OF_ENEMIES ; i++)
 		DrawableEntityList.push_back(numbers[i]);
-	for ( int i = 0; i < 10; i++ )
-		DrawableEntityList.push_back(wall[i]);
 	std::cout << "DEL size: " << DrawableEntityList.size() << std::endl;
 
 }

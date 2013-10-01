@@ -14,6 +14,7 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 	ANIMATION_TYPE = STAY;
 
 	depth = 0;
+	armor = false;
 
 	MyTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Player.PNG" );
 	MyTexture.CreateMaskFromColor(sf::Color(255,0,255));

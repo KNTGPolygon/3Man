@@ -11,6 +11,7 @@ MapCreator::MapCreator(const sf::Input &_steering)
 		hotKeys[i] = 0;
 	}
 	lControlPressed = false;
+	lShiftPressed = false;
 
 	//loading images from files, creating sprites
 	LoadTileGraphics();

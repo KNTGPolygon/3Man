@@ -23,6 +23,7 @@ private:
 	unsigned int Size;
 	unsigned int toolboxFirstFieldNumber;
 	bool lControlPressed;
+	bool lShiftPressed;
 
 	ToolboxMenuState toolboxMenuState;
 	int hotKeys[10];
@@ -81,6 +82,7 @@ public:
 	void GetScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);
 
 	bool saveMap (std::string filename);
+	bool LoadMap (const std::string& filename);
 
 	~MapCreator();
 

@@ -607,13 +607,13 @@ void MapCreator::changingSpriteInMap(sf::Vector2i mapClickPosition)
 	sf::Vector2i realClickPosition;
 	realClickPosition.x = (int)(cameraPosition.x - 370 + mapClickPosition.x);
 	realClickPosition.y = (int)(cameraPosition.y - 350 + mapClickPosition.y);
-	if(realClickPosition.x > 0 && realClickPosition.y > 0 && chosenTileFromToolbox != 0 && (unsigned int)(realClickPosition.x/32) < Size && (unsigned int)(realClickPosition.y/32) <Size)
+	if(realClickPosition.x > 0 && realClickPosition.y > 0 && (unsigned int)(realClickPosition.x/32) < Size && (unsigned int)(realClickPosition.y/32) <Size)
 	{
-		if(!lShiftPressed)
+		if(!lShiftPressed && chosenTileFromToolbox != 0)
 		{
 			createdMap[realClickPosition.y/32][realClickPosition.x/32].changeType(chosenTileFromToolbox);
 		}
-		else
+		else if(lShiftPressed)
 		{
 			createdMap[realClickPosition.y/32][realClickPosition.x/32].changeType(1);
 		}
@@ -626,13 +626,13 @@ void MapCreator::changingObjectInMap(sf::Vector2i mapClickPosition)
 	sf::Vector2i realClickPosition;
 	realClickPosition.x = (int)(cameraPosition.x - 370 + mapClickPosition.x);
 	realClickPosition.y = (int)(cameraPosition.y - 350 + mapClickPosition.y);
-	if(realClickPosition.x > 0 && realClickPosition.y > 0 && chosenObjectFromToolbox >0 && (unsigned int)(realClickPosition.x/16) < Size*2 && (unsigned int)(realClickPosition.y/16) <Size*2)
+	if(realClickPosition.x > 0 && realClickPosition.y > 0 && (unsigned int)(realClickPosition.x/16) < Size*2 && (unsigned int)(realClickPosition.y/16) <Size*2)
 	{
-		if(!lShiftPressed)
+		if(!lShiftPressed && chosenObjectFromToolbox >0)
 		{
 			mapObjects[realClickPosition.y/16][realClickPosition.x/16].changeType(chosenObjectFromToolbox);
 		}
-		else
+		else if(lShiftPressed)
 		{
 			mapObjects[realClickPosition.y/16][realClickPosition.x/16].changeType(0);
 		}

@@ -159,7 +159,6 @@ void MapCreator::Display(sf::RenderWindow *window)
 					tileSprites.at(toolboxIterator).SetScale(0.5,0.5);
 				}
 		
-
 				if(chosenTileFromToolbox - toolboxFirstFieldNumber + 1 > 0 )
 				{
 					tileSprites.at(0).SetPosition(-380 + cameraPosition.x + (chosenTileFromToolbox - toolboxFirstFieldNumber)*96, -280 + cameraPosition.y);
@@ -315,7 +314,7 @@ void MapCreator::CreateSprites()
 	for(unsigned int i = 0; i<objectGraphics.size();i++)
 	{
 		spr.SetImage(objectGraphics[i]);
-		spr.SetScale(1,1);
+		spr.SetScale(0.5,0.5);
 		objectSprites.push_back(spr);
 	}
 
@@ -451,6 +450,10 @@ void MapCreator::GetEvent(sf::Event& event)
 					}
 				}
 
+			if(event.Key.Code == sf::Key::L)
+			{
+				LoadMap("Data/Maps/Test.map");
+			}
 		}
 
 		if(lControlPressed == false)
@@ -624,7 +627,7 @@ MapCreator::~MapCreator()
 	delete [] createdMap;
 
 
-	for(unsigned int i = 0; i < Size; ++i)
+	for(unsigned int i = 0; i < 2*Size; ++i)
     delete mapObjects[i];
 	delete mapObjects;
 
@@ -748,5 +751,212 @@ bool MapCreator::saveMap(std::string filename)
 	}
 
 	outputFile.close();
+	return true;
+}
+
+bool MapCreator::LoadMap(const std::string& filename)
+{
+	std::ifstream map(filename.c_str());
+		 if (!map) 
+		 {
+			std::cerr << "Nie udalo sie zaladowac pliku mapy!!! " << filename << "\n";
+			return false;
+		 }
+
+		   std::string stringRepresentingFileLine;
+		  std::string mapTilesPath;
+		  bool looping = true;
+
+		   for(unsigned int i = 0; i < Size; ++i)
+			delete [] createdMap[i];
+			delete [] createdMap;
+
+			for(unsigned int i = 0; i < 2*Size; ++i)
+			delete mapObjects[i];
+			delete mapObjects;
+
+		  do{
+			 if(map.good())
+				 {
+					 getline (map,stringRepresentingFileLine);
+					 if(stringRepresentingFileLine.at(0) != '*')
+						{
+						std::istringstream iss(stringRepresentingFileLine);
+						iss >> Size;
+						}
+					 else
+					 {
+						 looping = false;
+					 }
+				 }
+		  }while(looping);
+
+		
+		createdMap = new Tile*[Size];
+		for(unsigned int i = 0; i < Size; ++i)
+			createdMap[i] = new Tile[Size];
+
+
+		mapObjects = new MapObject*[Size*2];
+		for(unsigned int i = 0; i < Size*2; ++i)
+		mapObjects[i] = new MapObject[Size*2];
+
+
+
+		looping = true;		
+
+			 //getting paths from the beggining of file
+			 do{
+				 if(map.good())
+				 {
+					 getline (map,stringRepresentingFileLine);
+					 if(stringRepresentingFileLine.at(0) != '*')
+						{
+						std::istringstream iss(stringRepresentingFileLine);
+						iss >> mapTilesPath;
+						}
+					 else
+					 {
+						 mapTilesPath = "Data/Textures/MapTiles/";
+						 looping = false;
+					 }
+				 }
+			 }while(looping);
+
+			 //---------------
+
+			 looping = true;
+			 std::string substring;
+
+			 //passing info about map tiles' graphics (first row of map file)
+			 do{
+				if(map.good())
+				{
+					getline (map,stringRepresentingFileLine);
+
+					if(stringRepresentingFileLine.at(0) != '*')
+					{
+
+					}
+					else
+					{
+						looping = false;
+					}
+				}
+			 }while(looping);
+
+			 //------------
+
+			 looping = true;
+
+			  do{
+				if(map.good())
+				{
+					getline (map,stringRepresentingFileLine);
+
+					if(stringRepresentingFileLine.at(0) != '*')
+					{
+
+					}
+					else
+					{
+						looping = false;
+					}
+				}
+				else
+				{
+					std::cout<<"map is not good\n";
+					break;
+
+				}
+			 }while(looping);
+
+
+			  //------------------------
+			  	int rowNumber = 0;
+				int colNumber = 0;
+
+
+			  while ( map.good() )
+				{
+						int fieldType = -1;
+						 getline (map,stringRepresentingFileLine);
+					
+				 std::istringstream iss(stringRepresentingFileLine);
+				 std::string sub;
+
+				 looping = true;
+				 int tileType = -1;
+						do
+						{
+						iss >>sub;
+						if(sub.at(0) == '*')
+						{
+							break;
+						}
+						//geting type of tile <ID 1,2,3... which tells what is it's picture
+							tileType = atoi(sub.c_str());
+							createdMap[rowNumber][colNumber] = Tile(tileType,colNumber*32 - 32, 48 + rowNumber*32);
+							colNumber++;
+							if(colNumber == Size)
+							{
+								break;
+							}
+
+						}
+						while(iss);
+
+						rowNumber++;					
+
+						colNumber = 0;
+
+						if(sub.at(0) == '*')
+							{
+								break;
+							}
+
+				}
+
+			
+			  //---------------------------
+
+			  rowNumber = 0;
+
+			  while ( map.good() )
+				{
+				colNumber = 0;
+				 getline (map,stringRepresentingFileLine);
+				 std::istringstream iss(stringRepresentingFileLine);
+				 std::string sub;
+				 looping = true;
+						do
+						{
+							if((unsigned int)colNumber >= 2*Size)
+							{
+								break;
+							}
+
+						iss >>sub;
+						if(sub.at(0) == '*')
+						{
+							break;
+						}
+						mapObjects[rowNumber][colNumber] = MapObject (atoi(sub.c_str()), colNumber * 16 - 32,48 + rowNumber * 16);
+						
+						colNumber++;
+						}
+						while(iss);
+
+						rowNumber++;
+						if(rowNumber == 2*Size)
+						{
+							break;
+						}
+
+				}
+
+			  std::cout << "Editor says: Map loaded succesfully!" << std::endl;
+			  map.close();
+
 	return true;
 }

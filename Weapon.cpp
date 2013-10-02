@@ -132,7 +132,7 @@ int Weapon::SetWeapon(WeaponType Weapon)
 	switch(Weapon)
 	{
 	case Integral:
-		directory = "Integral.png";
+		directory = "Integral.PNG";
 		damage = 10;
 		range = 300;
 		speed = 4.0;
@@ -141,7 +141,7 @@ int Weapon::SetWeapon(WeaponType Weapon)
 		error = 0.0;
 		break;
 	case Derivative:
-		directory = "Derivative.png";
+		directory = "Derivative.PNG";
 		damage = 1;
 		range = 300;
 		speed = 8.0;
@@ -150,7 +150,7 @@ int Weapon::SetWeapon(WeaponType Weapon)
 		error = 25.0;
 		break;
 	case Plus:
-		directory = "Plus.png";
+		directory = "Plus.PNG";
 		damage = 50;
 		range = 300;
 		speed = 5.0;
@@ -159,7 +159,7 @@ int Weapon::SetWeapon(WeaponType Weapon)
 		error = 5.0;
 		break;
 	case Minus:
-		directory = "Minus.png";
+		directory = "Minus.PNG";
 		damage = 5;
 		range = 300;
 		speed = 5.0;
@@ -176,6 +176,7 @@ int Weapon::SetWeapon(WeaponType Weapon)
 		repeatRate = 0.25;
 		bulletFireLimit = 5;
 		error = 10.0;
+		break;
 	default:
 		return 1;
 		break;

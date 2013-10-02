@@ -42,12 +42,12 @@ Maps::Maps(const std::string& filename)
 
 	//creating dynamic two-dimensional array (tiles created with default constructor, each with type = -1)
 	map_data = new Tile*[Size];
-	for(unsigned int i = 0; i < Size; ++i)
+	for(int i = 0; i < Size; ++i)
     map_data[i] = new Tile[Size];
 
 	//creating temporary array for map objects (for storing loaded data)
 	tempConstructorObjects = new MapObject*[Size*2];
-	for(unsigned int i = 0; i < Size*2; ++i)
+	for(int i = 0; i < Size*2; ++i)
     tempConstructorObjects[i] = new MapObject[Size*2];
 
 
@@ -115,10 +115,13 @@ Maps::Maps(const std::string& filename)
 				if(map.good())
 				{
 					getline (map,stringRepresentingFileLine);
+					std::istringstream iss(stringRepresentingFileLine);
+
 					if(stringRepresentingFileLine.at(0) != '*')
 					{
-					tempAddressesArray[counter] = (objectPath + stringRepresentingFileLine).c_str();
-					counter++;
+						iss >> substring;
+						tempAddressesArray[counter] = (objectPath + substring).c_str();
+						counter++;
 					}
 					else
 					{

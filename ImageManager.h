@@ -3,19 +3,16 @@
 #include <map>
 #include <string>
 #include <SFML/Graphics.hpp>
+#include "Singleton.h"
 
 
-class ImageManager
+class ImageManager : public Singleton<ImageManager>
 {
-	private:
-	
-	static ImageManager* INSTANCE;
+private:
 	std::map<std::string, sf::Image> images;
 	sf::Image image_blank;
 	
-	public:
-	
-	static ImageManager* getInstance();
+public:
 	sf::Image& loadImage( std::string filename );
 };
 

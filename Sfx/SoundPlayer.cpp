@@ -3,15 +3,6 @@
 #include "SoundBufferManager.h"
 #include "../GameEngine.h"
 
-SoundPlayer* SoundPlayer::INSTANCE = NULL;
-
-SoundPlayer* SoundPlayer::getInstance()
-{
-		if ( INSTANCE == NULL )
-			INSTANCE = new SoundPlayer();
-		return INSTANCE;
-}
-
 SoundPlayer::SoundPlayer()
 {
 	paths[0] = "Data/Sounds/shoot.wav";

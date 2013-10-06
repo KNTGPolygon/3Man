@@ -6,6 +6,7 @@
 #include <queue>
 #include <vector>
 #include <cmath>
+#include "Singleton.h"
 #include "Cursor.h"
 #include "Drawable.h"
 #include "Util.h"
@@ -33,7 +34,7 @@ public:
 	}
 };
 
-class GameEngine
+class GameEngine : public Singleton<GameEngine>
 {
 public:	
 	static const int SCREEN_WIDTH  = 800;
@@ -77,8 +78,6 @@ private:
 	sf::SoundBuffer soundBuffer;
 	sf::Music soundtrack;
 
-
-
 	void Display();
 
 public:
@@ -86,7 +85,6 @@ public:
 
 	GameEngine(void);
 	~GameEngine(void);
-	static GameEngine* getInstance(void);
 		
 	void ChangeState(STATE); // wysyla zadanie zmiany state'a
 	void SwitchState();		 // dokonuje faktycznej zamiany state'ow (nie ruszac, to sie robi samo!)
@@ -103,6 +101,7 @@ public:
 	sf::Event& getEvent();
 	Cursor& getCursor();
 	sf::Music& getMusic();
+	sf::Clock& GetTimer();
 	void SetSounds(bool);
 	bool Sounds();
 
@@ -123,8 +122,6 @@ public:
 	std::vector<sf::Vector3i> GetObjects();
 	sf::Vector2i GetGridSize();
 
-private:
-	static GameEngine * engine;
 };
 
 

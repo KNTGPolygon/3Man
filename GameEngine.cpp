@@ -1,5 +1,6 @@
 #include "GameEngine.h"
 #include "Sfx/SoundPlayer.h"
+#include "Fx/EffectLayer.h"
 
 GameEngine::GameEngine(void):steering(window.GetInput())
 {	
@@ -41,6 +42,7 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	soundtrack.SetLoop( true );
 	soundtrack.Play();
 	SoundPlayer::getInstance();
+	EffectLayer::getInstance();
 }
 
 GameEngine::~GameEngine(void)
@@ -60,7 +62,8 @@ void GameEngine::Display()
 		SetGameView();
 		strFps.SetText("FPS = " + Util::int2str((int)(1/(currentTime-lastTime))) +
 					   "\nFrame time = " + Util::flo2str(window.GetFrameTime()) +
-					   "\nMouse: " + Util::int2str( GetMouseCoords().x ) + ", " + Util::int2str(GetMouseCoords().y ));
+					   "\nMouse: " + Util::int2str( GetMouseCoords().x ) + ", " + Util::int2str(GetMouseCoords().y )+
+					   "\nElapsed time: " + Util::flo2str(currentTime) );
 		SetDefaultView();
 		window.Draw( strFps );
 		lastTime = currentTime;
@@ -357,12 +360,7 @@ sf::Vector2f GameEngine::GetMouseCoords()
 	return window.ConvertCoords( mouse_x, mouse_y, &window.GetView() );
 }
 
-GameEngine* GameEngine::engine = NULL;
-GameEngine* GameEngine::getInstance(void)
+sf::Clock& GameEngine::GetTimer()
 {
-	if(engine == NULL)	
-	{
-		engine = new GameEngine();
-	}
-	return engine;
+	return time;
 }

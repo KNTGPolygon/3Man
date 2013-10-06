@@ -11,6 +11,7 @@ private:
 	sf::Image image;
 	SpriteExt sprite;
 public:
+	Invincibility(float, float);
 	void UpdateSystem();
 	void EventHandling();
 	void Display(sf::RenderWindow*);

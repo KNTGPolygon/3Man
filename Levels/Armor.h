@@ -11,6 +11,7 @@ private:
 	sf::Image image;
 	SpriteExt sprite;
 public:
+	Armor(float, float);
 	void UpdateSystem();
 	void EventHandling();
 	void Display(sf::RenderWindow*);

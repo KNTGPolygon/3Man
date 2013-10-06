@@ -4,6 +4,7 @@
 #include "ImageManager.h"
 #include <iostream>
 #include "Collision/BoxMask.h"
+#include "Fx/EffectLayer.h"
 //-------------------------------- Hero
 
 sf::Vector2f Hero::myPosition;
@@ -15,6 +16,7 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 
 	depth = 0;
 	armor = false;
+	invincible = false;
 
 	MyTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Player.PNG" );
 	MyTexture.CreateMaskFromColor(sf::Color(255,0,255));
@@ -49,6 +51,8 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 	keyLeft = sf::Key::A;
 	keyRight = sf::Key::D;
 
+	death_anim_timer.Reset();
+	death_effect = false;
 }
 
 Hero::~Hero(void)
@@ -144,6 +148,27 @@ void Hero::GetEvent()
 						  sf::Vector2i( (int)(GameEngine::getInstance()->GetMouseCoords().x), (int)(GameEngine::getInstance()->GetMouseCoords().y) ));
 		weapon[i]->active = false;
 		}
+
+		if ( steering.IsKeyDown(sf::Key::Space) && !death_effect)
+		{
+			death_effect = true;
+			death_anim_timer.Reset();
+		}
+
+		if ( death_effect )
+		{
+			sf::PostFX& hero_death = EffectLayer::getInstance()->AddEffect(Fx::HeroDeath);
+
+			hero_death.SetParameter("screen", (float)GameEngine::SCREEN_WIDTH, (float)GameEngine::SCREEN_HEIGHT);
+
+			float _cos = cos(death_anim_timer.GetElapsedTime()+0.6);
+			hero_death.SetParameter("circle",
+							myPosition.x-GameEngine::getInstance()->getView().GetRect().Left,
+							myPosition.y-GameEngine::getInstance()->getView().GetRect().Top,
+							800*_cos*_cos);
+			if ( death_anim_timer.GetElapsedTime() > M_PI-0.6 )
+				death_effect = false;
+		}
 }
 
 void Hero::EventHandling()
@@ -216,11 +241,14 @@ void Hero::UpdateSystem()
 
 void Hero::UpdatePosition()
 {
-	 GameEngine::getInstance()->AddToCollisionQuadtree(&Me);
 	 myPosition     = Me.GetPosition();
 	 for(int i = 0 ; i < 4 ; i++)
 	 animate[i]->Update(Me.GetPosition());
 	 depth = (int)( -Me.GetPosition().y );
+	 if ( GameEngine::getInstance()->DetectCollision(&Me, "armor") )
+		 armor = true;
+	 if ( GameEngine::getInstance()->DetectCollision(&Me, "invincibility") )
+		 invincible = true;
 }
 sf::Vector2f Hero::GetPosition()
 {

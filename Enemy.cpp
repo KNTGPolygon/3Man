@@ -14,12 +14,15 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	mySprite.SetPosition((float) myPosition.x ,(float) myPosition.y );
 	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
 	mySprite.setType( "enemy" );
-	startPosition = Position;
+
+	startPosition   = Position;
 	pathFinderPoint = Position;
-	target = Position;
-	MovementVector.x = MovementVector.y = 150;
+	target			= Position;
+
+	MovementVector.x = MovementVector.y = 64;//150
 
 	pathSearched = false;
+	RandomPathMode = false;
 	if( RandomPathMode )
 	{
 	pathMode = RANDOM_PATHWALK;
@@ -31,7 +34,7 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	myAI = PATHWALK;
 	}
 
-	myAI = STAY;
+	//myAI = STAY;
 
 	inMove		  = false;
 	targetReached = false;
@@ -48,13 +51,17 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	path->push_back(sf::Vector2i(100,100));
 	path->push_back(sf::Vector2i(300,100));
 
+	numberOfRandomPathPoints = 5;
+	randomPatrolPath = new std::vector<sf::Vector2i>[numberOfRandomPathPoints] ;
+
+
 	mySprite.setCircleMask(20,20,20);
 
 	myWeapon = new Weapon(YellowBall);
 	myWeapon->PutScreenSize(GameEngine::SCREEN_WIDTH,GameEngine::SCREEN_HEIGHT );
 
-	pathFinderPointReached = true;
 	myID = GameEngine::getInstance()->pathfinder->AddNewMobID();
+	generated = false;
 }
 
 Enemy::~Enemy(void)
@@ -81,7 +88,7 @@ void Enemy::EventHandling()
 
 void Enemy::Logic(sf::Vector2i Target)
 {
-	if(GoToPosition( Target ) ){
+	if( GoToPosition( Target ) ){
 
 		mySprite.Move(velocity*shiftVector);
 
@@ -95,116 +102,24 @@ void Enemy::Logic(sf::Vector2i Target)
 }
 void Enemy::AI()
 {
+	if( generated == false )
+	{
+		GenerateRandomPath();
+		generated = true;
+	}
 	switch( myAI )
 	{
 	case PATHWALK: //   ---  PATHWALK ---
 	
 	attacking = false;
-
-		if( distanceFromHero < pullRange )
-		{
-			myAI = FOLLOW;
-			std::cout<<"Following...\n"	;
-			break;
-		}
-
-		if(waitTimeCounter < waitTime && targetReached == true)
-		{
-			waitTimeCounter++;
-			break;
-		}
-		else
-		{
-			waitTimeCounter = 0;
-		}
-		// satrt chodzenia sciezka
-		if( pathNumber <  (signed) ( path->size() ) )
-		{
-			if (  targetReached == false )
-			{
-					Logic( path[0][pathNumber] );
-					
-			}else
-			{
-				targetReached = false;
-				pathNumber++;
-				std::cout<<"pathNumber = "<< pathNumber <<"\n";
-			}
-		}
-		else
-		if( pathNumber >= (signed)( path->size() - 1 ) )
-		{
-			pathNumber = 0;
-			std::cout<<"pathNumber = "<< pathNumber <<"\n";
-		}	
-		// stop chodzenia sciezka
+	PathWalk();
 		break;
-	case FOLLOW:	
-			if( !pathSearched )
-			{
-				std::cout<<"mob"<<myID<<": Searching for path...\n";
-				pathfinderPath.resize(0);
-				iterator = 0;
-				oldHeroPosition = sf::Vector2i( (int)Hero::myPosition.x,(int)Hero::myPosition.y );
-				pathStatus = GameEngine::getInstance()->pathfinder->FindPath( myID, myPosition , oldHeroPosition );
-				pathfinderPath = GameEngine::getInstance()->pathfinder->GetPath( myID );
-				pathSearched = true;			
-				
-			}
-			if( pathStatus == PathFinder::FOUND )
-			{
-				if( iterator != pathfinderPath.size() )
-				{
-					if( targetReached == true )
-					{
-
-						pathFinderPoint = pathfinderPath[iterator];
-						pathFinderPoint.x = pathFinderPoint.x *32 + 16;
-						pathFinderPoint.y = pathFinderPoint.y *32 + 16;
-						iterator++;
-						std::cout<<"mob"<<myID<<": heading to : x = "<<pathFinderPoint.x /32<<" y = " << pathFinderPoint.y/32<<std::endl;
-						if( iterator % 5 == 0 )
-						{
-
-							if( (  oldHeroPosition.x/32 != (int)Hero::myPosition.x /32 ) && 
-								( oldHeroPosition.y/32 != (int)Hero::myPosition.y /32 )  )
-							{
-								pathSearched = false;
-							}
-						}
-					}
-					
-				}
-				else
-				{
-					std::cout<<"mob"<<myID<<": target reached!"<<std::endl;
-					myAI = STAY;
-					pathSearched = false;
-				}
-				Logic( pathFinderPoint );
-			} else
-			{
-				myAI = STAY;
-				pathSearched = false;
-				std::cout<<"No path found\n";
-			}
-			//Logic( pathFinderPoint );
-			//pathFinderPoint
-			
-			myAI = COMBAT;
-			
-			/*if( distanceFromHero > escapeRange )
-			{
-			myAI = pathMode;
-			pathSearched = false;
-			std::cout<<"Returning to path...\n";
-			}*/
-
+	case FOLLOW:
+		Follow();
 		break;
 
 	case COMBAT:
 		//Logic( pathFinderPoint );
-		pathFinderPointReached = false;
 		attacking = true;
 		myWeapon->active = true;
 		myWeapon->SetFiringPosition( sf::Vector2f( (float)myPosition.x, (float)myPosition.y) );
@@ -213,42 +128,178 @@ void Enemy::AI()
 		break;
 
 	case RANDOM_PATHWALK: //   ---  RANDOM_PATHWALK ---
-
-		myWeapon->active = false;
-		if( distanceFromHero < pullRange )
-		{
-			myAI = FOLLOW;
-			targetReached = true;
-			//std::cout<<"Following...\n";
-			break;
-		}
-
-		if(waitTimeCounter < waitTime && targetReached == true)
-		{
-			waitTimeCounter++;
-			break;
-		}
-		else
-		{
-			waitTimeCounter = 0;
-		}
-		
-		if (  targetReached == false )
-		{
-			Logic(target);
-		}
-		else
-		{
-		targetReached = false;
-		GenerateRandomPath();
-	//	std::cout<<"Going to point ( "<<target.x<<" , "<<target.y<<" )\n";
-		}
+		RandomPathWalk();
+		break;
+	case RETURN_TO_PATHWALK:
+		ReturnToPathWalk();
 		break;
 	default:
 		break;
 	}
 
 	myWeapon->Logic(attacking,heroPosition);
+}
+void Enemy::Follow()
+{
+	myAI = COMBAT;
+	if( !pathSearched )
+	{
+		std::cout<<"mob"<<myID<<": Searching for path...\n";
+		pathfinderPath.resize(0);
+		iterator = 0;
+		oldHeroPosition = sf::Vector2i( (int)Hero::myPosition.x,(int)Hero::myPosition.y );
+		pathStatus = GameEngine::getInstance()->pathfinder->FindPath( myID, myPosition , oldHeroPosition );
+		pathfinderPath = GameEngine::getInstance()->pathfinder->GetPath( myID );
+		pathSearched = true;			
+				
+	}
+	if( pathStatus == PathFinder::FOUND )
+	{
+		if( iterator != pathfinderPath.size() )
+		{
+			if( targetReached == true )
+			{
+				pathFinderPoint = pathfinderPath[iterator];
+				pathFinderPoint.x = pathFinderPoint.x *32 + rand()%32;
+				pathFinderPoint.y = pathFinderPoint.y *32 + rand()%32;
+				iterator++;
+				std::cout<<"mob"<<myID<<": heading to : x = "<<pathFinderPoint.x /32<<" y = " << pathFinderPoint.y/32<<std::endl;
+				if( iterator % 5 == 0 )
+				{
+					if( (  oldHeroPosition.x/32 != (int)Hero::myPosition.x /32 ) && 
+						( oldHeroPosition.y/32 != (int)Hero::myPosition.y /32 )  )
+					{
+						pathSearched = false;
+					}
+				}
+			}
+				
+		}
+		else
+		{
+			std::cout<<"mob"<<myID<<": target reached!"<<std::endl;
+			myAI = RETURN_TO_PATHWALK;
+			pathSearched = false;
+		}
+		Logic( pathFinderPoint );
+	} else
+	{
+		myAI = RETURN_TO_PATHWALK;
+		pathSearched = false;
+		myWeapon->active = false;
+		std::cout<<"No path found\n";
+	}
+	//Logic( pathFinderPoint );
+	//pathFinderPoint
+			
+
+			
+	if( distanceFromHero > escapeRange )
+	{
+		myAI = RETURN_TO_PATHWALK;
+		pathSearched = false;
+		std::cout<<"Returning to path...\n";
+	}
+
+
+}
+void Enemy::RandomPathWalk()
+{		
+	
+	myWeapon->active = false;
+	if( distanceFromHero < pullRange )
+	{
+		myAI = FOLLOW;
+		targetReached = true;
+		//break;
+		//std::cout<<"Following...\n";
+	}else
+	{
+		if(waitTimeCounter < waitTime && targetReached == true)
+		{
+			waitTimeCounter++;
+			//break;
+		}
+		else
+		{
+			waitTimeCounter = 0;
+			
+			if (  targetReached == false )
+			{
+				Logic(target);
+			}
+			else
+			{
+				targetReached = false;
+				//GenerateRandomPath();
+
+			//	std::cout<<"Going to point ( "<<target.x<<" , "<<target.y<<" )\n";
+			}
+		}
+	}
+
+}
+void Enemy::PathWalk()
+{
+	if( distanceFromHero < pullRange )
+	{
+		myAI = FOLLOW;
+		std::cout<<"Following...\n"	;
+	}else
+	{
+		if(waitTimeCounter < waitTime && targetReached == true)
+		{
+			waitTimeCounter++;
+		}
+		else
+		{
+			waitTimeCounter = 0;			
+			// start chodzenia sciezka
+			if( iterator < randomPatrolPath[pathNumber].size() )
+			{
+				if( targetReached == true )
+				{
+					pathFinderPoint   = randomPatrolPath[pathNumber][iterator];//randomPatrolPath[pathNumber][iterator]
+					pathFinderPoint.x = pathFinderPoint.x *32 + rand()%32;
+					pathFinderPoint.y = pathFinderPoint.y *32 + rand()%32;
+					iterator++;
+				}
+			}
+			else
+			{
+				pathNumber++;
+				iterator = 0;
+				if( pathNumber >= numberOfRandomPathPoints )
+					pathNumber = 0;
+			}
+
+			Logic( pathFinderPoint );
+			// stop chodzenia sciezka
+		}
+	}
+}
+void Enemy::ReturnToPathWalk()
+{
+	if( FindPath( target ) == PathFinder::FOUND )
+	{
+		if( iterator != pathfinderPath.size() )
+		{
+			if( targetReached == true )
+			{
+				pathFinderPoint = pathfinderPath[iterator];
+				pathFinderPoint.x = pathFinderPoint.x *32 + rand()%32;
+				pathFinderPoint.y = pathFinderPoint.y *32 + rand()%32;
+				iterator++;
+			}
+				
+		}
+		else
+		{
+			myAI = pathMode;
+			pathSearched = false;
+		}
+		Logic( pathFinderPoint );
+	}
 }
 Enemy::State Enemy::GetAIState()
 {
@@ -269,15 +320,41 @@ int Enemy::GoToPosition(sf::Vector2i Destination)
 
 	return inMove;
 }
-void Enemy::RandomPathWalk()
+
+int Enemy::FindPath(sf::Vector2i Target)
 {
-		
-		
+	if( !pathSearched )
+	{
+		pathfinderPath.resize(0);
+		iterator = 0;
+		pathStatus = GameEngine::getInstance()->pathfinder->FindPath( myID, myPosition , Target );
+		pathfinderPath = GameEngine::getInstance()->pathfinder->GetPath( myID );
+		pathSearched = true;			
+				
+	}
+	return pathStatus;
 }
+
 void Enemy::GenerateRandomPath()
 {
-	target.x = rand()%( 2 * MovementVector.x ) + ( startPosition.x - MovementVector.x );
-	target.y = rand()%( 2 * MovementVector.y ) + ( startPosition.y - MovementVector.y );
+	for( int i = 0 ; i < numberOfRandomPathPoints ; i++ )
+	{
+		do{
+		target.x = rand()%( 2 * MovementVector.x ) + ( startPosition.x - MovementVector.x );
+		target.y = rand()%( 2 * MovementVector.y ) + ( startPosition.y - MovementVector.y );
+		std::cout<<target.x<<" "<<target.y<<"\n";
+		pathSearched = false;
+		if( FindPath( target ) == PathFinder::FOUND )
+		{
+			pathStatus = PathFinder::NONEXISTENT;
+			randomPatrolPath[i] = pathfinderPath;
+			break;
+		}
+
+		}while( pathStatus != PathFinder::FOUND );
+	}
+		
+		
 }
 
 void Enemy::Display(sf::RenderWindow *window)

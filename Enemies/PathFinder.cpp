@@ -226,7 +226,7 @@ void PathFinder::Initialization(std::vector<sf::Vector3i> objectList, int _gridX
 	}
 	for( int i = 0 ; i < objectList.size() ; i ++ )
 	{
-		cell[ objectList[i].y ][ objectList[i].x ].walkability = UNWALKABLE; // zamieniam x -> y , y - >x 
+		cell[ objectList[i].y ][ objectList[i].x ].walkability = UNWALKABLE;  
 	}
 }
 int PathFinder::FindPath(int pathfinderID, sf::Vector2i _start, sf::Vector2i _target)
@@ -237,7 +237,7 @@ int PathFinder::FindPath(int pathfinderID, sf::Vector2i _start, sf::Vector2i _ta
 
 	start  = sf::Vector2i( _start.x / gridCellSize   , _start.y / gridCellSize ); //stare
 	target = sf::Vector2i( _target.x / gridCellSize  , _target.y /gridCellSize ); //stare
-	
+
 	//start  = sf::Vector2i( _start.y / gridCellSize   , _start.x / gridCellSize ); 
 	//target = sf::Vector2i( _target.y / gridCellSize  , _target.x /gridCellSize ); 
 
@@ -247,9 +247,14 @@ int PathFinder::FindPath(int pathfinderID, sf::Vector2i _start, sf::Vector2i _ta
 		return FOUND;
 	if (start.x == target.x && start.y == target.y && pathLength[pathfinderID] == 0)
 		return NONEXISTENT;
-
-	if ( cell[target.x][target.y].walkability == UNWALKABLE )
+	
+	if ( target.x < gridXSize && target.y < gridYSize)
+	{
+	if ( cell[target.x][target.y].walkability == UNWALKABLE 
+		 || target.x < 0 || target.y < 0 )
 		goto noPath;
+	}else
+	goto noPath;
 
 
 	closedListMarker = closedListMarker + 2; 
@@ -271,11 +276,6 @@ int PathFinder::FindPath(int pathfinderID, sf::Vector2i _start, sf::Vector2i _ta
 		//std::cout<<"loops made : "<<counter<<std::endl;
 			thisPointID = openList->GetLowestFCostPointID();
 			thisPoint   = openList->pointCoords[ thisPointID ];
-
-			//std::cout<<"lowest Fcost[0] = "<<openList->FCost[0]<<std::endl;
-			//if( openList->size > 1 )
-			//std::cout<<"lowest Fcost[1] = "<<openList->FCost[1]<<std::endl;
-
 
 			cell[ thisPoint.x ][ thisPoint.y ].whichList = closedListMarker; // XD
 
@@ -304,7 +304,6 @@ int PathFinder::FindPath(int pathfinderID, sf::Vector2i _start, sf::Vector2i _ta
 	}
 	return pathStatus[ pathfinderID ];
 noPath:
-
 	foundedCoords[ pathfinderID ] = _start;
 	return NONEXISTENT;
 

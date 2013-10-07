@@ -22,18 +22,21 @@ public:
 	COMBAT,
 	FOLLOW,
 	PATHWALK,
-	RANDOM_PATHWALK
+	RANDOM_PATHWALK,
+	RETURN_TO_PATHWALK
 	};
 		bool pathSearched;
 protected:
 	
 	bool gotHit;
 	bool attacking;
+	bool generated;
 
 	int pathNumber;
 	int waitTime;
 	int waitTimeCounter;
 	int iterator;
+	int numberOfRandomPathPoints;
 
 	float velocity;
 	float distanceFromTarget;
@@ -43,7 +46,9 @@ protected:
 	float distanceFromHero;
 
 	std::vector<sf::Vector2i> *path;
+	std::vector<sf::Vector2i> *randomPatrolPath;
 	std::vector<sf::Vector2i> pathfinderPath;
+
 	State pathMode;
 	State myAI;
 
@@ -57,7 +62,12 @@ protected:
 	sf::Vector2i MovementVector; //obszar generowania randomowej sciezki
 	sf::Vector2f shiftVector;
 	sf::Vector2i oldHeroPosition;
+
 	void RandomPathWalk();
+	void PathWalk();
+	void Follow();
+	void ReturnToPathWalk();
+	int FindPath(sf::Vector2i Target);
 	
 	Weapon *myWeapon;
 	
@@ -66,7 +76,6 @@ public:
 	int myID;
 	int pathStatus;
 
-	bool pathFinderPointReached;
 	sf::Vector2i pathFinderPoint;
 
 	bool targetReached;

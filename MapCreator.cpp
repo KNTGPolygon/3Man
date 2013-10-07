@@ -221,8 +221,8 @@ bool MapCreator::LoadTileGraphics()
 	int counter = 0;
 	ImageManager* imgmng = ImageManager::getInstance();
 	//creating map tiles (will be anchanced)
-	std::string tileAddress = "Data/Textures/EditorMapTiles/";
-	std::ifstream dataSet("Data/Textures/EditorMapTiles/EditorLoadingFile.txt");
+	std::string pathToFiles = "Data/Textures/MapTiles/";
+	std::ifstream dataSet("Data/Textures/MapTiles/EditorLoadingFile.txt");
 	std::string str;
 
 		 if (!dataSet) {
@@ -248,13 +248,13 @@ bool MapCreator::LoadTileGraphics()
 				}
 				
 				
-				tileGraphics[counter] = imgmng->loadImage(tileAddress + str);
+				tileGraphics[counter] = imgmng->loadImage(pathToFiles + str);
 				counter ++;
 			
 			 }
 
-		 
-		  tileAddress = "Data/Textures/MapObjects/";
+	//------------- 
+		  pathToFiles = "Data/Textures/MapObjects/";
 		   //loading objectGraphics
 		   while( !dataSet.eof() )
 			{	
@@ -265,13 +265,31 @@ bool MapCreator::LoadTileGraphics()
 					break;
 				}
 				
-				objectGraphics[counter] = imgmng->loadImage(tileAddress + str);
+				objectGraphics[counter] = imgmng->loadImage(pathToFiles + str);
 				counter ++;
 			
 			 }
+
+	//-------------
+		 pathToFiles = "Data/Textures/Enemy/";
+		     while( !dataSet.eof() )
+			{	
+				dataSet >> str;
+					if(str.at(0) == '-')
+				{
+					counter = 0;
+					break;
+				}
+				
+				enemyGraphics[counter] = imgmng->loadImage(pathToFiles + str);
+				counter ++;
+			
+			 }
+
+
 		   dataSet.close();
 		 }
-		  
+	 //------------- 
 
 	for(unsigned int i = 0; i < tileGraphics.size(); i++)
 	{
@@ -317,6 +335,13 @@ void MapCreator::CreateSprites()
 		spr.SetImage(objectGraphics[i]);
 		spr.SetScale(0.5,0.5);
 		objectSprites.push_back(spr);
+	}
+
+	for(unsigned int i = 0; i<enemyGraphics.size();i++)
+	{
+		spr.SetImage(enemyGraphics[i]);
+		spr.SetScale(0.75,0.75);
+		enemySprites.push_back(spr);
 	}
 
 	for(int i = 0; i < 6; i++)
@@ -674,7 +699,7 @@ bool MapCreator::saveMap(std::string filename)
 	std::ofstream outputFile;
 
 	//opening dataSet!
-	std::ifstream dataSet("Data/Textures/EditorMapTiles/EditorLoadingFile.txt");
+	std::ifstream dataSet("Data/Textures/MapTiles/EditorLoadingFile.txt");
 	std::string str;
 
 		 if (!dataSet) 

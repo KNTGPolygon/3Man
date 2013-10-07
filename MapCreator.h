@@ -41,6 +41,9 @@ private:
 	std::map <int, sf::Image> objectGraphics;
 	std::vector <sf::Sprite> objectSprites;
 
+	std::map <int, sf::Image> enemyGraphics;
+	std::vector <sf::Sprite> enemySprites;
+
 	int whichSubmenuButtonAnimate;
 	sf::Image submenuButtonImage [6];
 	sf::Sprite *submenuButtonSprite [6];

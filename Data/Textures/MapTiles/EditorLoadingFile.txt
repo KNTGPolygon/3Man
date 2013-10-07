@@ -1,4 +1,10 @@
 border.png
+floor1.png 1 0
+grass.png 1 0
+lava.png 0 1
+pinky.png 0 0
+wall.png 0 0
+water.png 0 1
 grass.png 1 0
 lava.png 0 1
 pinky.png 0 0
@@ -9,8 +15,22 @@ Blank.png
 Star.png
 Square.png
 Pentagon.png
+Wall.png
 Cloud.png
 Circle.png
 Arrow.png
 Triangle.png
+-
+0.png
+1.png
+2.png
+3.png
+4.png
+5.png
+6.png
+7.png
+8.png
+9.png
+Pirate.png
+x.png
 -

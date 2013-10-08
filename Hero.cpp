@@ -161,12 +161,12 @@ void Hero::GetEvent()
 
 			hero_death.SetParameter("screen", (float)GameEngine::SCREEN_WIDTH, (float)GameEngine::SCREEN_HEIGHT);
 
-			float _cos = cos(death_anim_timer.GetElapsedTime()+0.6);
+			float _cos = cos(2*death_anim_timer.GetElapsedTime());
 			hero_death.SetParameter("circle",
 							myPosition.x-GameEngine::getInstance()->getView().GetRect().Left,
 							myPosition.y-GameEngine::getInstance()->getView().GetRect().Top,
-							800*_cos*_cos);
-			if ( death_anim_timer.GetElapsedTime() > M_PI-0.6 )
+							500*_cos*_cos );
+			if ( death_anim_timer.GetElapsedTime() > M_PI/2 )
 				death_effect = false;
 		}
 }

@@ -2,6 +2,7 @@
 
 Drawable::Drawable()
 {
+	depth = 0;
 }
 
 void Drawable::Display(sf::RenderWindow* window)

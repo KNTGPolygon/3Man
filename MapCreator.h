@@ -29,6 +29,7 @@ private:
 	int hotKeys[10];
 	int chosenTileFromToolbox;
 	int chosenObjectFromToolbox;
+	int chosenEnemyFromToolbox;
 
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
@@ -54,6 +55,7 @@ private:
 
 	 Tile ** createdMap;
 	 MapObject ** mapObjects;
+	 int ** arrayOfEnemies;
 
 	 sf::Shape blackBackgroundShape;
 
@@ -62,6 +64,12 @@ private:
 	std::map <int, sf::IntRect> toolboxRectangles;
 
 	const sf::Input &steering;
+
+	bool saveMapToFile (std::string filename);
+	bool saveMap_SavingUsedObjectsNamesPhase(std::ifstream& editorLoadingFile_inputStream, std::ofstream& outputFileStream);
+	bool saveMap_SavingGroundTilesPhase(std::ofstream& outputFileStream);
+	bool saveMap_SavingObjectsPhase(std::ofstream& outputFileStream);
+	bool saveMap_SavingEnemiesPhase(std::ofstream& outputFileStream);
 
 public:
 	MapCreator(const sf::Input &_steering);
@@ -72,8 +80,12 @@ public:
 
 	void CreateSprites();
 	void toolboxManagement(sf::Vector2i toolboxClickPosition);
+
+	bool isChosenEnemyFieldFreeOfObjects(sf::Vector2i enemy_inEnemyArrayPosition);
+	bool isChosenObjectFieldFreeOfEnemies(sf::Vector2i object_inObjectArrayPosition);
 	void changingSpriteInMap(sf::Vector2i mapClickPosition);
 	void changingObjectInMap(sf::Vector2i mapClickPosition);
+	void changingEnemyInMap(sf::Vector2i mapClickPosition);
 
 	void initializeMapArrays (unsigned int Size);
 
@@ -84,9 +96,7 @@ public:
 	void MoveCamera(sf::View *View, sf::RenderWindow *window);
 	void GetScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);
 
-	bool saveMap (std::string filename);
 	bool LoadMap (const std::string& filename);
-
 	~MapCreator();
 
 };

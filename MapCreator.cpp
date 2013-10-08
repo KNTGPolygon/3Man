@@ -20,6 +20,7 @@ MapCreator::MapCreator(const sf::Input &_steering)
 	
 	chosenTileFromToolbox = 0;
 	chosenObjectFromToolbox = 0;
+	chosenEnemyFromToolbox = 0;
 	
 	//setting default value of camera
 	cameraPosition.x = 350;
@@ -53,12 +54,17 @@ void MapCreator::initializeMapArrays (unsigned int Size)
 	for(unsigned int i = 0; i < Size*2; ++i)
     mapObjects[i] = new MapObject[Size*2];
 
+	arrayOfEnemies = new int*[Size];
+	for(unsigned int i = 0; i < Size; ++i)
+    arrayOfEnemies[i] = new int[Size];
+
 	//initialization of createdMap array (representation of created map) with first, default tile
 	for(unsigned int row = 0; row < Size; row++)
 	{
 		for(unsigned int col = 0; col < Size; col++)
 		{
 			createdMap[row][col] = Tile(1,col*32 - 32, 48 + row*32);
+			arrayOfEnemies[row][col] = -1;
 		}
 	}
 
@@ -80,7 +86,7 @@ void MapCreator::Display(sf::RenderWindow *window)
 	firstFieldX = (unsigned int)(((cameraPosition.x - 400)>0?(cameraPosition.x-400):0)/32);
 	firstFieldY = (unsigned int)(((cameraPosition.y - 240)>0?(cameraPosition.y-240):0)/32);
 
-	//----------------------------- MAP DISPLAY (TILES & OBJECTS)  ------------------------------------------
+	//----------------------------- MAP DISPLAY (TILES)  ------------------------------------------
 	for(unsigned int row = firstFieldY; row < ((noOfTilesVisible.y + firstFieldY - 8)>Size? Size:(noOfTilesVisible.y + firstFieldY - 8)); row++)
 	{
 		for(unsigned int col = firstFieldX; col < ((noOfTilesVisible.x + firstFieldX + 2)>Size? Size:(noOfTilesVisible.x + firstFieldX + 2)); col++)
@@ -92,14 +98,33 @@ void MapCreator::Display(sf::RenderWindow *window)
 		}
 	}
 
-	
+
+	//----------------------------- MAP DISPLAY (ENEMIES)  ------------------------------------------
+
+		for(unsigned int row = firstFieldY; row < ((noOfTilesVisible.y + firstFieldY - 8)>Size? Size:(noOfTilesVisible.y + firstFieldY - 8)); row++)
+		{
+			for(unsigned int col = firstFieldX; col < ((noOfTilesVisible.x + firstFieldX + 2)>Size? Size:(noOfTilesVisible.x + firstFieldX + 2)); col++)
+			{
+				if(arrayOfEnemies[row][col] >= 0)
+						{
+							//I'm getting tiles' positions, because tiles' and enemies' arrays look similiar
+							//In both of them positions of [row][col] field is the same
+							sf::Vector2i temp = createdMap[row][col].getPosition();
+							enemySprites.at(arrayOfEnemies[row][col]).SetPosition((float)temp.x, (float)temp.y);
+							window->Draw(enemySprites.at(arrayOfEnemies[row][col]));
+						}
+			}
+		}
+
+
+	//----------------------------- MAP DISPLAY (OBJECTS)  ------------------------------------------
+
 			for(unsigned int row = firstFieldY*2; row < ((noOfTilesVisible.y + firstFieldY - 8)*2 >Size*2? Size*2 :(noOfTilesVisible.y + firstFieldY - 8)*2); row++)
 				{
 					for(unsigned int col = firstFieldX*2; col < ((noOfTilesVisible.x + firstFieldX + 1)*2 >Size*2? Size*2:(noOfTilesVisible.x + firstFieldX + 1)*2); col++)
 					{
-						if(mapObjects[row][col].getType() > 0)
+						if(mapObjects[row][col].getType() > -1)
 						{
-							
 							sf::Vector2i temp = mapObjects[row][col].getPosition();
 							objectSprites.at(mapObjects[row][col].getType()).SetPosition((float)temp.x, (float)temp.y);
 							window->Draw(objectSprites.at(mapObjects[row][col].getType()));
@@ -204,6 +229,40 @@ void MapCreator::Display(sf::RenderWindow *window)
 
 			}
 
+			//----------------------------- ENEMIES DISPLAY ------------------------------------------
+			else if (toolboxMenuState == ENEMIES)
+			{
+
+				int lastField;
+				if(toolboxFirstFieldNumber + 7 > enemySprites.size())
+				{
+					lastField = enemySprites.size();
+				}
+				else
+				{
+					lastField = toolboxFirstFieldNumber + 7;
+				}
+
+
+				for(int toolboxIterator = toolboxFirstFieldNumber;toolboxIterator < lastField; toolboxIterator ++ )
+				{
+					enemySprites.at(toolboxIterator).SetPosition(-380 + cameraPosition.x + (toolboxIterator-toolboxFirstFieldNumber)*96, -280 + cameraPosition.y);
+					enemySprites.at(toolboxIterator).SetScale((float)1.52,(float)1.52);
+					window->Draw(enemySprites.at(toolboxIterator));
+					//changing sprites size to default for map-drawing
+					enemySprites.at(toolboxIterator).SetScale(0.75,0.75);
+				}
+		
+
+				if(chosenEnemyFromToolbox - toolboxFirstFieldNumber + 1 > 0 )
+				{
+					tileSprites.at(0).SetPosition(-380 + cameraPosition.x + (chosenEnemyFromToolbox - toolboxFirstFieldNumber)*96, -280 + cameraPosition.y);
+					tileSprites.at(0).SetScale(1,1);
+					window->Draw(tileSprites.at(0));
+					tileSprites.at(0).SetScale(0.5,0.5);	
+				}
+
+			}
 
 			//-------------------- ANIMATING MAIN MENU BUTTONS ------------------------------------
 			if(toolboxMenuState != SUBMENU_CHOICE)
@@ -302,6 +361,11 @@ bool MapCreator::LoadTileGraphics()
 		objectGraphics[i].CreateMaskFromColor(sf::Color(255,0,255));
 	}
 
+	for(unsigned int i = 0; i < enemyGraphics.size(); i++)
+	{
+		enemyGraphics[i].CreateMaskFromColor(sf::Color(255,0,255));
+	}
+
 	submenuButtonImage[0] = imgmng->loadImage("Data/Textures/Buttons/Tiles.bmp");
 	submenuButtonImage[1] = imgmng->loadImage("Data/Textures/Buttons/Objects.bmp");
 	submenuButtonImage[2] = imgmng->loadImage("Data/Textures/Buttons/Enemies.bmp");
@@ -380,8 +444,6 @@ void MapCreator::GetSteeringEvent()
 		blackBackgroundShape.Move(0,20);
 		}
 
-
-		//!!!!!!!!!!!!!
 	int mousePositionX = steering.GetMouseX();
 	int mousePositionY = steering.GetMouseY();
 
@@ -425,6 +487,13 @@ void MapCreator::GetSteeringEvent()
 			mousePos.x = steering.GetMouseX();
 			mousePos.y = steering.GetMouseY();
 			changingSpriteInMap(mousePos);
+		}
+		else if(toolboxMenuState == ENEMIES && mousePositionY > 150 && mousePositionX)
+		{
+			sf::Vector2i mousePos;
+			mousePos.x = steering.GetMouseX();
+			mousePos.y = steering.GetMouseY();
+			changingEnemyInMap(mousePos);
 		}
 
 		
@@ -583,7 +652,7 @@ void MapCreator::toolboxManagement(sf::Vector2i toolboxClickPosition)
 		}
 		else if(submenuButtonRectangles[3].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
 		{
-			saveMap("Test");
+			saveMapToFile("Test");
 		}
 	}
 
@@ -612,6 +681,21 @@ void MapCreator::toolboxManagement(sf::Vector2i toolboxClickPosition)
 				if(tempCheck >= 1 && tempCheck < objectSprites.size())
 				{
 					chosenObjectFromToolbox = tempCheck;
+				}
+			}
+		}
+	}
+
+	else if (toolboxMenuState == ENEMIES)
+	{
+		for(unsigned int rectangleCheckIterator = 1; rectangleCheckIterator <= toolboxRectangles.size(); rectangleCheckIterator++)
+		{
+			if(toolboxRectangles[rectangleCheckIterator].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
+			{
+				unsigned int tempCheck = rectangleCheckIterator + (toolboxFirstFieldNumber - 1);
+				if(tempCheck >= 1 && tempCheck < enemySprites.size())
+				{
+					chosenEnemyFromToolbox = tempCheck;
 				}
 			}
 		}
@@ -654,18 +738,75 @@ void MapCreator::changingObjectInMap(sf::Vector2i mapClickPosition)
 	realClickPosition.y = (int)(cameraPosition.y - 350 + mapClickPosition.y);
 	if(realClickPosition.x > 0 && realClickPosition.y > 0 && (unsigned int)(realClickPosition.x/16) < Size*2 && (unsigned int)(realClickPosition.y/16) <Size*2)
 	{
-		if(!lShiftPressed && chosenObjectFromToolbox >0)
+		sf::Vector2i object_inObjectArrayPosition ((realClickPosition.x)/16, (realClickPosition.y)/16);
+
+		if(!lShiftPressed && chosenObjectFromToolbox >-1 && isChosenObjectFieldFreeOfEnemies(object_inObjectArrayPosition))
 		{
-			mapObjects[realClickPosition.y/16][realClickPosition.x/16].changeType(chosenObjectFromToolbox);
+			mapObjects[object_inObjectArrayPosition.y][object_inObjectArrayPosition.x].changeType(chosenObjectFromToolbox);
 		}
 		else if(lShiftPressed)
 		{
-			mapObjects[realClickPosition.y/16][realClickPosition.x/16].changeType(0);
+			mapObjects[object_inObjectArrayPosition.y][object_inObjectArrayPosition.x].changeType(-1);
 		}
 	}
 
 }
+
+void MapCreator::changingEnemyInMap(sf::Vector2i mapClickPosition)
+{
+	sf::Vector2i realClickPosition;
+	realClickPosition.x = (int)(cameraPosition.x - 370 + mapClickPosition.x);
+	realClickPosition.y = (int)(cameraPosition.y - 350 + mapClickPosition.y);
+	if(realClickPosition.x > 0 && realClickPosition.y > 0 && (unsigned int)(realClickPosition.x/32) < Size && (unsigned int)(realClickPosition.y/32) <Size)
+	{
+		sf::Vector2i enemy_inEnemyArrayPosition ((realClickPosition.x)/32, (realClickPosition.y)/32);
+
+		if(!lShiftPressed && chosenEnemyFromToolbox >-1 && isChosenEnemyFieldFreeOfObjects(enemy_inEnemyArrayPosition))
+		{
+			arrayOfEnemies[enemy_inEnemyArrayPosition.y][enemy_inEnemyArrayPosition.x] = chosenEnemyFromToolbox;
+		}
+		else if(lShiftPressed)
+		{
+			arrayOfEnemies[enemy_inEnemyArrayPosition.y][enemy_inEnemyArrayPosition.x] = -1;
+		}
+	}
+
+}
+
+bool MapCreator::isChosenEnemyFieldFreeOfObjects(sf::Vector2i enemy_inEnemyArrayPosition)
+{
+	sf::Vector2i enemy_inObjectArrayPosition (enemy_inEnemyArrayPosition.x * 2, enemy_inEnemyArrayPosition.y * 2);
+	bool isEnemyFieldFree = true;
+
+	if(mapObjects[enemy_inObjectArrayPosition.y][enemy_inObjectArrayPosition.x].getType() != -1)
+		isEnemyFieldFree = false;
+
+	if(mapObjects[enemy_inObjectArrayPosition.y + 1][enemy_inObjectArrayPosition.x].getType() != -1)
+		isEnemyFieldFree = false;
+
+	if(mapObjects[enemy_inObjectArrayPosition.y][enemy_inObjectArrayPosition.x + 1].getType() != -1)
+		isEnemyFieldFree = false;
+
+	if(mapObjects[enemy_inObjectArrayPosition.y + 1][enemy_inObjectArrayPosition.x + 1].getType() != -1)
+		isEnemyFieldFree = false;
+
+	return isEnemyFieldFree;
+}
  
+bool MapCreator::isChosenObjectFieldFreeOfEnemies(sf::Vector2i object_inObjectArrayPosition)
+{
+	sf::Vector2i enemy_inObjectArrayPosition ((int)(object_inObjectArrayPosition.x / 2), (int)(object_inObjectArrayPosition.y / 2));
+
+	bool isObjectFieldFree = true;
+
+	if(arrayOfEnemies[enemy_inObjectArrayPosition.y][enemy_inObjectArrayPosition.x] != -1)
+		isObjectFieldFree = false;
+
+
+	return isObjectFieldFree;
+}
+
+
 
 MapCreator::~MapCreator()
 {
@@ -690,40 +831,39 @@ MapCreator::~MapCreator()
 
 }
 
-bool MapCreator::saveMap(std::string filename)
+bool MapCreator::saveMapToFile(std::string filename)
 {
 	int counter = 0;
 	std::stringstream tempFilename;
 
 	std::string path = "./Data/Maps/";
-	std::ofstream outputFile;
+	std::ofstream outputFileStream;
 
-	//opening dataSet!
-	std::ifstream dataSet("Data/Textures/MapTiles/EditorLoadingFile.txt");
+	std::ifstream editorLoadingFile_inputStream("Data/Textures/MapTiles/EditorLoadingFile.txt");
 	std::string str;
 
-		 if (!dataSet) 
+		 if (!editorLoadingFile_inputStream) 
 			 {
-				std::cerr << "Nie udało się załadował pliku " <<" EditorLoadingFile.txt "<< "\n";
+				std::cerr << "Nie udało się załadować pliku " <<" EditorLoadingFile.txt "<< "\n";
 				return 0;
 			 }
 		
 			tempFilename << filename << ".map";
 
 	
-	outputFile.open((path + tempFilename.str()).c_str());
+	outputFileStream.open((path + tempFilename.str()).c_str());
 
 	//to skip border image address
-	dataSet >> str;
+	editorLoadingFile_inputStream >> str;
 
-	if(outputFile)
+	if(outputFileStream)
 	{
-		outputFile << Size << "\n" << "*" << "\n";
-		outputFile << "./Data/Textures/MapTiles/" << "\n" << "*" << "\n";
+		outputFileStream << Size << "\n" << "*" << "\n";
+		outputFileStream << "./Data/Textures/MapTiles/" << "\n" << "*" << "\n";
 			
-				  while( !dataSet.eof() )
+				  while( !editorLoadingFile_inputStream.eof() )
 					{	
-						dataSet >> str;
+						editorLoadingFile_inputStream >> str;
 						
 							if(str[0] == '-')
 						{
@@ -731,76 +871,151 @@ bool MapCreator::saveMap(std::string filename)
 						}
 
 							if(str.size() != 1)
-								outputFile << str << " " ;
+								outputFileStream << str << " " ;
 							else
 							{
-								outputFile << str << " ";
-								dataSet >> str;
-								outputFile << str << "\n";
+								outputFileStream << str << " ";
+								editorLoadingFile_inputStream >> str;
+								outputFileStream << str << "\n";
 							}
 
 				   }
-		outputFile << "*" << "\n";
+		outputFileStream << "*" << "\n";
 
 		//skipping blank object
-		dataSet >> str;
+		editorLoadingFile_inputStream.ignore(1);
 
-		//saving info about objects into map file
-		while( !dataSet.eof() )
+		saveMap_SavingUsedObjectsNamesPhase(editorLoadingFile_inputStream, outputFileStream);
+
+		saveMap_SavingGroundTilesPhase(outputFileStream);
+		saveMap_SavingObjectsPhase(outputFileStream);
+		saveMap_SavingEnemiesPhase(outputFileStream);
+
+
+		std::cout << "Map saved!" << std::endl;
+	}
+
+	editorLoadingFile_inputStream.close();
+	outputFileStream.close();
+	return true;
+}
+
+bool MapCreator::saveMap_SavingUsedObjectsNamesPhase(std::ifstream& editorLoadingFile_inputStream, std::ofstream& outputFileStream)
+{
+	std::string usedObjectName = "";
+
+	while( !editorLoadingFile_inputStream.eof() )
 					{	
-						dataSet >> str;
-							if(str.at(0) == '-')
+						editorLoadingFile_inputStream >> usedObjectName;
+							if(usedObjectName.at(0) == '-')
 						{
 							break;
 						}
 
-						outputFile << str << "\n";
+						outputFileStream << usedObjectName << "\n";
 
 				   }
 
-		outputFile << "*" << "\n";
+		outputFileStream << "*" << "\n";
+		return true;
+}
 
+bool MapCreator::saveMap_SavingGroundTilesPhase(std::ofstream& outputFileStream)
+{
+	if(outputFileStream.good())
+	{
 		for(unsigned int row = 0; row < Size; row++)
-		{
-			for(unsigned int col = 0; col < Size ; col++)
 			{
-				if(col != Size-1)
-					outputFile << createdMap[row][col].getType() << " ";
-				else
+				for(unsigned int col = 0; col < Size ; col++)
 				{
-					outputFile << createdMap[row][col].getType();
+					if(col != Size-1)
+						outputFileStream << createdMap[row][col].getType() << " ";
+					else
+					{
+						outputFileStream << createdMap[row][col].getType();
+					}
 				}
+				outputFileStream << "\n" ;
 			}
-			outputFile << "\n" ;
-		}
-		outputFile << "*" << "\n";
+		outputFileStream << "*" << "\n";
+	}
+	else
+	{
+		std::cout << "Problem detected in saveMap_SavingGroundTilesPhase function" << std::endl;
+		return false;
+	}
+	return true;
+}
 
+bool MapCreator::saveMap_SavingObjectsPhase(std::ofstream& outputFileStream)
+{
+	if(outputFileStream.good())
+	{
 		for(unsigned int row = 0; row < Size*2; row++)
 			{
 				for(unsigned int col = 0; col < Size*2; col++)
 				{
 					if(col != Size*2-1 && mapObjects[row][col].getType() != -1)
-						outputFile << " " << mapObjects[row][col].getType() << " ";
+						outputFileStream << " " << mapObjects[row][col].getType() << " ";
 					else if(col != Size*2-1)
 					{
-						outputFile << mapObjects[row][col].getType() << " ";
+						outputFileStream << mapObjects[row][col].getType() << " ";
 					}
 					else if(mapObjects[row][col].getType() != -1)
 					{
-						outputFile << " " << mapObjects[row][col].getType();
+						outputFileStream << " " << mapObjects[row][col].getType();
 					}
 					else
 					{
-						outputFile << mapObjects[row][col].getType();
+						outputFileStream << mapObjects[row][col].getType();
 					}
 				}
-				outputFile << "\n" ;
+				outputFileStream << "\n" ;
 			}
-		outputFile << "*" ;
-		std::cout << "Map saved!" << std::endl;
+		outputFileStream << "*\n";
+	}
+	else
+	{
+		std::cout << "Problem detected in saveMap_SavingObjectsPhase function" << std::endl;
+		return false;
 	}
 
-	outputFile.close();
+		return true;
+}
+
+bool MapCreator::saveMap_SavingEnemiesPhase(std::ofstream& outputFileStream)
+{
+	if(outputFileStream.good())
+	{
+		for(unsigned int row = 0; row < Size; row++)
+			{
+				for(unsigned int col = 0; col < Size; col++)
+				{
+					if(col != Size-1 && arrayOfEnemies[row][col] != -1)
+						outputFileStream << " " << arrayOfEnemies[row][col] << " ";
+					else if(col != Size-1)
+					{
+						outputFileStream << arrayOfEnemies[row][col] << " ";
+					}
+					else if(arrayOfEnemies[row][col] != -1)
+					{
+						outputFileStream << " " << arrayOfEnemies[row][col];
+					}
+					else
+					{
+						outputFileStream << arrayOfEnemies[row][col];
+					}
+				}
+				outputFileStream << "\n" ;
+			}
+		outputFileStream << "*\n";
+	}
+	else
+	{
+		std::cout << "Problem detected in saveMap_SavingEnemiesPhase function" << std::endl;
+		return false;
+	}
+
 	return true;
 }
 

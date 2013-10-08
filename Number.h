@@ -1,7 +1,7 @@
 #pragma once
 #include "Enemy.h"
-
-class Number : public Enemy
+#include "Drawable.h"
+class Number : public Enemy//protected
 {
 private:
 	int value;
@@ -12,6 +12,8 @@ public:
 		bool RandomPathMode =  true,float Velocity = 1.0 , float PullRange = 100.0 );
 	~Number(void);
 	void Colliding(bool minusCollision,bool plusCollision);
+	void UpdateCollision();
+	void UpdateSystem();
 	void Display(sf::RenderWindow *window);
 	void SetImage(int Value);
 

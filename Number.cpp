@@ -16,6 +16,7 @@ Number::Number(sf::Vector2i Position,int Value, bool RandomPathMode
 		sign = sf::Shape::Rectangle(0.0,0.0,10.0,4.0,sf::Color(0,0,0));
 		sign.SetCenter(sign.GetPosition().x/2,sign.GetPosition().y/2);
 	}
+
 	myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+Util::int2str( abs( value ) ) + ".PNG" );
 	myTexture.SetSmooth( false );
 	myTexture.CreateMaskFromColor(sf::Color(255,0,255));
@@ -25,11 +26,13 @@ Number::Number(sf::Vector2i Position,int Value, bool RandomPathMode
 	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
 	mySprite.setType( "enemy" );
 	
-	startPosition = Position;
-	target = Position;
-	MovementVector.x = MovementVector.y = 150;
+	startPosition   = Position;
+	pathFinderPoint = Position;
+	target			= Position;
+	MovementVector.x = MovementVector.y = 64;
 
-	
+	pathSearched = false;
+	RandomPathMode = false;
 
 	if( RandomPathMode )
 	{
@@ -41,21 +44,28 @@ Number::Number(sf::Vector2i Position,int Value, bool RandomPathMode
 		myAI = PATHWALK;
 	pathMode = PATHWALK;
 	}
+
 	inMove		  = false;
 	targetReached = false;
+	attacking	  = false;
 	pathNumber	  = 0;
 	escapeRange = 300;
 	pullRange = PullRange;
 	waitTimeCounter = 0;
 	waitTime = 50;
 
-	path = new std::vector<sf::Vector2i> ;
-	path->push_back(sf::Vector2i(500,500));
-	path->push_back(sf::Vector2i(400,400));
-	path->push_back(sf::Vector2i(100,100));
-	path->push_back(sf::Vector2i(300,100));
+
+	numberOfRandomPathPoints = 5;
+	randomPatrolPath = new std::vector<sf::Vector2i>[numberOfRandomPathPoints] ;
 
 	mySprite.setCircleMask(20,20,20);
+
+	myWeapon = new Weapon(YellowBall);
+	myWeapon->PutScreenSize(GameEngine::SCREEN_WIDTH,GameEngine::SCREEN_HEIGHT );
+
+	//myID = GameEngine::getInstance()->pathfinder->AddNewMobID();
+	std::cout<<"number myID: " <<myID<<std::endl;
+	generated = false;
 }
 
 Number::~Number(void)
@@ -71,10 +81,20 @@ void Number::SetImage(int Value)
 			mySprite.SetPosition((float) myPosition.x ,(float) myPosition.y );
 			mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
 }
+void Number::UpdateCollision()
+{
+ 	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
+	Colliding( GameEngine::getInstance()->DetectCollision(&mySprite,"Minus.PNG") 
+			 , GameEngine::getInstance()->DetectCollision(&mySprite,"Plus.PNG" ) );
+	myWeapon->UpdateCollision();
+}
+void Number::UpdateSystem()
+{
+	UpdateCollision();
+}
 void Number::Colliding(bool minusCollision,bool plusCollision)
 {
 	//DetectCollision(SpriteExt*, std::string);
-	GameEngine::getInstance()->DetectCollision(&mySprite,"Plus");
 	if(minusCollision)
 	{
 		if( value > 0 && value < 9)
@@ -84,7 +104,7 @@ void Number::Colliding(bool minusCollision,bool plusCollision)
 			SetImage(value);
 		}
 		else
-			if( value >-9)
+			if( value >-9 )
 			{
 			value--;
 			isMinus = true;
@@ -101,7 +121,7 @@ void Number::Colliding(bool minusCollision,bool plusCollision)
 			SetImage(value);
 		}
 		else
-		if( value > -9  )
+		if( value <= 0 && value >= -9 )
 		{
 			value++;
 			isMinus = true;
@@ -112,7 +132,7 @@ void Number::Colliding(bool minusCollision,bool plusCollision)
 }
 void Number::Display(sf::RenderWindow *window)
 {
-	depth = -mySprite.GetPosition().y;
+	depth = (int)( -mySprite.GetPosition().y );
 	window->Draw( mySprite );
 	if ( isMinus )
 	{

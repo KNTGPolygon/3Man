@@ -813,14 +813,14 @@ MapCreator::~MapCreator()
 	
 	if(createdMap != NULL)
 	{
-	for(unsigned int i = 0; i < Size; ++i)
+	for(unsigned int i = 0; i < Size; i++)
     delete [] createdMap[i];
 	delete [] createdMap;
 
 
-	for(unsigned int i = 0; i < 2*Size; ++i)
-    delete mapObjects[i];
-	delete mapObjects;
+	for(unsigned int i = 0; i < 2*Size; i++)
+    delete [] mapObjects[i];
+	delete [] mapObjects;
 
 	for(int i = 0; i < 6; i++)
 	{

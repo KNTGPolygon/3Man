@@ -2,11 +2,23 @@
 #include "Hero.h"
 #include "GameEngine.h"
 
-Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
+Enemy::Enemy(sf::Vector2i Position, int _value, std::string fileName, 
 	float Velocity , float PullRange)
-: velocity(Velocity),pullRange(PullRange), myPosition(Position)
+: velocity(Velocity),pullRange(PullRange), myPosition(Position),value(_value)
 {
+	if( value == 10 )
 	myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+fileName );
+	else if( value >= -9 && value <=9 )
+	myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+Util::int2str( abs( value ) ) + ".PNG" );
+	
+	if( value < 0 )
+		isMinus = true;
+	else
+		isMinus = false;
+
+	sign = sf::Shape::Rectangle(0.0,0.0,10.0,4.0,sf::Color(0,0,0));
+	sign.SetCenter(sign.GetPosition().x/2,sign.GetPosition().y/2);
+
 	myTexture.SetSmooth( false );
 	myTexture.CreateMaskFromColor(sf::Color(255,0,255));
 
@@ -15,6 +27,7 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
 	mySprite.setType( "enemy" );
 
+
 	startPosition   = Position;
 	pathFinderPoint = Position;
 	target			= Position;
@@ -22,7 +35,7 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	MovementVector.x = MovementVector.y = 64;//150
 
 	pathSearched = false;
-	RandomPathMode = false;
+	bool RandomPathMode = false;
 	if( RandomPathMode )
 	{
 	pathMode = RANDOM_PATHWALK;
@@ -40,16 +53,10 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	targetReached = false;
 	attacking	  = false;
 	pathNumber	  = 0;
-	escapeRange = 300;
+	escapeRange = 400;
 	pullRange = PullRange;
 	waitTimeCounter = 0;
 	waitTime = 50;
-
-	path = new std::vector<sf::Vector2i> ;
-	path->push_back(sf::Vector2i(500,500));
-	path->push_back(sf::Vector2i(400,400));
-	path->push_back(sf::Vector2i(100,100));
-	path->push_back(sf::Vector2i(300,100));
 
 	numberOfRandomPathPoints = 5;
 	randomPatrolPath = new std::vector<sf::Vector2i>[numberOfRandomPathPoints] ;
@@ -61,6 +68,7 @@ Enemy::Enemy(sf::Vector2i Position,std::string fileName, bool RandomPathMode,
 	myWeapon->PutScreenSize(GameEngine::SCREEN_WIDTH,GameEngine::SCREEN_HEIGHT );
 
 	myID = GameEngine::getInstance()->pathfinder->AddNewMobID();
+	std::cout<<"enemy myID: " <<myID<<std::endl;
 	generated = false;
 }
 
@@ -71,7 +79,8 @@ Enemy::~Enemy(void)
 void Enemy::UpdateCollision()
 {
  	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
-	
+	Colliding( GameEngine::getInstance()->DetectCollision(&mySprite,"Minus.PNG") 
+			 , GameEngine::getInstance()->DetectCollision(&mySprite,"Plus.PNG" ) );
 	myWeapon->UpdateCollision();
 }
 
@@ -79,7 +88,43 @@ void Enemy::UpdateSystem()
 {
 	UpdateCollision();
 }
-
+void Enemy::Colliding(bool minusCollision,bool plusCollision)
+{
+	if(minusCollision)
+	{
+		if( value > 0 && value < 9)
+		{
+			value--;
+			isMinus = false;
+			SetImage(value);
+		}
+		else
+			if( value >-9 )
+			{
+			value--;
+			isMinus = true;
+				if ( value == 0 ) isMinus = false;		
+			SetImage(value);
+			}
+	}
+	else if(plusCollision)
+	{
+		if( value > 0 && value < 9)
+		{
+			value++;
+			isMinus = false;
+			SetImage(value);
+		}
+		else
+		if( value <= 0 && value >= -9 )
+		{
+			value++;
+			isMinus = true;
+			if ( value == 0 ) isMinus = false;		
+			SetImage(value);
+		}
+	}
+}
 void Enemy::EventHandling()
 {
 	SetHeroPosition(Hero::myPosition);
@@ -107,6 +152,7 @@ void Enemy::AI()
 		GenerateRandomPath();
 		generated = true;
 	}
+	attacking = false;
 	switch( myAI )
 	{
 	case PATHWALK: //   ---  PATHWALK ---
@@ -337,6 +383,9 @@ int Enemy::FindPath(sf::Vector2i Target)
 
 void Enemy::GenerateRandomPath()
 {
+	std::cout<<"ID: " <<myID<<std::endl;
+
+	std::cout<<"start : "<<startPosition.x<<" "<<startPosition.y<<std::endl;
 	for( int i = 0 ; i < numberOfRandomPathPoints ; i++ )
 	{
 		do{
@@ -362,6 +411,11 @@ void Enemy::Display(sf::RenderWindow *window)
 	window->Draw( mySprite );
 	myWeapon->Display( window );
 
+	if ( isMinus )
+	{
+		sign.SetPosition( mySprite.GetPosition().x - 20,mySprite.GetPosition().y);	
+		window->Draw( sign );
+	}
 	if(GameEngine::getInstance()->devmode)
 	{
 		if ( GameEngine::getInstance()->DetectCollision(&mySprite) )
@@ -388,10 +442,17 @@ sf::Vector2i Enemy::GetPosition()
 {
 	return sf::Vector2i( (int)myPosition.x , (int)myPosition.y );
 }
-void Enemy::SetPathPoints(std::vector<sf::Vector2i> *Path)
+void Enemy::SetImage(int Value)
 {
-	path = Path;
+			myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+Util::int2str( abs( Value ) ) + ".PNG" );
+			myTexture.SetSmooth( false );
+			myTexture.CreateMaskFromColor(sf::Color(255,0,255));
+
+			mySprite.SetImage( myTexture );
+			mySprite.SetPosition((float) myPosition.x ,(float) myPosition.y );
+			mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
 }
+
 void Enemy::SetHeroPosition( sf::Vector2f HeroPosition )
 {
 	heroPosition.x = (int) HeroPosition.x;

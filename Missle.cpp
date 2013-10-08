@@ -12,7 +12,7 @@ Missle::Missle(std::string fileName, std::string _missleColider, float Range ,fl
 	mySprite.SetPosition(0,0);
 	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
 	mySprite.setCircleMask((int)mySprite.GetCenter().x, (int)mySprite.GetCenter().y, 4);
-	mySprite.setType("missile");
+	mySprite.setType(fileName);
 
 	angle = 0;
 	inMove   = false;

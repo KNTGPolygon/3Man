@@ -37,6 +37,7 @@ protected:
 	int waitTimeCounter;
 	int iterator;
 	int numberOfRandomPathPoints;
+	int value;
 
 	float velocity;
 	float distanceFromTarget;
@@ -45,7 +46,6 @@ protected:
 	float escapeRange;
 	float distanceFromHero;
 
-	std::vector<sf::Vector2i> *path;
 	std::vector<sf::Vector2i> *randomPatrolPath;
 	std::vector<sf::Vector2i> pathfinderPath;
 
@@ -68,7 +68,8 @@ protected:
 	void Follow();
 	void ReturnToPathWalk();
 	int FindPath(sf::Vector2i Target);
-	
+	void Colliding(bool minusCollision,bool plusCollision);
+	void SetImage(int Value);
 	Weapon *myWeapon;
 	
 public:
@@ -76,12 +77,12 @@ public:
 	int myID;
 	int pathStatus;
 
+	sf::Shape sign;
 	sf::Vector2i pathFinderPoint;
 
 	bool targetReached;
 	bool inMove;
-
-
+	bool isMinus;
 
 	void Display(sf::RenderWindow *window);
 	void UpdateSystem();
@@ -93,9 +94,8 @@ public:
 	void AI();
 	void GenerateRandomPath();
 	void SetStartPosition(sf::Vector2f Position);
-	void SetPathPoints(std::vector<sf::Vector2i> *Path);
-	Enemy(sf::Vector2i Position = sf::Vector2i(300,300),std::string fileName = "Pirate.PNG" ,
-		bool RandomPathMode = true,float Velocity = 1.0 , float PullRange = 100.0 );
+	Enemy(sf::Vector2i Position = sf::Vector2i(300,300),int _value = 10,
+		  std::string fileName = "Pirate.PNG" ,float Velocity = 1.0 , float PullRange = 100.0 );
 	~Enemy(void);
 
 	void SetHeroPosition( sf::Vector2f HeroPosition );

@@ -19,11 +19,9 @@ private:
 	std::vector<Drawable*> DrawableEntityList;
 	Hero* hero;
 	Maps* map;
+
 	Enemy* pirate;
-	Number *seven;
-	Number **numbers;
-	std::vector<sf::Vector2i> foundedPath;
-	//PathFinding *pathfinding;
+
 	int iterator;
 	int mapPixelatedSize;
 	int numberOfObjects;

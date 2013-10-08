@@ -21,14 +21,15 @@ void GameState::Init()
 	arrayOfObjects = map->getMapGameObjects();
 	mapPixelatedSize = map->getSize() * 64;
 
-	pirate = new Enemy(sf::Vector2i(100,100));
-	
+	pirate = new Enemy(sf::Vector2i(100,100),1);
 	GameEngine::getInstance()->pathfinder->Initialization( GameEngine::getInstance()->GetObjects(),
 														   GameEngine::getInstance()->GetGridSize().x,
 														   GameEngine::getInstance()->GetGridSize().y );
 	
 	DrawableEntityList.push_back(hero);
 	DrawableEntityList.push_back(pirate);
+
+
 	for( int i = 0; i < numberOfObjects ; i++ )
 		DrawableEntityList.push_back( arrayOfObjects[i] );
 	std::cout << "DEL size: " << DrawableEntityList.size() << std::endl;

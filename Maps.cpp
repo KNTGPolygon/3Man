@@ -50,7 +50,7 @@ Maps::Maps(const std::string& filename)
 	for(int i = 0; i < Size*2; ++i)
     tempConstructorObjects[i] = new MapObject[Size*2];
 
-
+	
 	int rowNumber = 0;
 	int colNumber = 0;
 
@@ -73,7 +73,7 @@ Maps::Maps(const std::string& filename)
 					 }
 				 }
 			 }while(looping);
-
+			
 			looping = true;
 			 unsigned int counter = 1;
 			 std::string substring;
@@ -110,7 +110,7 @@ Maps::Maps(const std::string& filename)
 			 looping = true;
 			
 			 std::string objectPath = "Data/Textures/MapObjects/";
-			 counter = 1;
+			 counter = 0;
 			 do{
 				if(map.good())
 				{

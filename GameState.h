@@ -6,6 +6,7 @@
 #include "Number.h"
 #include "Collision/QuadtreeNode.h"
 #include "Enemies/PathFinder.h"
+#include <string>
 
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
@@ -28,6 +29,10 @@ private:
 	GameObject ** arrayOfObjects;
 	static const int NUM_OF_ENEMIES = 5;
 public:
+	static bool restart_level;
+	static bool death_effect;
+	static sf::Clock death_anim_timer;
+public:
 	GameState();
 	void Init();
 	void Display();
@@ -35,6 +40,9 @@ public:
 	void EventHandling();
 	void GetEvents();
 	void Cleanup();
+	void LoadLevel(const std::string&);
+	void ClearLevel();
+	void HeroDeathEffect();
 };
 
 #endif

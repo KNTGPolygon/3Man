@@ -50,9 +50,6 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 	keyDown = sf::Key::S;
 	keyLeft = sf::Key::A;
 	keyRight = sf::Key::D;
-
-	death_anim_timer.Reset();
-	death_effect = false;
 }
 
 Hero::~Hero(void)
@@ -149,25 +146,11 @@ void Hero::GetEvent()
 		weapon[i]->active = false;
 		}
 
-		if ( steering.IsKeyDown(sf::Key::Space) && !death_effect)
+		if ( steering.IsKeyDown(sf::Key::Space) && !GameState::death_effect)
 		{
-			death_effect = true;
-			death_anim_timer.Reset();
-		}
-
-		if ( death_effect )
-		{
-			sf::PostFX& hero_death = EffectLayer::getInstance()->AddEffect(Fx::HeroDeath);
-
-			hero_death.SetParameter("screen", (float)GameEngine::SCREEN_WIDTH, (float)GameEngine::SCREEN_HEIGHT);
-
-			float _cos = cos(2*death_anim_timer.GetElapsedTime());
-			hero_death.SetParameter("circle",
-							myPosition.x-GameEngine::getInstance()->getView().GetRect().Left,
-							myPosition.y-GameEngine::getInstance()->getView().GetRect().Top,
-							500*_cos*_cos );
-			if ( death_anim_timer.GetElapsedTime() > M_PI/2 )
-				death_effect = false;
+			GameState::death_effect = true;
+			GameState::death_anim_timer.Reset();
+			GameState::restart_level = true;
 		}
 }
 

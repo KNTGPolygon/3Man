@@ -20,8 +20,6 @@ private:
 	bool armor; //pancerz
 	bool invincible; //niesmiertelnosc
 
-	bool death_effect;
-
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
 	int weaponType;
@@ -52,8 +50,6 @@ private:
 
 	sf::Image MyTexture;			
 	sf::String strMyPosition;
-
-	sf::Clock death_anim_timer;
 
 const sf::Input &steering;//Interakcja z otoczeniem
 

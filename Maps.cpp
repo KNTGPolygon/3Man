@@ -50,6 +50,10 @@ Maps::Maps(const std::string& filename)
 	for(int i = 0; i < Size*2; ++i)
     tempConstructorObjects[i] = new MapObject[Size*2];
 
+	arrayOfEnemies = new Enemy*[Size];
+	for(unsigned int i = 0; i < Size; ++i)
+		arrayOfEnemies[i] = new Enemy[Size];
+
 	
 	int rowNumber = 0;
 	int colNumber = 0;
@@ -269,6 +273,55 @@ Maps::Maps(const std::string& filename)
 				}
 				
 				std::cout << " Map loaded succesfully! " << std::endl;
+
+
+				//------------------------
+
+				getline (map,stringRepresentingFileLine);
+
+				colNumber = 0;
+				rowNumber = 0;
+
+			  while ( map.good() )
+				{
+				 int enemyType = -1;
+				 getline (map,stringRepresentingFileLine);
+				 std::istringstream iss(stringRepresentingFileLine);
+				 std::string sub;
+
+				 looping = true;
+
+						do
+						{
+						iss >>sub;
+						if(sub.at(0) == '*')
+						{
+							break;
+						}
+
+							enemyType = atoi(sub.c_str());
+							arrayOfEnemies[rowNumber][colNumber] = Enemy(sf::Vector2i(colNumber * 64,rowNumber * 64),enemyType);
+							colNumber++;
+							if(colNumber == Size)
+							{
+								break;
+							}
+
+						}
+						while(iss);
+
+						rowNumber++;					
+
+						colNumber = 0;
+
+						if(sub.at(0) == '*')
+							{
+								break;
+							}
+
+				}
+
+
 
 		 map.close();
 

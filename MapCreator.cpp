@@ -16,7 +16,7 @@ MapCreator::MapCreator(const sf::Input &_steering)
 	//loading images from files, creating sprites
 	LoadTileGraphics();
 
-	blackBackgroundShape = sf::Shape::Rectangle(-64,-20,800,40, sf::Color(0,0,0,255));
+	blackBackgroundShape = sf::Shape::Rectangle(-64,-100,800,40, sf::Color(25,50,25,255));
 	
 	chosenTileFromToolbox = 0;
 	chosenObjectFromToolbox = 0;
@@ -353,17 +353,20 @@ bool MapCreator::LoadTileGraphics()
 	for(unsigned int i = 0; i < tileGraphics.size(); i++)
 	{
 		tileGraphics[i].CreateMaskFromColor(sf::Color(255,0,255));
+		tileGraphics[i].SetSmooth(false);
 	}
 
 
 	for(unsigned int i = 0; i < objectGraphics.size(); i++)
 	{
 		objectGraphics[i].CreateMaskFromColor(sf::Color(255,0,255));
+		objectGraphics[i].SetSmooth(false);
 	}
 
 	for(unsigned int i = 0; i < enemyGraphics.size(); i++)
 	{
 		enemyGraphics[i].CreateMaskFromColor(sf::Color(255,0,255));
+		enemyGraphics[i].SetSmooth(false);
 	}
 
 	submenuButtonImage[0] = imgmng->loadImage("Data/Textures/Buttons/Tiles.bmp");
@@ -956,7 +959,9 @@ bool MapCreator::saveMap_SavingObjectsPhase(std::ofstream& outputFileStream)
 				for(unsigned int col = 0; col < Size*2; col++)
 				{
 					if(col != Size*2-1 && mapObjects[row][col].getType() != -1)
+					{
 						outputFileStream << " " << mapObjects[row][col].getType() << " ";
+					}
 					else if(col != Size*2-1)
 					{
 						outputFileStream << mapObjects[row][col].getType() << " ";
@@ -1040,6 +1045,10 @@ bool MapCreator::LoadMap(const std::string& filename)
 			delete mapObjects[i];
 			delete mapObjects;
 
+			for(unsigned int i = 0; i < Size; ++i)
+			delete [] arrayOfEnemies[i];
+			delete [] arrayOfEnemies;
+
 		  do{
 			 if(map.good())
 				 {
@@ -1065,6 +1074,10 @@ bool MapCreator::LoadMap(const std::string& filename)
 		mapObjects = new MapObject*[Size*2];
 		for(unsigned int i = 0; i < Size*2; ++i)
 		mapObjects[i] = new MapObject[Size*2];
+
+		arrayOfEnemies = new int*[Size];
+		for(unsigned int i = 0; i < Size; ++i)
+			arrayOfEnemies[i] = new int[Size];
 
 
 
@@ -1220,8 +1233,56 @@ bool MapCreator::LoadMap(const std::string& filename)
 
 				}
 
+
+			  //------------------------
+			   getline (map,stringRepresentingFileLine);;
+			  	rowNumber = 0;
+				colNumber = 0;
+
+
+			  while ( map.good() )
+				{
+				 int fieldType = -1;
+				 getline (map,stringRepresentingFileLine);
+				 std::istringstream iss(stringRepresentingFileLine);
+				 std::string sub;
+
+				 looping = true;
+				 int enemyType = -1;
+						do
+						{
+						iss >>sub;
+						if(sub.at(0) == '*')
+						{
+							break;
+						}
+						//geting type of tile <ID 1,2,3... which tells what is it's picture
+							enemyType = atoi(sub.c_str());
+							arrayOfEnemies[rowNumber][colNumber] = enemyType;
+							colNumber++;
+							if(colNumber == Size)
+							{
+								break;
+							}
+
+						}
+						while(iss);
+
+						rowNumber++;					
+
+						colNumber = 0;
+
+						if(sub.at(0) == '*')
+							{
+								break;
+							}
+
+				}
+
 			  std::cout << "Editor says: Map loaded succesfully!" << std::endl;
 			  map.close();
+
+
 
 	return true;
 }

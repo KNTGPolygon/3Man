@@ -50,10 +50,6 @@ Maps::Maps(const std::string& filename)
 	for(int i = 0; i < Size*2; ++i)
     tempConstructorObjects[i] = new MapObject[Size*2];
 
-	arrayOfEnemies = new Enemy*[Size];
-	for(unsigned int i = 0; i < Size; ++i)
-		arrayOfEnemies[i] = new Enemy[Size];
-
 	
 	int rowNumber = 0;
 	int colNumber = 0;
@@ -300,8 +296,14 @@ Maps::Maps(const std::string& filename)
 						}
 
 							enemyType = atoi(sub.c_str());
-							arrayOfEnemies[rowNumber][colNumber] = Enemy(sf::Vector2i(colNumber * 64,rowNumber * 64),enemyType);
+
+							if(enemyType != -1)
+							{
+								listOfEnemies.push_back(sf::Vector3i(colNumber * 64,rowNumber * 64,enemyType));
+							}
+
 							colNumber++;
+
 							if(colNumber == Size)
 							{
 								break;

@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <list>
 #include <cstdlib>
 #include "Tile.h"
 #include "MapObject.h"
@@ -27,7 +28,7 @@ private:
 
 	Tile ** map_data;
 	GameObject ** mapGameObjects;
-	Enemy ** arrayOfEnemies;
+	std::list <sf::Vector3i> listOfEnemies;
 
 	std::map <int, int> typeOfTileAnimations;
 

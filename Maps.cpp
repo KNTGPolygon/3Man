@@ -270,6 +270,61 @@ Maps::Maps(const std::string& filename)
 				
 				std::cout << " Map loaded succesfully! " << std::endl;
 
+
+				//------------------------
+
+				getline (map,stringRepresentingFileLine);
+
+				colNumber = 0;
+				rowNumber = 0;
+
+			  while ( map.good() )
+				{
+				 int enemyType = -1;
+				 getline (map,stringRepresentingFileLine);
+				 std::istringstream iss(stringRepresentingFileLine);
+				 std::string sub;
+
+				 looping = true;
+
+						do
+						{
+						iss >>sub;
+						if(sub.at(0) == '*')
+						{
+							break;
+						}
+
+							enemyType = atoi(sub.c_str());
+
+							if(enemyType != -1)
+							{
+								listOfEnemies.push_back(sf::Vector3i(colNumber * 64,rowNumber * 64,enemyType));
+							}
+
+							colNumber++;
+
+							if(colNumber == Size)
+							{
+								break;
+							}
+
+						}
+						while(iss);
+
+						rowNumber++;					
+
+						colNumber = 0;
+
+						if(sub.at(0) == '*')
+							{
+								break;
+							}
+
+				}
+
+
+
 		 map.close();
 
 		 createTiles();

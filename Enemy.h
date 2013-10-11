@@ -63,6 +63,7 @@ protected:
 	sf::Vector2f shiftVector;
 	sf::Vector2i oldHeroPosition;
 
+	void Combat();
 	void RandomPathWalk();
 	void PathWalk();
 	void Follow();

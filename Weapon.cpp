@@ -178,8 +178,8 @@ int Weapon::SetWeapon(WeaponType Weapon)
 		error = 10.0;
 		break;
 	default:
-		return 1;
+		return 0;
 		break;
 	}
-	return 0;
+	return 1;
 }

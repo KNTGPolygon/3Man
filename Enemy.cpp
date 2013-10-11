@@ -47,8 +47,6 @@ Enemy::Enemy(sf::Vector2i Position, int _value, std::string fileName,
 	myAI = PATHWALK;
 	}
 
-	//myAI = STAY;
-
 	inMove		  = false;
 	targetReached = false;
 	attacking	  = false;
@@ -60,7 +58,6 @@ Enemy::Enemy(sf::Vector2i Position, int _value, std::string fileName,
 
 	numberOfRandomPathPoints = 5;
 	randomPatrolPath = new std::vector<sf::Vector2i>[numberOfRandomPathPoints] ;
-
 
 	mySprite.setCircleMask(20,20,20);
 
@@ -92,7 +89,7 @@ void Enemy::Colliding(bool minusCollision,bool plusCollision)
 {
 	if(minusCollision)
 	{
-		if( value > 0 && value < 9)
+		if( value > 0 && value <= 9)
 		{
 			value--;
 			isMinus = false;
@@ -156,8 +153,6 @@ void Enemy::AI()
 	switch( myAI )
 	{
 	case PATHWALK: //   ---  PATHWALK ---
-	
-	attacking = false;
 	PathWalk();
 		break;
 	case FOLLOW:
@@ -165,15 +160,9 @@ void Enemy::AI()
 		break;
 
 	case COMBAT:
-		//Logic( pathFinderPoint );
-		attacking = true;
-		myWeapon->active = true;
-		myWeapon->SetFiringPosition( sf::Vector2f( (float)myPosition.x, (float)myPosition.y) );
-		inMove = false;
-		myAI = FOLLOW;
+		Combat();
 		break;
-
-	case RANDOM_PATHWALK: //   ---  RANDOM_PATHWALK ---
+	case RANDOM_PATHWALK:
 		RandomPathWalk();
 		break;
 	case RETURN_TO_PATHWALK:
@@ -184,6 +173,15 @@ void Enemy::AI()
 	}
 
 	myWeapon->Logic(attacking,heroPosition);
+}
+void Enemy::Combat()
+{
+		Logic( pathFinderPoint );
+		attacking = true;
+		myWeapon->active = true;
+		myWeapon->SetFiringPosition( sf::Vector2f( (float)myPosition.x, (float)myPosition.y) );
+		inMove = false;
+		myAI = FOLLOW;
 }
 void Enemy::Follow()
 {
@@ -213,7 +211,7 @@ void Enemy::Follow()
 				if( iterator % 5 == 0 )
 				{
 					if( (  oldHeroPosition.x/32 != (int)Hero::myPosition.x /32 ) && 
-						( oldHeroPosition.y/32 != (int)Hero::myPosition.y /32 )  )
+						(  oldHeroPosition.y/32 != (int)Hero::myPosition.y /32 )  )
 					{
 						pathSearched = false;
 					}
@@ -224,9 +222,10 @@ void Enemy::Follow()
 		else
 		{
 			std::cout<<"mob"<<myID<<": target reached!"<<std::endl;
-			myAI = RETURN_TO_PATHWALK;
+			myAI = FOLLOW;
 			pathSearched = false;
 		}
+
 		Logic( pathFinderPoint );
 	} else
 	{
@@ -234,20 +233,13 @@ void Enemy::Follow()
 		pathSearched = false;
 		myWeapon->active = false;
 		std::cout<<"No path found\n";
-	}
-	//Logic( pathFinderPoint );
-	//pathFinderPoint
-			
-
-			
+	}		
 	if( distanceFromHero > escapeRange )
 	{
 		myAI = RETURN_TO_PATHWALK;
 		pathSearched = false;
 		std::cout<<"Returning to path...\n";
 	}
-
-
 }
 void Enemy::RandomPathWalk()
 {		
@@ -287,6 +279,7 @@ void Enemy::RandomPathWalk()
 }
 void Enemy::PathWalk()
 {
+	attacking = false;
 	if( distanceFromHero < pullRange )
 	{
 		myAI = FOLLOW;
@@ -375,7 +368,7 @@ int Enemy::FindPath(sf::Vector2i Target)
 		iterator = 0;
 		pathStatus = GameEngine::getInstance()->pathfinder->FindPath( myID, myPosition , Target );
 		pathfinderPath = GameEngine::getInstance()->pathfinder->GetPath( myID );
-		pathSearched = true;			
+		pathSearched = true;	
 				
 	}
 	return pathStatus;
@@ -386,20 +379,24 @@ void Enemy::GenerateRandomPath()
 	std::cout<<"ID: " <<myID<<std::endl;
 
 	std::cout<<"start : "<<startPosition.x<<" "<<startPosition.y<<std::endl;
+
 	for( int i = 0 ; i < numberOfRandomPathPoints ; i++ )
 	{
 		do{
 		target.x = rand()%( 2 * MovementVector.x ) + ( startPosition.x - MovementVector.x );
 		target.y = rand()%( 2 * MovementVector.y ) + ( startPosition.y - MovementVector.y );
-		std::cout<<target.x<<" "<<target.y<<"\n";
+		//std::cout<<target.x<<" "<<target.y<<"\n";
 		pathSearched = false;
-		if( FindPath( target ) == PathFinder::FOUND )
+		if( target.x/32 != myPosition.x/32 &&
+		    target.y/32 != myPosition.y/32 )
 		{
-			pathStatus = PathFinder::NONEXISTENT;
-			randomPatrolPath[i] = pathfinderPath;
-			break;
+			if( FindPath( target ) == PathFinder::FOUND )
+			{
+				pathStatus = PathFinder::NONEXISTENT;
+				randomPatrolPath[i] = pathfinderPath;
+				break;
+			}
 		}
-
 		}while( pathStatus != PathFinder::FOUND );
 	}
 		

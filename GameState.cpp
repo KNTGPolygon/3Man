@@ -39,7 +39,7 @@ void GameState::LoadLevel(const std::string& filename)
 														   GameEngine::getInstance()->GetGridSize().y );
 	
 	DrawableEntityList.push_back(hero);
-	//DrawableEntityList.push_back(pirate);
+	DrawableEntityList.push_back(pirate);
 
 	for( int i = 0; i < numberOfObjects ; i++ )
 		DrawableEntityList.push_back( arrayOfObjects[i] );

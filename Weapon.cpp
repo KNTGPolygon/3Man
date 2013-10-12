@@ -59,6 +59,9 @@ void Weapon::Logic(bool FiringLocked, sf::Vector2i target)
 			repetition.Reset();
 			destenation.x = target.x - (int)fireFromPosition.x;
 			destenation.y = target.y - (int)fireFromPosition.y;
+
+			destenation.x += (-error/2) + rand()%error;
+			destenation.y += (-error/2) + rand()%error;
 			distanceFromMouse=sqrt((float)(destenation.x)*(destenation.x)+(float)(destenation.y)*(destenation.y));
 			
 			if( missle[ReturnFirstAvailable(missle,bulletFireLimit)]->inMove == false )
@@ -70,7 +73,7 @@ void Weapon::Logic(bool FiringLocked, sf::Vector2i target)
 		}
 	
 	}
-		if( FiringLocked && fired == false)
+		if( FiringLocked && fired == false) //First blood
 	{
 		if( repetition.GetElapsedTime() > repeatRate )
 		{
@@ -138,7 +141,7 @@ int Weapon::SetWeapon(WeaponType Weapon)
 		speed = 4.0;
 		repeatRate = 0.5;
 		bulletFireLimit = 5;
-		error = 0.0;
+		error = 1;
 		break;
 	case Derivative:
 		directory = "Derivative.PNG";
@@ -147,7 +150,7 @@ int Weapon::SetWeapon(WeaponType Weapon)
 		speed = 8.0;
 		repeatRate = 0.2;
 		bulletFireLimit = 5;
-		error = 25.0;
+		error = 25;
 		break;
 	case Plus:
 		directory = "Plus.PNG";
@@ -156,7 +159,7 @@ int Weapon::SetWeapon(WeaponType Weapon)
 		speed = 5.0;
 		repeatRate = 0.25;
 		bulletFireLimit = 5;
-		error = 5.0;
+		error = 5;
 		break;
 	case Minus:
 		directory = "Minus.PNG";
@@ -165,7 +168,7 @@ int Weapon::SetWeapon(WeaponType Weapon)
 		speed = 5.0;
 		repeatRate = 0.25;
 		bulletFireLimit = 5;
-		error = 10.0;
+		error = 10;
 		break;
 	case YellowBall:
 		directory = "YellowDeathBall.PNG";
@@ -175,7 +178,7 @@ int Weapon::SetWeapon(WeaponType Weapon)
 		speed = 5.0;
 		repeatRate = 0.25;
 		bulletFireLimit = 5;
-		error = 10.0;
+		error = 50;
 		break;
 	default:
 		return 0;

@@ -26,10 +26,10 @@ private:
 	float cooldown;
 	float distanceFromMouse;
 
+	int error;
 	double damage;
 	double range;
-	double speed;
-	double error;
+	double speed;	
 	double repeatRate;
 	
 	std::string missleColider;

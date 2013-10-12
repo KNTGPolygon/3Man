@@ -127,7 +127,6 @@ void Enemy::EventHandling()
 	SetHeroPosition(Hero::myPosition);
 	AI();
 }
-
 void Enemy::Logic(sf::Vector2i Target)
 {
 	if( GoToPosition( Target ) ){
@@ -380,15 +379,16 @@ void Enemy::GenerateRandomPath()
 
 	std::cout<<"start : "<<startPosition.x<<" "<<startPosition.y<<std::endl;
 
+	pathStatus = PathFinder::NONEXISTENT;
 	for( int i = 0 ; i < numberOfRandomPathPoints ; i++ )
 	{
 		do{
 		target.x = rand()%( 2 * MovementVector.x ) + ( startPosition.x - MovementVector.x );
 		target.y = rand()%( 2 * MovementVector.y ) + ( startPosition.y - MovementVector.y );
-		//std::cout<<target.x<<" "<<target.y<<"\n";
+		std::cout<<target.x<<" "<<target.y<<"\n";
 		pathSearched = false;
-		if( target.x/32 != myPosition.x/32 &&
-		    target.y/32 != myPosition.y/32 )
+		if( (target.x/32 != myPosition.x/32) &&
+		    (target.y/32 != myPosition.y/32) )
 		{
 			if( FindPath( target ) == PathFinder::FOUND )
 			{

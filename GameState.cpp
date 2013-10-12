@@ -17,13 +17,14 @@ void GameState::Init()
 	death_effect = false;
 	death_anim_timer.Reset();
 	GameEngine::getInstance()->getCursor().setType(CROSSHAIR);
-	GameEngine::getInstance()->pathfinder->SetNumberOfMobs( 0 );
 
-	LoadLevel("Data/Maps/Test.map");
+	current_level = "Data/Maps/Test.map";
+	LoadLevel(current_level);
 }
 
 void GameState::LoadLevel(const std::string& filename)
 {
+	GameEngine::getInstance()->pathfinder->SetNumberOfMobs( 0 );
 	DrawableEntityList.clear();
 	hero = new Hero(GameEngine::getInstance()->getSteering(),2);
 	hero->PutScreenSize(GameEngine::SCREEN_WIDTH, GameEngine::SCREEN_HEIGHT);
@@ -123,7 +124,7 @@ void GameState::HeroDeathEffect()
 		if ( death_anim_timer.GetElapsedTime() > M_PI/4 && GameState::restart_level )
 		{
 			ClearLevel();
-			LoadLevel("Data/Maps/Test.map");
+			LoadLevel(current_level);
 			restart_level = false;
 		}
 		if ( death_anim_timer.GetElapsedTime() > M_PI/2 )

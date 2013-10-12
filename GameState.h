@@ -20,6 +20,7 @@ private:
 	std::vector<Drawable*> DrawableEntityList;
 	Hero* hero;
 	Maps* map;
+	std::string current_level;
 
 	Enemy* pirate;
 

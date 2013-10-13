@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include "Tile.h"
 #include "MapObject.h"
-#include "GameObject.h"
+#include "GameNonActiveObject.h"
 #include "Enemy.h"
 
 #ifndef MAPS_H
@@ -27,26 +27,30 @@ private:
 	std::map<const int, std::string> addresses;
 
 	Tile ** map_data;
-	GameObject ** mapGameObjects;
-	std::list <sf::Vector3i> listOfEnemies;
+	GameNonActiveObject ** mapGameObjects;
+	std::vector <sf::Vector3i> listOfEnemies;
 
 	std::map <int, int> typeOfTileAnimations;
 
 	std::map <int, sf::Image> mapGraphics;
 	std::map <int, sf::Sprite> tileSprites;
 
-
+	
 public:
 	Maps(const std::string& filename);
 	~Maps();
 	void showMap(sf::RenderWindow *window, sf::Vector2f heroPosition);
 	int getSize();
 	int getNoOfObjects();
-	GameObject ** getMapGameObjects();
+	GameNonActiveObject ** getMapGameObjects();
 
 private:
-	void animate();
-	void createTiles();
+	void MapFileLoading(const std::string& filename);
+	void MapFileLoading_GetMapSize(std::ifstream& inputMapFileStream);
+	void MapFileLoading_PrepareTileArrayAccordingToSize();
+
+	void Animate();
+	void CreateTiles();
 };
 
 #endif

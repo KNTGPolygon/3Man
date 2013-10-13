@@ -5,9 +5,18 @@
 
 Maps::Maps(const std::string& filename)
 {
-	clockCounter = 1;
 
-	MapObject **tempConstructorObjects;
+	clockCounter = 1;
+	numberOfObjects = 0;
+
+	MapFileLoading(filename);
+
+	CreateTiles();
+
+}
+
+void Maps::MapFileLoading(const std::string& filename)
+{
 	std::map <const int, std::string> tempAddressesArray;
 
 	std::map <int, int> passageRightsRead;
@@ -16,67 +25,24 @@ Maps::Maps(const std::string& filename)
 	std::ifstream map(filename.c_str());
 		 if (!map) 
 		 {
-			std::cerr << "Nie udalo sie zaladowac pliku mapy!!! " << filename << "\n";
+			std::cerr << "Nie udalo sie stworzyæ strumienia wejœcia do programu z pliku mapy!!! " << filename << "\n";
 			return;
 		 }
 
-		  std::string stringRepresentingFileLine;
-		  std::string mapTilesPath;
-		  bool looping = true;
+	std::string stringRepresentingFileLine;
 
-		  do{
-		 if(map.good())
-				 {
-					 getline (map,stringRepresentingFileLine);
-					 if(stringRepresentingFileLine.at(0) != '*')
-						{
-						std::istringstream iss(stringRepresentingFileLine);
-						iss >> Size;
-						}
-					 else
-					 {
-						 looping = false;
-					 }
-				 }
-		  }while(looping);
+	MapFileLoading_GetMapSize(map);
+	MapFileLoading_PrepareTileArrayAccordingToSize();
 
-	//creating dynamic two-dimensional array (tiles created with default constructor, each with type = -1)
-	map_data = new Tile*[Size];
-	for(int i = 0; i < Size; ++i)
-    map_data[i] = new Tile[Size];
-
-	//creating temporary array for map objects (for storing loaded data)
-	tempConstructorObjects = new MapObject*[Size*2];
-	for(int i = 0; i < Size*2; ++i)
-    tempConstructorObjects[i] = new MapObject[Size*2];
-
-	
 	int rowNumber = 0;
 	int colNumber = 0;
 
-	looping = true;		
+	 bool looping = true;	
+	std::string mapTilesPath = "Data/Textures/MapTiles/";
+			 
 
-			 //getting paths from the beggining of file
-			 do{
-				 if(map.good())
-				 {
-					 getline (map,stringRepresentingFileLine);
-					 if(stringRepresentingFileLine.at(0) != '*')
-						{
-						std::istringstream iss(stringRepresentingFileLine);
-						iss >> mapTilesPath;
-						}
-					 else
-					 {
-						 mapTilesPath = "Data/Textures/MapTiles/";
-						 looping = false;
-					 }
-				 }
-			 }while(looping);
-			
-			looping = true;
-			 unsigned int counter = 1;
-			 std::string substring;
+	 unsigned int counter = 1;
+	 std::string substring;
 
 			 //passing info about map tiles' graphics (first row of map file)
 			 do{
@@ -183,12 +149,20 @@ Maps::Maps(const std::string& filename)
 
 			  rowNumber = 0;
 
+			   std::vector <sf::Vector3i> temp_ObjectVectorRepresentations;
+			   int objectType = 0;
+
+			   std::vector< sf::Vector3i > objects;
+			   sf::Vector3i tempVector;
+
 			   while ( map.good() )
 				{
 				colNumber = 0;
 				 getline (map,stringRepresentingFileLine);
 				 std::istringstream iss(stringRepresentingFileLine);
 				 std::string sub;
+
+				 
 
 				 looping = true;
 						do
@@ -203,7 +177,19 @@ Maps::Maps(const std::string& filename)
 						{
 							break;
 						}
-						tempConstructorObjects[rowNumber][colNumber] = MapObject (atoi(sub.c_str()), colNumber * 32, rowNumber * 32);
+
+						objectType = atoi(sub.c_str());
+
+						if(objectType > 0)
+						{
+							tempVector.x = rowNumber;
+							tempVector.y = colNumber;
+							tempVector.z = objectType;
+							objects.push_back( tempVector );
+
+							temp_ObjectVectorRepresentations.push_back(sf::Vector3i(colNumber * 32, rowNumber * 32, objectType));
+						}
+						
 						
 						colNumber++;
 						}
@@ -211,62 +197,31 @@ Maps::Maps(const std::string& filename)
 
 						rowNumber++;
 
-						if(rowNumber == 2*Size)
+						if(rowNumber >= 2*Size)
 						{
 							break;
 						}
 
 				}
 
-			   std::map<const int, GameObject*> reducedTempConstructorObjects;
-			   counter = 1;
-			   sf::Vector2i position;
-			   std::vector< sf::Vector3i > objects;
-			   sf::Vector3i tempVector;
-			   
-			   for(unsigned int i = 0; i < 2*Size ; i++)
-			   {
-				   for(unsigned int j = 0; j < 2 * Size; j++)
-				   {
-					   if(tempConstructorObjects[i][j].getType() > 0)
-					   {
-						 tempVector.x = i;
-						 tempVector.y = j;
-						 tempVector.z = tempConstructorObjects[i][j].getType();
-						 objects.push_back( tempVector );
-						   position = tempConstructorObjects[i][j].getPosition();
-						   unsigned int addressNumber = tempConstructorObjects[i][j].getType();
-						  reducedTempConstructorObjects[counter] = new GameObject((float)position.x, (float)position.y, addressNumber,tempAddressesArray[addressNumber]);
-						  counter++;
-					   }
+			   numberOfObjects = temp_ObjectVectorRepresentations.size();
+			   mapGameObjects = new GameNonActiveObject*[numberOfObjects];
 
-					   
-				   }
-			   }
+			   sf::Vector2i objectPosition;
+
+				for(unsigned int i = 0; i < numberOfObjects; i++)
+				{
+					objectPosition = sf::Vector2i(temp_ObjectVectorRepresentations.at(i).x, temp_ObjectVectorRepresentations.at(i).y);
+					objectType = temp_ObjectVectorRepresentations.at(i).z;
+					mapGameObjects[i] = new GameNonActiveObject(objectPosition.x, objectPosition.y, objectType, tempAddressesArray[objectType]);
+				}
+
+
+			   int objectArraySize = 2*Size;
+			   
 			   GameEngine::getInstance()->SetMapObjectsGrid( objects, 2*Size );
 			   std::cout << " Created tempConstructorObjects! " << std::endl;
 
-			    for(unsigned int i = 0; i < 2*Size ; i++)
-			   {
-					delete [] tempConstructorObjects[i];
-			   }
-				delete [] tempConstructorObjects;
-
-				numberOfObjects = reducedTempConstructorObjects.size();
-				mapGameObjects = new GameObject*[reducedTempConstructorObjects.size()];
-
-				sf::Vector2f pos;
-				for(unsigned int i = 0; i < reducedTempConstructorObjects.size(); i++)
-				{
-					pos = reducedTempConstructorObjects[i+1]->GetPosition();
-					int type = reducedTempConstructorObjects[i+1]->getType();
-					mapGameObjects[i] = new GameObject(pos.x, pos.y, type, tempAddressesArray[type]);//reducedTempConstructorObjects[i+1];
-				}
-
-				for(unsigned int i = 0; i < reducedTempConstructorObjects.size(); i++)
-				{
-					delete reducedTempConstructorObjects[i+1];
-				}
 				
 				std::cout << " Map loaded succesfully! " << std::endl;
 
@@ -326,14 +281,35 @@ Maps::Maps(const std::string& filename)
 
 
 		 map.close();
-
-		 createTiles();
-
-		 //----------------------
 }
+
+void Maps::MapFileLoading_GetMapSize(std::ifstream& inputMapFileStream)
+{
+	std::string stringRepresentingFileLine = "";
+
+	if(inputMapFileStream.good())
+				 {
+					getline (inputMapFileStream,stringRepresentingFileLine);
+					std::istringstream iss(stringRepresentingFileLine);
+					iss >> Size;
+				 }
+
+		 getline (inputMapFileStream,stringRepresentingFileLine);
+}
+
+void Maps::MapFileLoading_PrepareTileArrayAccordingToSize()
+{
+	map_data = new Tile*[Size];
+	for(int i = 0; i < Size; ++i)
+		map_data[i] = new Tile[Size];
+
+}
+
+
+
 void Maps::showMap(sf::RenderWindow *window, sf::Vector2f heroPosition)
 {		
-	animate();
+	Animate();
 
 	sf::Vector2i leftTopFieldVisible;
 	sf::Vector2i rightBotFieldVisible;
@@ -361,16 +337,16 @@ void Maps::showMap(sf::RenderWindow *window, sf::Vector2f heroPosition)
 
 }
 
-void Maps::animate()
+void Maps::Animate()
 {
-	
+
 	int period = 300;
 
 	if(clockCounter == 1)
 	{
 		for(unsigned int i = 1; i <= mapGraphics.size(); i++)
 		{
-			if(typeOfTileAnimations[i]==1)
+			if(typeOfTileAnimations[i] == 1)
 			tileSprites[i].SetColor(sf::Color(255,255,255,255));
 		}
 	}
@@ -403,7 +379,7 @@ void Maps::animate()
 	clockCounter++;
 }
 
-void Maps::createTiles()
+void Maps::CreateTiles()
 {
 	
 	//i<addresses.size() cause last field is empty, we have to make it safe somehow
@@ -456,7 +432,7 @@ int Maps::getNoOfObjects()
 	return numberOfObjects;
 }
 
-GameObject ** Maps::getMapGameObjects()
+GameNonActiveObject ** Maps::getMapGameObjects()
 {
 	return mapGameObjects;
 }

@@ -281,11 +281,11 @@ bool MapCreator::LoadTileGraphics()
 	ImageManager* imgmng = ImageManager::getInstance();
 	//creating map tiles (will be anchanced)
 	std::string pathToFiles = "Data/Textures/MapTiles/";
-	std::ifstream dataSet("Data/Textures/MapTiles/EditorLoadingFile.txt");
+	std::ifstream dataSet("Data/Textures/LoadingFile.txt");
 	std::string str;
 
 		 if (!dataSet) {
-        std::cerr << "Nie udało się załadował pliku " <<" EditorLoadingFile.txt "<< "\n";
+        std::cerr << "Nie udało się załadował pliku " <<" LoadingFile.txt "<< "\n";
 		return 0;
 				 }
 
@@ -314,7 +314,7 @@ bool MapCreator::LoadTileGraphics()
 
 	//------------- 
 		  pathToFiles = "Data/Textures/MapObjects/";
-		   //loading objectGraphics
+		   //loading passiveObjectGraphics
 		   while( !dataSet.eof() )
 			{	
 				dataSet >> str;
@@ -345,6 +345,24 @@ bool MapCreator::LoadTileGraphics()
 			
 			 }
 
+
+	 //------------- 
+		  pathToFiles = "Data/Textures/MapObjects/";
+		  counter = objectGraphics.size();
+		   //loading activeObjectGraphics
+		   while( !dataSet.eof() )
+			{	
+				dataSet >> str;
+					if(str.at(0) == '-')
+				{
+					counter = 0;
+					break;
+				}
+				
+				objectGraphics[counter] = imgmng->loadImage(pathToFiles + str);
+				counter ++;
+			
+			 }
 
 		   dataSet.close();
 		 }
@@ -842,12 +860,12 @@ bool MapCreator::saveMapToFile(std::string filename)
 	std::string path = "./Data/Maps/";
 	std::ofstream outputFileStream;
 
-	std::ifstream editorLoadingFile_inputStream("Data/Textures/MapTiles/EditorLoadingFile.txt");
+	std::ifstream editorLoadingFile_inputStream("Data/Textures/LoadingFile.txt");
 	std::string str;
 
 		 if (!editorLoadingFile_inputStream) 
 			 {
-				std::cerr << "Nie udało się załadować pliku " <<" EditorLoadingFile.txt "<< "\n";
+				std::cerr << "Nie udało się załadować pliku " <<" LoadingFile.txt "<< "\n";
 				return 0;
 			 }
 		
@@ -894,7 +912,6 @@ bool MapCreator::saveMapToFile(std::string filename)
 		saveMap_SavingObjectsPhase(outputFileStream);
 		saveMap_SavingEnemiesPhase(outputFileStream);
 
-
 		std::cout << "Map saved!" << std::endl;
 	}
 
@@ -907,6 +924,7 @@ bool MapCreator::saveMap_SavingUsedObjectsNamesPhase(std::ifstream& editorLoadin
 {
 	std::string usedObjectName = "";
 
+	//------------ NON-ACTIVE OBJECTS-------------------------
 	while( !editorLoadingFile_inputStream.eof() )
 					{	
 						editorLoadingFile_inputStream >> usedObjectName;
@@ -958,7 +976,7 @@ bool MapCreator::saveMap_SavingObjectsPhase(std::ofstream& outputFileStream)
 			{
 				for(unsigned int col = 0; col < Size*2; col++)
 				{
-					if(col != Size*2-1 && mapObjects[row][col].getType() != -1)
+					if(col != Size*2-1 && mapObjects[row][col].getType() != -1 && mapObjects[row][col].getType() < 10)
 					{
 						outputFileStream << " " << mapObjects[row][col].getType() << " ";
 					}
@@ -966,7 +984,7 @@ bool MapCreator::saveMap_SavingObjectsPhase(std::ofstream& outputFileStream)
 					{
 						outputFileStream << mapObjects[row][col].getType() << " ";
 					}
-					else if(mapObjects[row][col].getType() != -1)
+					else if(mapObjects[row][col].getType() != -1 && mapObjects[row][col].getType() < 10)
 					{
 						outputFileStream << " " << mapObjects[row][col].getType();
 					}
@@ -1235,7 +1253,7 @@ bool MapCreator::LoadMap(const std::string& filename)
 
 
 			  //------------------------
-			   getline (map,stringRepresentingFileLine);;
+			   getline (map,stringRepresentingFileLine);
 			  	rowNumber = 0;
 				colNumber = 0;
 

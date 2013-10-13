@@ -34,3 +34,7 @@ Triangle.png
 Pirate.png
 x.png
 -
+LaserTower.png
+BulletTower.png
+Spikes.png
+-

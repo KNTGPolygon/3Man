@@ -27,7 +27,7 @@ private:
 	int iterator;
 	int mapPixelatedSize;
 	int numberOfObjects;
-	GameObject ** arrayOfObjects;
+	GameNonActiveObject ** arrayOfObjects;
 	static const int NUM_OF_ENEMIES = 5;
 public:
 	static bool restart_level;

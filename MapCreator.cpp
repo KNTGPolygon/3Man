@@ -880,7 +880,6 @@ bool MapCreator::saveMapToFile(std::string filename)
 	if(outputFileStream)
 	{
 		outputFileStream << Size << "\n" << "*" << "\n";
-		outputFileStream << "./Data/Textures/MapTiles/" << "\n" << "*" << "\n";
 			
 				  while( !editorLoadingFile_inputStream.eof() )
 					{	

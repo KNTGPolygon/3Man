@@ -40,6 +40,7 @@ public:
 	Maps(const std::string& filename);
 	~Maps();
 	void showMap(sf::RenderWindow *window, sf::Vector2f heroPosition);
+	std::vector<sf::Vector3i>  GetListOfEnemies();
 	int getSize();
 	int getNoOfObjects();
 	GameNonActiveObject ** getMapGameObjects();

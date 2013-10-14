@@ -1097,27 +1097,10 @@ bool MapCreator::LoadMap(const std::string& filename)
 			arrayOfEnemies[i] = new int[Size];
 
 
-
+		mapTilesPath = "Data/Textures/MapTiles/";
 		looping = true;		
 
-			 //getting paths from the beggining of file
-			 do{
-				 if(map.good())
-				 {
-					 getline (map,stringRepresentingFileLine);
-					 if(stringRepresentingFileLine.at(0) != '*')
-						{
-						std::istringstream iss(stringRepresentingFileLine);
-						iss >> mapTilesPath;
-						}
-					 else
-					 {
-						 mapTilesPath = "Data/Textures/MapTiles/";
-						 looping = false;
-					 }
-				 }
-			 }while(looping);
-
+			 
 			 //---------------
 
 			 looping = true;

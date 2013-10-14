@@ -35,13 +35,17 @@ void Missle::Logic()
 	currentDistance = sqrt((startPosition.x-currentPosition.x)*(startPosition.x-currentPosition.x)
 						 + (startPosition.y-currentPosition.y)*(startPosition.y-currentPosition.y));
 
-	//GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
 
 	if( GameEngine::getInstance()->DetectCollision(&mySprite,missleColider) )
 	{
 		colisionWithiObiect = true;
 		if ( missleColider == "enemy" )
             SoundPlayer::getInstance()->Play(Snd::EnemyDeath);
+	}else
+	if( GameEngine::getInstance()->DetectCollision(&mySprite,"wall") )
+	{
+		colisionWithiObiect = true;
+        SoundPlayer::getInstance()->Play(Snd::EnemyDeath);
 	}
 
 	if(currentDistance < range)

@@ -11,6 +11,7 @@ class GameNonActiveObject : public GameObject
 public:
 	GameNonActiveObject();
 	GameNonActiveObject(float, float, int _type, std::string imageFilePath);
+	void EventHandling();
 	void Update();
 	void Display(sf::RenderWindow*);
 

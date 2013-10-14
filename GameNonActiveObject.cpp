@@ -30,6 +30,11 @@ void GameNonActiveObject::Update()
 	depth = -mySprite.GetPosition().y;
 }
 
+void GameNonActiveObject::EventHandling()
+{
+	depth = -mySprite.GetPosition().y;
+}
+
 void GameNonActiveObject::Display(sf::RenderWindow * window)
 {
 	

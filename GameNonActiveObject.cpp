@@ -17,17 +17,16 @@ GameNonActiveObject::GameNonActiveObject(float x, float y, int _type, std::strin
 
 	mySprite.SetImage(myTexture);
     mySprite.SetScale( 1, 1 );
-	mySprite.SetPosition( x, y );
-	mySprite.SetCenter(0,0);
+	mySprite.SetPosition( x - 16, y - 16);
+	mySprite.SetCenter(16,textureHeight/2);
 	mySprite.setBoxMask(sf::IntRect(2, textureHeight - 8 ,30,textureHeight));
-	mySprite.setType("non-active object");
+	mySprite.setType("wall");
 
 }
 
-void GameNonActiveObject::Update()
+void GameNonActiveObject::UpdateSystem()
 {
 	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
-	depth = -mySprite.GetPosition().y;
 }
 
 void GameNonActiveObject::EventHandling()
@@ -39,7 +38,7 @@ void GameNonActiveObject::Display(sf::RenderWindow * window)
 {
 	
 	window->Draw(mySprite);
-	
+
 	if(GameEngine::getInstance()->devmode)
 	{
 		if ( GameEngine::getInstance()->DetectCollision(&mySprite) )

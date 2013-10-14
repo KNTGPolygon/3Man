@@ -1,12 +1,11 @@
 #include "GameObject.h"
-#include "GameEngine.h"
 
 GameObject::GameObject()
 {
 
 }
 
-void GameObject::Update()
+void GameObject::UpdateSystem()
 {
 
 }

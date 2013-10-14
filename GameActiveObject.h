@@ -13,7 +13,8 @@ class GameActiveObject : public GameObject
 	public:
 	GameActiveObject();
 	GameActiveObject(float, float, int _type, std::string imageFilePath);
-	void Update();
+	void EventHandling();
+	void UpdateSystem();
 	void Display(sf::RenderWindow*);
 
 };

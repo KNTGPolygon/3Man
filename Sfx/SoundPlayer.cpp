@@ -14,7 +14,10 @@ SoundPlayer::SoundPlayer()
 	paths[6] = "Data/Sounds/hit.wav";
 
 	for ( int i = 0; i < 7; i++ )
+	{
 		sounds[i].SetBuffer( SoundBufferManager::getInstance()->loadSound(paths[i]) );
+		sounds[i].SetVolume(20);
+	}
 }
 
 void SoundPlayer::Play( unsigned int id )

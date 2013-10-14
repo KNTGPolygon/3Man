@@ -17,16 +17,20 @@ GameActiveObject::GameActiveObject(float x, float y, int _type, std::string imag
 
 	mySprite.SetImage(myTexture);
     mySprite.SetScale( 1, 1 );
-	mySprite.SetPosition( x, y );
-	mySprite.SetCenter(0,0);
+	mySprite.SetPosition( x - 16, y - 16);
+	mySprite.SetCenter(16,textureHeight/2);
 	mySprite.setBoxMask(sf::IntRect(2, textureHeight - 8 ,30,textureHeight));
-	mySprite.setType("active object");
+	mySprite.setType("wall");
 
 }
 
-void GameActiveObject::Update()
+void GameActiveObject::UpdateSystem()
 {
 	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
+}
+
+void GameActiveObject::EventHandling()
+{
 	depth = -mySprite.GetPosition().y;
 }
 

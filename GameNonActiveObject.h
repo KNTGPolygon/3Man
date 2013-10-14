@@ -12,7 +12,7 @@ public:
 	GameNonActiveObject();
 	GameNonActiveObject(float, float, int _type, std::string imageFilePath);
 	void EventHandling();
-	void Update();
+	void UpdateSystem();
 	void Display(sf::RenderWindow*);
 
 };

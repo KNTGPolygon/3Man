@@ -16,7 +16,7 @@ protected:
 	SpriteExt mySprite;
 public:
 	GameObject();
-	virtual void Update();
+	virtual void UpdateSystem();
 	virtual void Display(sf::RenderWindow*);
 	sf::Vector2f GetPosition();
 	int getType();

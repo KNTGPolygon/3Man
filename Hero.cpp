@@ -128,7 +128,7 @@ void Hero::GetEvent()
 
 		Me.Move( xstep, ystep );
 		
-		if ( GameEngine::getInstance()->DetectCollision(&Me, "wall") )
+		if ( GameEngine::getInstance()->DetectCollision(&Me, "unwalkable") )
 			Me.Move( -xstep, -ystep );
 
 		if( steering.IsKeyDown(sf::Key::Num1) )weaponType=0;

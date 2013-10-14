@@ -63,6 +63,8 @@ protected:
 	sf::Vector2f shiftVector;
 	sf::Vector2i oldHeroPosition;
 
+	sf::String exponent;
+
 	void Combat();
 	void RandomPathWalk();
 	void PathWalk();
@@ -70,7 +72,9 @@ protected:
 	void ReturnToPathWalk();
 	int FindPath(sf::Vector2i Target);
 	void Colliding(bool minusCollision,bool plusCollision);
+	void TypeSwichColliding();
 	void SetImage(int Value);
+	void SetImage(std::string filename);
 	Weapon *myWeapon;
 	
 public:
@@ -84,6 +88,7 @@ public:
 	bool targetReached;
 	bool inMove;
 	bool isMinus;
+	bool isX;
 
 	void Display(sf::RenderWindow *window);
 	void UpdateSystem();
@@ -95,7 +100,7 @@ public:
 	void AI();
 	void GenerateRandomPath();
 	void SetStartPosition(sf::Vector2f Position);
-	Enemy(sf::Vector2i Position = sf::Vector2i(300,300),int _value = 10,
+	Enemy(sf::Vector2i Position = sf::Vector2i(300,300),int _value = 7, bool _isX = false,
 		  std::string fileName = "Pirate.PNG" ,float Velocity = 1.0 , float PullRange = 100.0 );
 	~Enemy(void);
 

@@ -2,15 +2,27 @@
 #include "Hero.h"
 #include "GameEngine.h"
 
-Enemy::Enemy(sf::Vector2i Position, int _value, std::string fileName, 
+Enemy::Enemy(sf::Vector2i Position, int _value, bool _isX, std::string fileName,
 	float Velocity , float PullRange)
-: velocity(Velocity),pullRange(PullRange), myPosition(Position),value(_value)
+: velocity(Velocity),pullRange(PullRange), myPosition(Position),value(_value),isX(_isX)
 {
+	isX = false;
 	if( value == 10 )
-	myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+fileName );
+	SetImage( fileName );
 	else if( value >= -9 && value <=9 )
-	myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+Util::int2str( abs( value ) ) + ".PNG" );
-	
+	SetImage( Util::int2str( abs( value ) ) + ".PNG" );
+	else
+	{
+		value = 4;
+		isX = true;
+		SetImage( "x.PNG" );
+	}
+
+	exponent.SetText( Util::int2str( value ) );
+	exponent.SetSize( 25.0 );
+	exponent.SetPosition( sf::Vector2f( (float) Position.x, (float) Position.y ) );
+	exponent.SetColor( sf::Color( 0,0,0) );
+
 	if( value < 0 )
 		isMinus = true;
 	else
@@ -19,14 +31,7 @@ Enemy::Enemy(sf::Vector2i Position, int _value, std::string fileName,
 	sign = sf::Shape::Rectangle(0.0,0.0,10.0,4.0,sf::Color(0,0,0));
 	sign.SetCenter(sign.GetPosition().x/2,sign.GetPosition().y/2);
 
-	myTexture.SetSmooth( false );
-	myTexture.CreateMaskFromColor(sf::Color(255,0,255));
-
-	mySprite.SetImage( myTexture );
-	mySprite.SetPosition((float) myPosition.x ,(float) myPosition.y );
-	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
 	mySprite.setType( "enemy" );
-
 
 	startPosition   = Position;
 	pathFinderPoint = Position;
@@ -76,8 +81,14 @@ Enemy::~Enemy(void)
 void Enemy::UpdateCollision()
 {
  	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
+	if( isX )
+	Colliding( GameEngine::getInstance()->DetectCollision(&mySprite,"Derivative.PNG") 
+			 , GameEngine::getInstance()->DetectCollision(&mySprite,"Integral.PNG" ) );
+	else
 	Colliding( GameEngine::getInstance()->DetectCollision(&mySprite,"Minus.PNG") 
 			 , GameEngine::getInstance()->DetectCollision(&mySprite,"Plus.PNG" ) );
+	TypeSwichColliding();
+
 	myWeapon->UpdateCollision();
 }
 
@@ -98,10 +109,14 @@ void Enemy::Colliding(bool minusCollision,bool plusCollision)
 		else
 			if( value >-9 )
 			{
-			value--;
-			isMinus = true;
-				if ( value == 0 ) isMinus = false;		
-			SetImage(value);
+				value--;
+				isMinus = true;
+				if ( value == 0 )
+				{
+					isMinus = false;
+					isX     = false;
+				}
+				SetImage(value);
 			}
 	}
 	else if(plusCollision)
@@ -117,10 +132,41 @@ void Enemy::Colliding(bool minusCollision,bool plusCollision)
 		{
 			value++;
 			isMinus = true;
-			if ( value == 0 ) isMinus = false;		
+			if ( value == 0 )
+			{
+				isMinus = false;	
+				isX		= false;
+			}
 			SetImage(value);
 		}
 	}
+}
+void Enemy::TypeSwichColliding()
+{
+	if( !isX )
+	{
+		if( GameEngine::getInstance()->DetectCollision(&mySprite,"Derivative.PNG") )
+		{
+			value = 0;
+			isMinus = false;
+			SetImage( value );
+		}else
+		if( GameEngine::getInstance()->DetectCollision(&mySprite,"Integral.PNG" ) )
+		{
+			value = 1;
+			isX = true;
+			SetImage( "x.PNG" );
+		}
+	}else
+	{
+		if( value == 0 )
+		{
+			isX = false;
+			value = 1;
+			SetImage( value );
+		}
+	}
+
 }
 void Enemy::EventHandling()
 {
@@ -203,8 +249,8 @@ void Enemy::Follow()
 			if( targetReached == true )
 			{
 				pathFinderPoint = pathfinderPath[iterator];
-				pathFinderPoint.x = pathFinderPoint.x *32 + rand()%32;
-				pathFinderPoint.y = pathFinderPoint.y *32 + rand()%32;
+				pathFinderPoint.x = pathFinderPoint.x *32 +8 + rand()%24;
+				pathFinderPoint.y = pathFinderPoint.y *32 +8 + rand()%24;
 				iterator++;
 				std::cout<<"mob"<<myID<<": heading to : x = "<<pathFinderPoint.x /32<<" y = " << pathFinderPoint.y/32<<std::endl;
 				if( iterator % 5 == 0 )
@@ -298,8 +344,8 @@ void Enemy::PathWalk()
 				if( targetReached == true )
 				{
 					pathFinderPoint   = randomPatrolPath[pathNumber][iterator];//randomPatrolPath[pathNumber][iterator]
-					pathFinderPoint.x = pathFinderPoint.x *32 + rand()%32;
-					pathFinderPoint.y = pathFinderPoint.y *32 + rand()%32;
+					pathFinderPoint.x = pathFinderPoint.x *32 +8 + rand()%24;
+					pathFinderPoint.y = pathFinderPoint.y *32 +8 + rand()%24;
 					iterator++;
 				}
 			}
@@ -408,10 +454,19 @@ void Enemy::Display(sf::RenderWindow *window)
 	window->Draw( mySprite );
 	myWeapon->Display( window );
 
-	if ( isMinus )
+	if ( isMinus && !isX)
 	{
 		sign.SetPosition( mySprite.GetPosition().x - 20,mySprite.GetPosition().y);	
 		window->Draw( sign );
+	}
+	if ( isX )
+	{
+		if( value >= 0 )
+		exponent.SetPosition( mySprite.GetPosition().x + 20.0, mySprite.GetPosition().y - 40.0 );
+		else
+		exponent.SetPosition( mySprite.GetPosition().x + 10.0, mySprite.GetPosition().y - 40.0 );
+
+		window->Draw( exponent );
 	}
 	if(GameEngine::getInstance()->devmode)
 	{
@@ -430,6 +485,10 @@ void Enemy::SetStartPosition(sf::Vector2f Position)
 	mySprite.SetPosition( Position );
 	myPosition.x = (int) Position.x;
 	myPosition.y = (int) Position.y;
+	if( isX )
+	{
+		exponent.SetPosition( Position.x + 5.0, Position.y + 5.0 );
+	}
 }
 void Enemy::SetPosition( sf::Vector2i newPosition )
 {
@@ -441,7 +500,23 @@ sf::Vector2i Enemy::GetPosition()
 }
 void Enemy::SetImage(int Value)
 {
+	if( !isX )
+	{
 			myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+Util::int2str( abs( Value ) ) + ".PNG" );
+			myTexture.SetSmooth( false );
+			myTexture.CreateMaskFromColor(sf::Color(255,0,255));
+
+			mySprite.SetImage( myTexture );
+			mySprite.SetPosition((float) myPosition.x ,(float) myPosition.y );
+			mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
+	}else
+	{
+		exponent.SetText( Util::int2str( Value ) );
+	}
+}
+void Enemy::SetImage(std::string filename)
+{
+			myTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Enemy/"+filename );
 			myTexture.SetSmooth( false );
 			myTexture.CreateMaskFromColor(sf::Color(255,0,255));
 

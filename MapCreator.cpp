@@ -407,9 +407,10 @@ bool MapCreator::LoadTileGraphics()
 void MapCreator::CreateSprites()
 {
 	//creating sprites for each available image in MapCreator
-	sf::Sprite spr;
+	
 	for(unsigned int i = 0; i<tileGraphics.size();i++)
 	{
+		sf::Sprite spr;
 		spr.SetImage(tileGraphics[i]);
 		spr.SetScale(0.5,0.5);
 		tileSprites.push_back(spr);
@@ -417,13 +418,20 @@ void MapCreator::CreateSprites()
 
 	for(unsigned int i = 0; i<objectGraphics.size();i++)
 	{
+		sf::Sprite spr;
 		spr.SetImage(objectGraphics[i]);
+		sf::Vector2f spriteSize = spr.GetSize();
+
+		spr.SetSubRect(sf::IntRect(0,0,spriteSize.x,spriteSize.y));
+
+		std::cout << spriteSize.x << " " << spriteSize.y << std::endl;
 		spr.SetScale(0.5,0.5);
 		objectSprites.push_back(spr);
 	}
 
 	for(unsigned int i = 0; i<enemyGraphics.size();i++)
 	{
+		sf::Sprite spr;
 		spr.SetImage(enemyGraphics[i]);
 		spr.SetScale(0.75,0.75);
 		enemySprites.push_back(spr);

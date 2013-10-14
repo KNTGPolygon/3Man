@@ -146,12 +146,20 @@ void Hero::GetEvent()
 		weapon[i]->active = false;
 		}
 
-		if ( steering.IsKeyDown(sf::Key::Space) && !GameState::death_effect)
+		/*if ( steering.IsKeyDown(sf::Key::Space) && !GameState::death_effect)
+		{
+			GameState::death_effect = true;
+			GameState::death_anim_timer.Reset();
+			GameState::restart_level = true;
+		}*/
+
+		if ( GameEngine::getInstance()->DetectCollision(&Me, "YellowDeathBall.PNG") && !GameState::death_effect )
 		{
 			GameState::death_effect = true;
 			GameState::death_anim_timer.Reset();
 			GameState::restart_level = true;
 		}
+
 }
 
 void Hero::EventHandling()

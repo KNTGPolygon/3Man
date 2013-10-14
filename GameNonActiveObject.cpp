@@ -17,7 +17,7 @@ GameNonActiveObject::GameNonActiveObject(float x, float y, int _type, std::strin
 
 	mySprite.SetImage(myTexture);
     mySprite.SetScale( 1, 1 );
-	mySprite.SetPosition( x - 16, y - 16);
+	mySprite.SetPosition( x + 16, y + 16);
 	mySprite.SetCenter(16,textureHeight/2);
 	mySprite.setBoxMask(sf::IntRect(2, textureHeight - 8 ,30,textureHeight));
 	mySprite.setType("wall");

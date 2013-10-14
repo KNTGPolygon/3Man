@@ -42,7 +42,12 @@ void GameState::LoadLevel(const std::string& filename)
 	DrawableEntityList.push_back(pirate);
 
 	for( int i = 0; i < numberOfObjects ; i++ )
-		DrawableEntityList.push_back( arrayOfObjects[i] );
+	{
+		if ( arrayOfObjects[i]->getType() == 4 )
+			DrawableEntityList.push_back( new Wall(arrayOfObjects[i]->GetPosition().x, arrayOfObjects[i]->GetPosition().y) );
+		else
+			DrawableEntityList.push_back( arrayOfObjects[i] );
+	}
 	std::cout << "DEL size: " << DrawableEntityList.size() << std::endl;
 
 	counter = 0;

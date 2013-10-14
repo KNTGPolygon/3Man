@@ -13,12 +13,13 @@
 class Enemy : public Drawable
 {
 public:
-		enum State{
+enum State{
 	UP,
 	DOWN,
 	RIGHT,
 	LEFT,
 	STAY,
+	DEAD,
 	COMBAT,
 	FOLLOW,
 	PATHWALK,
@@ -38,6 +39,7 @@ protected:
 	int iterator;
 	int numberOfRandomPathPoints;
 	int value;
+	int frameCount;
 
 	float velocity;
 	float distanceFromTarget;
@@ -101,7 +103,7 @@ public:
 	void GenerateRandomPath();
 	void SetStartPosition(sf::Vector2f Position);
 	Enemy(sf::Vector2i Position = sf::Vector2i(300,300),int _value = 7, bool _isX = false,
-		  std::string fileName = "Pirate.PNG" ,float Velocity = 1.0 , float PullRange = 100.0 );
+		  std::string fileName = "Pirate.PNG" ,float Velocity = 1.0 , float PullRange = 200.0 );
 	~Enemy(void);
 
 	void SetHeroPosition( sf::Vector2f HeroPosition );

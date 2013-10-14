@@ -7,7 +7,7 @@
 class Cell
 {
 public:
-	int openListID; // chyba nie potrzebne
+	int openListID;
 	int walkability;
 	int whichList;
 	int GCost;
@@ -67,6 +67,7 @@ private:
 	int SaveFoundedPath(int pathfinderID , sf::Vector2i starting );
 	void Cleanup();
 public:
+	bool IsInSight( sf::Vector2i _start, sf::Vector2i _target);
 	void Initialization( std::vector<sf::Vector3i> objectList,int _gridXSize, int _gridYSize );	
 	int FindPath( int pathfinderID, sf::Vector2i _start, sf::Vector2i _target );
 	int AddNewMobID();

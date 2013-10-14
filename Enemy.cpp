@@ -6,7 +6,7 @@ Enemy::Enemy(sf::Vector2i Position, int _value, bool _isX, std::string fileName,
 	float Velocity , float PullRange)
 : velocity(Velocity),pullRange(PullRange), myPosition(Position),value(_value),isX(_isX)
 {
-	isX = false;
+	isX    = false;
 	if( value == 10 )
 	SetImage( fileName );
 	else if( value >= -9 && value <=9 )
@@ -38,7 +38,7 @@ Enemy::Enemy(sf::Vector2i Position, int _value, bool _isX, std::string fileName,
 	target			= Position;
 
 	MovementVector.x = MovementVector.y = 64;//150
-
+	frameCount = 0;
 	pathSearched = false;
 	bool RandomPathMode = false;
 	if( RandomPathMode )
@@ -80,21 +80,28 @@ Enemy::~Enemy(void)
 }
 void Enemy::UpdateCollision()
 {
- 	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
-	if( isX )
-	Colliding( GameEngine::getInstance()->DetectCollision(&mySprite,"Derivative.PNG") 
-			 , GameEngine::getInstance()->DetectCollision(&mySprite,"Integral.PNG" ) );
-	else
-	Colliding( GameEngine::getInstance()->DetectCollision(&mySprite,"Minus.PNG") 
-			 , GameEngine::getInstance()->DetectCollision(&mySprite,"Plus.PNG" ) );
-	TypeSwichColliding();
-
+	if( myAI != DEAD )
+	{
+ 		GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
+		if( isX )
+		Colliding( GameEngine::getInstance()->DetectCollision(&mySprite,"Derivative.PNG") 
+				 , GameEngine::getInstance()->DetectCollision(&mySprite,"Integral.PNG" ) );
+		else
+		Colliding( GameEngine::getInstance()->DetectCollision(&mySprite,"Minus.PNG") 
+				 , GameEngine::getInstance()->DetectCollision(&mySprite,"Plus.PNG" ) );
+		TypeSwichColliding();
+	}
 	myWeapon->UpdateCollision();
+	
 }
 
 void Enemy::UpdateSystem()
 {
 	UpdateCollision();
+	frameCount++;
+	if(frameCount >= 100)
+		frameCount = 0;
+
 }
 void Enemy::Colliding(bool minusCollision,bool plusCollision)
 {
@@ -104,6 +111,8 @@ void Enemy::Colliding(bool minusCollision,bool plusCollision)
 		{
 			value--;
 			isMinus = false;
+			if ( value == 0 )
+				if(!isX) myAI = DEAD;
 			SetImage(value);
 		}
 		else
@@ -114,6 +123,7 @@ void Enemy::Colliding(bool minusCollision,bool plusCollision)
 				if ( value == 0 )
 				{
 					isMinus = false;
+					if(!isX) myAI = DEAD;
 					isX     = false;
 				}
 				SetImage(value);
@@ -134,7 +144,8 @@ void Enemy::Colliding(bool minusCollision,bool plusCollision)
 			isMinus = true;
 			if ( value == 0 )
 			{
-				isMinus = false;	
+				isMinus = false;
+				if(!isX) myAI = DEAD;
 				isX		= false;
 			}
 			SetImage(value);
@@ -150,12 +161,14 @@ void Enemy::TypeSwichColliding()
 			value = 0;
 			isMinus = false;
 			SetImage( value );
+			myAI = DEAD;
 		}else
 		if( GameEngine::getInstance()->DetectCollision(&mySprite,"Integral.PNG" ) )
 		{
 			value = 1;
 			isX = true;
 			SetImage( "x.PNG" );
+			exponent.SetText( Util::int2str( value ) );
 		}
 	}else
 	{
@@ -325,10 +338,16 @@ void Enemy::RandomPathWalk()
 void Enemy::PathWalk()
 {
 	attacking = false;
-	if( distanceFromHero < pullRange )
+	if( frameCount == 50 )
 	{
-		myAI = FOLLOW;
-		std::cout<<"Following...\n"	;
+		if( distanceFromHero < pullRange )
+		{
+			if( GameEngine::getInstance()->pathfinder->IsInSight(myPosition,heroPosition) )
+			{
+				myAI = FOLLOW;
+				std::cout<<"Following...\n"	;
+			}
+		}
 	}else
 	{
 		if(waitTimeCounter < waitTime && targetReached == true)
@@ -364,25 +383,38 @@ void Enemy::PathWalk()
 }
 void Enemy::ReturnToPathWalk()
 {
-	if( FindPath( target ) == PathFinder::FOUND )
+	if( frameCount == 50 )
 	{
-		if( iterator != pathfinderPath.size() )
+		if( distanceFromHero < pullRange )
 		{
-			if( targetReached == true )
+			if( GameEngine::getInstance()->pathfinder->IsInSight(myPosition,heroPosition) )
 			{
-				pathFinderPoint = pathfinderPath[iterator];
-				pathFinderPoint.x = pathFinderPoint.x *32 + rand()%32;
-				pathFinderPoint.y = pathFinderPoint.y *32 + rand()%32;
-				iterator++;
+				myAI = FOLLOW;
+				std::cout<<"Following...\n"	;
 			}
-				
 		}
-		else
+	}else
+	{
+		if( FindPath( target ) == PathFinder::FOUND )
 		{
-			myAI = pathMode;
-			pathSearched = false;
+			if( iterator != pathfinderPath.size() )
+			{
+				if( targetReached == true )
+				{
+					pathFinderPoint = pathfinderPath[iterator];
+					pathFinderPoint.x = pathFinderPoint.x *32 + rand()%32;
+					pathFinderPoint.y = pathFinderPoint.y *32 + rand()%32;
+					iterator++;
+				}
+				
+			}
+			else
+			{
+				myAI = pathMode;
+				pathSearched = false;
+			}
+			Logic( pathFinderPoint );
 		}
-		Logic( pathFinderPoint );
 	}
 }
 Enemy::State Enemy::GetAIState()
@@ -451,22 +483,23 @@ void Enemy::GenerateRandomPath()
 
 void Enemy::Display(sf::RenderWindow *window)
 {
-	window->Draw( mySprite );
-	myWeapon->Display( window );
-
-	if ( isMinus && !isX)
+	if( myAI != DEAD )
 	{
-		sign.SetPosition( mySprite.GetPosition().x - 20,mySprite.GetPosition().y);	
-		window->Draw( sign );
-	}
-	if ( isX )
-	{
-		if( value >= 0 )
-		exponent.SetPosition( mySprite.GetPosition().x + 20.0, mySprite.GetPosition().y - 40.0 );
-		else
-		exponent.SetPosition( mySprite.GetPosition().x + 10.0, mySprite.GetPosition().y - 40.0 );
+		window->Draw( mySprite );
+		if ( isMinus && !isX)
+		{
+			sign.SetPosition( mySprite.GetPosition().x - 20,mySprite.GetPosition().y);	
+			window->Draw( sign );
+		}
+		if ( isX )
+		{
+			if( value >= 0 )
+			exponent.SetPosition( mySprite.GetPosition().x + 20.0, mySprite.GetPosition().y - 40.0 );
+			else
+			exponent.SetPosition( mySprite.GetPosition().x + 10.0, mySprite.GetPosition().y - 40.0 );
 
-		window->Draw( exponent );
+			window->Draw( exponent );
+		}
 	}
 	if(GameEngine::getInstance()->devmode)
 	{
@@ -479,6 +512,7 @@ void Enemy::Display(sf::RenderWindow *window)
 														 sf::Vector2f(mySprite.GetPosition().x-mySprite.GetCenter().x,
 																	  mySprite.GetPosition().y-mySprite.GetCenter().y));
 	}
+		myWeapon->Display( window );
 }
 void Enemy::SetStartPosition(sf::Vector2f Position)
 {

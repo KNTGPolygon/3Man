@@ -177,7 +177,7 @@ int Weapon::SetWeapon(WeaponType Weapon)
 		range = 300;
 		speed = 5.0;
 		repeatRate = 0.25;
-		bulletFireLimit = 5;
+		bulletFireLimit = 3;
 		error = 50;
 		break;
 	default:

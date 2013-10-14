@@ -488,3 +488,38 @@ int PathFinder::AddNewMobID()
 	return _numberOfMobs;
 
 }
+bool PathFinder::IsInSight( sf::Vector2i _start, sf::Vector2i _target)
+{
+	bool obsticle          = false;
+	int walkabilityCounter = 0;
+	
+	sf::Vector2i start    = sf::Vector2i( _start.x  / gridCellSize, _start.y  / gridCellSize );
+	sf::Vector2i target   = sf::Vector2i( _target.x / gridCellSize, _target.y / gridCellSize );
+	sf::Vector2i tempPos  = start;
+
+	do{
+		if( target.x > tempPos.x ) 
+		{
+			tempPos.x++;
+		}else if(target.x < tempPos.x )
+		{
+			tempPos.x--;
+		}
+		if( target.y > tempPos.y )
+		{
+			tempPos.y++;
+		}else if( target.y < tempPos.y )
+		{
+			tempPos.y--;
+		}
+		if(cell[tempPos.x][tempPos.y].walkability != WALKABLE )
+		{
+			obsticle = true;
+		}
+		if( obsticle )
+		{
+			return false;
+		}
+	}while( tempPos != target );
+		return true;
+}

@@ -31,15 +31,25 @@ void GameState::LoadLevel(const std::string& filename)
 	map = new Maps(filename);
 	numberOfObjects = map->getNoOfObjects();
 	arrayOfObjects = map->getMapGameObjects();
+	numberOfEnemies = map->GetListOfEnemies().size();
+	vectorOfEnemies = map->GetListOfEnemies();
 	mapPixelatedSize = map->getSize() * 64;
-
+	
 	pirate = new Enemy(sf::Vector2i(100,100),1);
+
+	enemy = new Enemy*[numberOfEnemies ];
+	for(int i = 0 ; i < numberOfEnemies ; i++ )
+		enemy[i] = new Enemy(sf::Vector2i(vectorOfEnemies[i].x,vectorOfEnemies[i].y ),vectorOfEnemies[i].z );
+	
 	GameEngine::getInstance()->pathfinder->Initialization( GameEngine::getInstance()->GetObjects(),
 														   GameEngine::getInstance()->GetGridSize().x,
 														   GameEngine::getInstance()->GetGridSize().y );
 	
 	DrawableEntityList.push_back(hero);
 	DrawableEntityList.push_back(pirate);
+
+	for( int i = 0; i < numberOfEnemies ; i++ )
+		DrawableEntityList.push_back( enemy[i] );
 
 	for( int i = 0; i < numberOfObjects ; i++ )
 	{
@@ -48,6 +58,7 @@ void GameState::LoadLevel(const std::string& filename)
 		else
 			DrawableEntityList.push_back( arrayOfObjects[i] );
 	}
+
 	std::cout << "DEL size: " << DrawableEntityList.size() << std::endl;
 
 	counter = 0;
@@ -70,7 +81,7 @@ void GameState::UpdateSystem()
 
 	GameEngine::getInstance()->ClearCollisionQuadtree();
 	for ( unsigned int i = 0; i < DrawableEntityList.size(); i++ )
-		DrawableEntityList[i]->UpdateSystem();
+ 		DrawableEntityList[i]->UpdateSystem();
 	counter++;
 }
 

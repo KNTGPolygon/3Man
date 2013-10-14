@@ -297,7 +297,7 @@ int PathFinder::FindPath(int pathfinderID, sf::Vector2i _start, sf::Vector2i _ta
 
 	counter++;
 	}while(1);
-	std::cout<<"Total loops made : "<<counter<<std::endl;
+	//std::cout<<"Total loops made : "<<counter<<std::endl;
 
 	if( pathStatus[ pathfinderID ] == FOUND )
 	{
@@ -443,7 +443,8 @@ int PathFinder::SaveFoundedPath(int pathfinderID , sf::Vector2i starting )
 	
 	tempCell = target;
 	int iterator = pathLength[pathfinderID] - 1;
-	std::cout<<"pathLength["<<pathfinderID<<"] = "<<pathLength[pathfinderID]<<std::endl;
+
+	//std::cout<<"pathLength["<<pathfinderID<<"] = "<<pathLength[pathfinderID]<<std::endl;
 	do{
 		pathBank[pathfinderID][ iterator ] = tempCell;
 		tempCell = cell[tempCell.x][tempCell.y].parent;	

@@ -13,10 +13,12 @@ Enemy::Enemy(sf::Vector2i Position, int _value, bool _isX, std::string fileName,
 	SetImage( Util::int2str( abs( value ) ) + ".PNG" );
 	else
 	{
-		value = 4;
+		value = -9 + rand()%19;
+		if( value == 0 ) value = 1;
 		isX = true;
 		SetImage( "x.PNG" );
 	}
+
 
 	exponent.SetText( Util::int2str( value ) );
 	exponent.SetSize( 25.0 );
@@ -455,7 +457,7 @@ void Enemy::GenerateRandomPath()
 {
 	std::cout<<"ID: " <<myID<<std::endl;
 
-	std::cout<<"start : "<<startPosition.x<<" "<<startPosition.y<<std::endl;
+	//std::cout<<"start : "<<startPosition.x<<" "<<startPosition.y<<std::endl;
 
 	pathStatus = PathFinder::NONEXISTENT;
 	for( int i = 0 ; i < numberOfRandomPathPoints ; i++ )
@@ -463,7 +465,7 @@ void Enemy::GenerateRandomPath()
 		do{
 		target.x = rand()%( 2 * MovementVector.x ) + ( startPosition.x - MovementVector.x );
 		target.y = rand()%( 2 * MovementVector.y ) + ( startPosition.y - MovementVector.y );
-		std::cout<<target.x<<" "<<target.y<<"\n";
+	//	std::cout<<target.x<<" "<<target.y<<"\n";
 		pathSearched = false;
 		if( (target.x/32 != myPosition.x/32) &&
 		    (target.y/32 != myPosition.y/32) )

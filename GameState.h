@@ -7,6 +7,7 @@
 #include "Collision/QuadtreeNode.h"
 #include "Enemies/PathFinder.h"
 #include <string>
+#include <vector>
 
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
@@ -23,11 +24,13 @@ private:
 	std::string current_level;
 
 	Enemy* pirate;
-
+	Enemy **enemy;
 	int iterator;
 	int mapPixelatedSize;
 	int numberOfObjects;
+	int numberOfEnemies;
 	GameNonActiveObject ** arrayOfObjects;
+	std::vector<sf::Vector3i> vectorOfEnemies;
 	static const int NUM_OF_ENEMIES = 5;
 public:
 	static bool restart_level;

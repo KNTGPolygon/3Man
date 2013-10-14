@@ -251,9 +251,15 @@ void Maps::MapFileLoading(const std::string& filename)
 						}
 
 							enemyType = atoi(sub.c_str());
+							
 
 							if(enemyType != -1)
 							{
+								if( enemyType != 11 )
+								{
+									enemyType = -9 + rand()%19;
+									if( enemyType == 0 ) enemyType = 1;
+								}
 								listOfEnemies.push_back(sf::Vector3i(colNumber * 64,rowNumber * 64,enemyType));
 							}
 
@@ -436,3 +442,9 @@ GameNonActiveObject ** Maps::getMapGameObjects()
 {
 	return mapGameObjects;
 }
+
+std::vector<sf::Vector3i> Maps::GetListOfEnemies()
+{
+	return listOfEnemies;
+}
+

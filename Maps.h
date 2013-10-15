@@ -47,7 +47,7 @@ public:
 	int getNoOfObjects();
 	std::vector <GameNonActiveObject *> getMapGameObjects();
 	std::vector <GameActiveObject *> getMapActiveGameObjects();
-	std::vector<sf::Vector3i> Maps::GetListOfEnemies();
+	std::vector<sf::Vector3i> GetListOfEnemies();
 
 private:
 	void MapFileLoading(const std::string& filename);

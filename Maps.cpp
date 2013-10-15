@@ -18,7 +18,6 @@ Maps::Maps(const std::string& filename)
 void Maps::MapFileLoading(const std::string& filename)
 {
 	std::map <const int, std::string> tempAddressesArray;
-
 	std::map <int, int> passageRightsRead;
 
 	//checking whether file can be opened
@@ -53,7 +52,6 @@ void Maps::MapFileLoading(const std::string& filename)
 
 					if(stringRepresentingFileLine.at(0) != '*')
 					{
-						//std::cout << mapTilesPath << " " <<  stringRepresentingFileLine << std::endl;
 						iss >> substring;
 						addresses[counter] = (mapTilesPath + substring).c_str() ;
 
@@ -75,6 +73,7 @@ void Maps::MapFileLoading(const std::string& filename)
 //-------------------------
 			 looping = true;
 			
+			 int numberOfNonActiveObjects = 0;
 			 std::string objectPath = "Data/Textures/MapObjects/";
 			 counter = 0;
 			 do{
@@ -88,6 +87,7 @@ void Maps::MapFileLoading(const std::string& filename)
 						iss >> substring;
 						tempAddressesArray[counter] = (objectPath + substring).c_str();
 						counter++;
+						numberOfNonActiveObjects++;
 					}
 					else
 					{
@@ -160,9 +160,7 @@ void Maps::MapFileLoading(const std::string& filename)
 				colNumber = 0;
 				 getline (map,stringRepresentingFileLine);
 				 std::istringstream iss(stringRepresentingFileLine);
-				 std::string sub;
-
-				 
+				 std::string sub; 
 
 				 looping = true;
 						do
@@ -205,85 +203,65 @@ void Maps::MapFileLoading(const std::string& filename)
 				}
 
 			   numberOfObjects = temp_ObjectVectorRepresentations.size();
-			   mapGameObjects = new GameNonActiveObject*[numberOfObjects];
 
 			   sf::Vector2i objectPosition;
 
+			   std::vector < sf::Vector3i >activeElementsVector;
 				for(unsigned int i = 0; i < numberOfObjects; i++)
 				{
 					objectPosition = sf::Vector2i(temp_ObjectVectorRepresentations.at(i).x, temp_ObjectVectorRepresentations.at(i).y);
 					objectType = temp_ObjectVectorRepresentations.at(i).z;
-					mapGameObjects[i] = new GameNonActiveObject(objectPosition.x, objectPosition.y, objectType, tempAddressesArray[objectType]);
+
+					if(objectType < numberOfNonActiveObjects)
+						mapGameObjects.push_back(new GameNonActiveObject(objectPosition.x, objectPosition.y, objectType, tempAddressesArray[objectType]));
+					else
+						activeElementsVector.push_back(sf::Vector3i(objectPosition.x, objectPosition.y, objectType));
 				}
 
 
 			   int objectArraySize = 2*Size;
 			   
 			   GameEngine::getInstance()->SetMapObjectsGrid( objects, 2*Size );
-			   std::cout << " Created tempConstructorObjects! " << std::endl;
+
+			    MapFileLoading_SkipFileLine(map);
+				MapFileLoading_GetEnemies(map);
+
+
+
+				counter = 0;
 
 				
-				std::cout << " Map loaded succesfully! " << std::endl;
-
-
-				//------------------------
-
-				getline (map,stringRepresentingFileLine);
-
-				colNumber = 0;
-				rowNumber = 0;
-
-			  while ( map.good() )
+				while ( map.good() )
 				{
-				 int enemyType = -1;
 				 getline (map,stringRepresentingFileLine);
 				 std::istringstream iss(stringRepresentingFileLine);
-				 std::string sub;
+				 std::string sub; 
 
 				 looping = true;
+				 iss >>sub;
 
-						do
-						{
-						iss >>sub;
-						if(sub.at(0) == '*')
+				 if(sub.at(0) == '*')
 						{
 							break;
 						}
 
-							enemyType = atoi(sub.c_str());
-							
-
-							if(enemyType != -1)
-							{
-								if( enemyType != 11 )
-								{
-									enemyType = -9 + rand()%19;
-									if( enemyType == 0 ) enemyType = 1;
-								}
-								listOfEnemies.push_back(sf::Vector3i(colNumber * 64,rowNumber * 64,enemyType));
-							}
-
-							colNumber++;
-
-							if(colNumber == Size)
-							{
-								break;
-							}
-
-						}
-						while(iss);
-
-						rowNumber++;					
-
-						colNumber = 0;
-
-						if(sub.at(0) == '*')
-							{
-								break;
-							}
-
+						std::cout << sub << std::endl;
+						addressesOfActiveGraphics[counter] = sub;
+						counter++;
 				}
 
+				for(int x = 0; x < 3 ; x++)
+				{
+					std::cout << addressesOfActiveGraphics[x] << std::endl;
+				}
+				
+				for(int i = 0; i < activeElementsVector.size(); i++)
+				{
+					sf::Vector3i tempVector = activeElementsVector.at(i);
+					mapGameActiveObjects.push_back(new GameActiveObject(tempVector.x, tempVector.y, tempVector.z, addressesOfActiveGraphics[tempVector.z - numberOfNonActiveObjects]));
+				}
+
+				std::cout << " Map loaded succesfully! " << std::endl;
 
 
 		 map.close();
@@ -309,6 +287,76 @@ void Maps::MapFileLoading_PrepareTileArrayAccordingToSize()
 	for(int i = 0; i < Size; ++i)
 		map_data[i] = new Tile[Size];
 
+}
+
+void Maps::MapFileLoading_GetEnemies(std::ifstream& inputMapFileStream)
+{
+		int colNumber = 0;
+		int rowNumber = 0;
+
+		int enemyType = -1;
+
+		std::string stringRepresentingFileLine = "";
+
+		bool looping = true;
+
+			  while ( inputMapFileStream.good() )
+				{
+
+				 enemyType = -1;
+				 getline (inputMapFileStream,stringRepresentingFileLine);
+				 std::istringstream iss(stringRepresentingFileLine);
+				 std::string sub;
+
+						do
+						{
+						iss >>sub;
+
+						if(sub.at(0) == '*')
+							{
+								break;
+							}
+
+						enemyType = atoi(sub.c_str());
+
+						if(enemyType != -1)
+							{
+
+								if( enemyType != 11 )
+								{
+									enemyType = -9 + rand()%19;
+									if( enemyType == 0 ) enemyType = 1;
+								}
+
+								listOfEnemies.push_back(sf::Vector3i(colNumber * 64,rowNumber * 64,enemyType));
+							}
+
+						colNumber++;
+
+						if(colNumber == Size)
+							{
+								break;
+							}
+
+						}while(iss);
+
+						rowNumber++;					
+
+						colNumber = 0;
+
+						if(sub.at(0) == '*')
+							{
+								break;
+							}
+				}
+}
+
+
+
+void Maps::MapFileLoading_SkipFileLine(std::ifstream& inputMapFileStream)
+{
+	std::string lineToIgnore = "";
+	std::getline (inputMapFileStream,lineToIgnore);
 }
 
 
@@ -438,13 +486,17 @@ int Maps::getNoOfObjects()
 	return numberOfObjects;
 }
 
-GameNonActiveObject ** Maps::getMapGameObjects()
+std::vector<GameNonActiveObject *> Maps::getMapGameObjects()
 {
 	return mapGameObjects;
+}
+
+std::vector<GameActiveObject *> Maps::getMapActiveGameObjects()
+{
+	return mapGameActiveObjects;
 }
 
 std::vector<sf::Vector3i> Maps::GetListOfEnemies()
 {
 	return listOfEnemies;
 }
-

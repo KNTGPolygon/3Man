@@ -10,6 +10,7 @@
 #include "Tile.h"
 #include "MapObject.h"
 #include "GameNonActiveObject.h"
+#include "GameActiveObject.h"
 #include "Enemy.h"
 
 #ifndef MAPS_H
@@ -25,9 +26,11 @@ private:
 	int Size;
 	int numberOfObjects;
 	std::map<const int, std::string> addresses;
+	std::map<const int, std::string> addressesOfActiveGraphics;
 
 	Tile ** map_data;
-	GameNonActiveObject ** mapGameObjects;
+	std::vector <GameNonActiveObject *> mapGameObjects;
+	std::vector <GameActiveObject*> mapGameActiveObjects;
 	std::vector <sf::Vector3i> listOfEnemies;
 
 	std::map <int, int> typeOfTileAnimations;
@@ -40,15 +43,20 @@ public:
 	Maps(const std::string& filename);
 	~Maps();
 	void showMap(sf::RenderWindow *window, sf::Vector2f heroPosition);
-	std::vector<sf::Vector3i>  GetListOfEnemies();
 	int getSize();
 	int getNoOfObjects();
-	GameNonActiveObject ** getMapGameObjects();
+	std::vector <GameNonActiveObject *> getMapGameObjects();
+	std::vector <GameActiveObject *> getMapActiveGameObjects();
+	std::vector<sf::Vector3i> Maps::GetListOfEnemies();
 
 private:
 	void MapFileLoading(const std::string& filename);
 	void MapFileLoading_GetMapSize(std::ifstream& inputMapFileStream);
 	void MapFileLoading_PrepareTileArrayAccordingToSize();
+	void MapFileLoading_GetEnemies(std::ifstream& inputMapFileStream);
+
+	void MapFileLoading_SkipFileLine(std::ifstream& inputMapFileStream);
+	
 
 	void Animate();
 	void CreateTiles();

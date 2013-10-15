@@ -29,18 +29,20 @@ void GameState::LoadLevel(const std::string& filename)
 	hero->PutScreenSize(GameEngine::SCREEN_WIDTH, GameEngine::SCREEN_HEIGHT);
 
 	map = new Maps(filename);
-	numberOfObjects = map->getNoOfObjects();
 	arrayOfObjects = map->getMapGameObjects();
 	numberOfEnemies = map->GetListOfEnemies().size();
 	vectorOfEnemies = map->GetListOfEnemies();
+
+	vectorOfActiveObjects = map->getMapActiveGameObjects();
 	mapPixelatedSize = map->getSize() * 64;
-	
+
 	pirate = new Enemy(sf::Vector2i(100,100),1);
 
 	enemy = new Enemy*[numberOfEnemies ];
 	for(int i = 0 ; i < numberOfEnemies ; i++ )
 		enemy[i] = new Enemy(sf::Vector2i(vectorOfEnemies[i].x,vectorOfEnemies[i].y ),vectorOfEnemies[i].z );
-	
+
+
 	GameEngine::getInstance()->pathfinder->Initialization( GameEngine::getInstance()->GetObjects(),
 														   GameEngine::getInstance()->GetGridSize().x,
 														   GameEngine::getInstance()->GetGridSize().y );
@@ -51,12 +53,19 @@ void GameState::LoadLevel(const std::string& filename)
 	for( int i = 0; i < numberOfEnemies ; i++ )
 		DrawableEntityList.push_back( enemy[i] );
 
-	for( int i = 0; i < numberOfObjects ; i++ )
+
+
+	for( int i = 0; i < arrayOfObjects.size() ; i++ )
 	{
-		if ( arrayOfObjects[i]->getType() == 4 )
-			DrawableEntityList.push_back( new Wall(arrayOfObjects[i]->GetPosition().x, arrayOfObjects[i]->GetPosition().y) );
+		if ( arrayOfObjects.at(i)->getType() == 4 )
+			DrawableEntityList.push_back( new Wall(arrayOfObjects.at(i)->GetPosition().x, arrayOfObjects.at(i)->GetPosition().y) );
 		else
-			DrawableEntityList.push_back( arrayOfObjects[i] );
+			DrawableEntityList.push_back( arrayOfObjects.at(i) );
+	}
+
+	for( int i = 0; i < vectorOfActiveObjects.size() ; i++ )
+	{
+		DrawableEntityList.push_back( vectorOfActiveObjects.at(i) );
 	}
 
 	std::cout << "DEL size: " << DrawableEntityList.size() << std::endl;
@@ -74,6 +83,8 @@ void GameState::ClearLevel()
 
 void GameState::UpdateSystem()
 {
+
+
 	if ( GameEngine::getInstance()->getSteering().IsKeyDown( sf::Key::J ) )
 	{
 		pirate->SetAIState( Enemy::FOLLOW );
@@ -81,7 +92,7 @@ void GameState::UpdateSystem()
 
 	GameEngine::getInstance()->ClearCollisionQuadtree();
 	for ( unsigned int i = 0; i < DrawableEntityList.size(); i++ )
- 		DrawableEntityList[i]->UpdateSystem();
+		DrawableEntityList[i]->UpdateSystem();
 	counter++;
 }
 

@@ -423,8 +423,6 @@ void MapCreator::CreateSprites()
 		sf::Vector2f spriteSize = spr.GetSize();
 
 		spr.SetSubRect(sf::IntRect(0,0,spriteSize.x,spriteSize.y));
-
-		std::cout << spriteSize.x << " " << spriteSize.y << std::endl;
 		spr.SetScale(0.5,0.5);
 		objectSprites.push_back(spr);
 	}
@@ -918,6 +916,32 @@ bool MapCreator::saveMapToFile(std::string filename)
 		saveMap_SavingGroundTilesPhase(outputFileStream);
 		saveMap_SavingObjectsPhase(outputFileStream);
 		saveMap_SavingEnemiesPhase(outputFileStream);
+
+		  while( !editorLoadingFile_inputStream.eof() )
+					{	
+						editorLoadingFile_inputStream >> str;
+						
+							if(str[0] == '-')
+						{
+							break;
+						}
+
+				   }
+
+		   while( !editorLoadingFile_inputStream.eof() )
+					{	
+						editorLoadingFile_inputStream >> str;
+						
+							if(str[0] == '-')
+						{
+							break;
+						}
+
+							outputFileStream << str << "\n";
+
+				   }
+
+		   outputFileStream << "*";
 
 		std::cout << "Map saved!" << std::endl;
 	}

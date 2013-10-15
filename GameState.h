@@ -24,12 +24,13 @@ private:
 	std::string current_level;
 
 	Enemy* pirate;
+
 	Enemy **enemy;
 	int iterator;
 	int mapPixelatedSize;
-	int numberOfObjects;
 	int numberOfEnemies;
-	GameNonActiveObject ** arrayOfObjects;
+	std::vector <GameNonActiveObject *> arrayOfObjects;
+	std::vector <GameActiveObject *> vectorOfActiveObjects;
 	std::vector<sf::Vector3i> vectorOfEnemies;
 	static const int NUM_OF_ENEMIES = 5;
 public:

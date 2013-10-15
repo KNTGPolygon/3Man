@@ -14,12 +14,10 @@ class Hero : public Drawable
 public:
 	static const int SPRITE_SIZE  = 32; // 32 bo szerokosc tekstury
 	static sf::Vector2f myPosition;	//hero position
+	static bool armor; //pancerz
+	static bool invincible; //niesmiertelnosc
 private:
-
 	bool fire;
-	bool armor; //pancerz
-	bool invincible; //niesmiertelnosc
-
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
 	int weaponType;
@@ -45,10 +43,13 @@ private:
 	State ANIMATION_TYPE;
 
 	Animate **animate;
+	Animate **animate_armor;
 	Weapon **weapon;
 	SpriteExt Me;
+	SpriteExt Me_armor;
 
-	sf::Image MyTexture;			
+	sf::Image MyTexture;
+	sf::Image MyTexture_armor;
 	sf::String strMyPosition;
 
 const sf::Input &steering;//Interakcja z otoczeniem

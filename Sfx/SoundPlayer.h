@@ -13,7 +13,8 @@ namespace Snd
 		EnemyDeath,
 		HeroDeath,
 		GunUpgrade,
-		ArmorUpgrade
+		ArmorUpgrade,
+		ArmorDestroy
 	};
 }
 

@@ -12,7 +12,7 @@ SoundPlayer::SoundPlayer()
 	paths[3] = "Data/Sounds/hero_death.wav";
 	paths[4] = "Data/Sounds/gun.wav";
 	paths[5] = "Data/Sounds/armor.wav";
-	paths[6] = "Data/Sounds/hit.wav";
+	paths[6] = "Data/Sounds/armor_destroy.wav";
 
 	for ( int i = 0; i < 7; i++ )
 		sounds[i].SetBuffer( SoundBufferManager::getInstance()->loadSound(paths[i]) );

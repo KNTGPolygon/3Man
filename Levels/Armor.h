@@ -10,6 +10,8 @@ class Armor : public Drawable
 private:
 	sf::Image image;
 	SpriteExt sprite;
+	bool active;
+	bool deactivate;
 public:
 	Armor(float, float);
 	void UpdateSystem();

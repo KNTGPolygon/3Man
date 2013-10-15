@@ -13,21 +13,31 @@ Armor::Armor(float x, float y)
 	sprite.SetCenter(0,0);
 	sprite.setBoxMask(sf::IntRect(1,16,31,31));
 	sprite.setType("armor");
+	active = true;
+	deactivate = false;
 }
 
 void Armor::UpdateSystem()
 {
-	GameEngine::getInstance()->AddToCollisionQuadtree(&sprite);
+	if (deactivate && Hero::armor) active = false;
+	if (active)
+		GameEngine::getInstance()->AddToCollisionQuadtree(&sprite);
 }
 
 void Armor::EventHandling()
 {
-	depth = -sprite.GetPosition().y -16;
+	if (active)
+	{
+		depth = -sprite.GetPosition().y -16;
+		if ( GameEngine::getInstance()->DetectCollision(&sprite, "Hero") )
+			deactivate = true;
+	}
 }
 
 
 void Armor::Display(sf::RenderWindow * window)
 {
+	if (!active) return;
 	window->Draw(sprite);
 
 	if(GameEngine::getInstance()->devmode)

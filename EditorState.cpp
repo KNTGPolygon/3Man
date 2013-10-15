@@ -16,12 +16,15 @@ void EditorState::Init()
 					sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -100),
 			       (float)(GameEngine::SCREEN_HEIGHT/2)),
 				   ""); 
-		textBox = new TextBox(sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -150.0),
-			       (float)(GameEngine::SCREEN_HEIGHT/2 - 200)),
-			       sf::Vector2f(250.0,100.0),
+		textBox = new TextBox(sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -175.0),
+			       (float)(GameEngine::SCREEN_HEIGHT/2 - 250)),
+			       sf::Vector2f(350.0,150.0),
 			       sf::Color(61,61,61),
-			       "Jakis jeden tekst tu jest \n a tu jakis drugi \n a tu nawet trzeci");
-
+			       " Edytor do tworzenia map:\n Zalecana wielkosc mapy 10 - 1000 \n Klawiszologia : \n CTRL + L - Wczytanie bierzacej mapy\n Shift + LPM - Usuniecie obiektu\n Dyskietka - Zapis mapy do pliku");
+		textBox1 = new TextBox(sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -230.0),
+			       (float)( GameEngine::SCREEN_HEIGHT/2) ),
+			       sf::Vector2f(130.0,30.0),
+			       sf::Color(61,61,61),"Rozmiar mapy ");
 	init = 1;
 	state = SET_MAP_SIZE;
 }
@@ -37,6 +40,7 @@ void EditorState::Display()
 		{
 			inputBox->Display(&GameEngine::getInstance()->getWindow());
 			textBox->Display(&GameEngine::getInstance()->getWindow());
+			textBox1->Display(&GameEngine::getInstance()->getWindow());
 		}
 	else if (state == MAIN)
 		{

@@ -14,6 +14,7 @@ private:
 	MapCreator *mapCreator;
 	InputBox* inputBox;
 	TextBox * textBox;
+	TextBox * textBox1;
 	CreatorStates state;
 	
 public:

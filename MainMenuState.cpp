@@ -35,10 +35,6 @@ void MainMenuState::Init()
 			       sf::Color(125,125,125),
 			       "Wyjscie");
 
-	inputBox = new InputBox(GameEngine::getInstance()->getSteering(),
-					sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -100),
-			       (float)(GameEngine::SCREEN_HEIGHT/2 - 150.0))); 
-
 	init = 1;
 }
 
@@ -53,7 +49,6 @@ void MainMenuState::Display()
 	gameStart->Display( &GameEngine::getInstance()->getWindow() );
 	options->Display( &GameEngine::getInstance()->getWindow() );
 	exit->Display( &GameEngine::getInstance()->getWindow() );
-	inputBox->Display( &GameEngine::getInstance()->getWindow() );
 }
 
 void MainMenuState::EventHandling()
@@ -63,7 +58,6 @@ void MainMenuState::EventHandling()
 	mapEditor->GetEvent();
 	options->GetEvent();
 	exit->GetEvent();
-	inputBox->HandleEvent(GameEngine::getInstance()->getEvent());
 	
 	if ( exit->pressed )
 	{
@@ -94,7 +88,6 @@ void MainMenuState::Cleanup()
 	delete mapEditor;
 	delete gameStart;
 	delete exit;
-	delete inputBox;
 	init = 0;
 }
 

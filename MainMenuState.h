@@ -13,7 +13,6 @@ private:
 	Button* mapEditor;
 	Button* exit;
 	Button* options;
-	InputBox* inputBox;
 
 public:
 	MainMenuState();

@@ -6,12 +6,12 @@
 #include <queue>
 #include <vector>
 #include <cmath>
-#include "Singleton.h"
 #include "Cursor.h"
 #include "Drawable.h"
 #include "Util.h"
 #include "State.h"
 #include "GameState.h"
+#include "GameMenuState.h"
 #include "MainMenuState.h"
 #include "OptionsMenuState.h"
 #include "EditorState.h"
@@ -22,7 +22,7 @@
 #ifndef GAME_ENGINE_H
 #define GAME_ENGINE_H
 
-enum STATE { MAINMENU, OPTIONSMENU, EDITOR, GAME, NOSTATE };
+enum STATE { MAINMENU, GAMEMENU, OPTIONSMENU, EDITOR, GAME, USERGAME, NOSTATE };
 
 class CompareDrawable
 {
@@ -34,7 +34,7 @@ public:
 	}
 };
 
-class GameEngine : public Singleton<GameEngine>
+class GameEngine
 {
 public:	
 	static const int SCREEN_WIDTH  = 800;
@@ -78,6 +78,8 @@ private:
 	sf::SoundBuffer soundBuffer;
 	sf::Music soundtrack;
 
+
+
 	void Display();
 
 public:
@@ -85,6 +87,7 @@ public:
 
 	GameEngine(void);
 	~GameEngine(void);
+	static GameEngine* getInstance(void);
 		
 	void ChangeState(STATE); // wysyla zadanie zmiany state'a
 	void SwitchState();		 // dokonuje faktycznej zamiany state'ow (nie ruszac, to sie robi samo!)
@@ -101,7 +104,6 @@ public:
 	sf::Event& getEvent();
 	Cursor& getCursor();
 	sf::Music& getMusic();
-	sf::Clock& GetTimer();
 	void SetSounds(bool);
 	bool Sounds();
 
@@ -121,7 +123,10 @@ public:
 	sf::Vector2f GetMouseCoords();
 	std::vector<sf::Vector3i> GetObjects();
 	sf::Vector2i GetGridSize();
+	STATE GetCurrentState();
 
+private:
+	static GameEngine * engine;
 };
 
 

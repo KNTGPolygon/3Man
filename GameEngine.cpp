@@ -1,6 +1,5 @@
 #include "GameEngine.h"
 #include "Sfx/SoundPlayer.h"
-#include "Fx/EffectLayer.h"
 
 GameEngine::GameEngine(void):steering(window.GetInput())
 {	
@@ -11,9 +10,11 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	View.SetFromRect( sf::Rect<float>(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT) );
 
 	States[GAME] = new GameState();
+	States[USERGAME] = new GameState();
 	States[MAINMENU] = new MainMenuState();
 	States[OPTIONSMENU] = new OptionsMenuState();
 	States[EDITOR] = new EditorState();
+	States[GAMEMENU] = new GameMenuState();
 	currentState = NOSTATE;
 	nextState = NOSTATE;
 	
@@ -42,7 +43,6 @@ GameEngine::GameEngine(void):steering(window.GetInput())
 	soundtrack.SetLoop( true );
 	soundtrack.Play();
 	SoundPlayer::getInstance();
-	EffectLayer::getInstance();
 }
 
 GameEngine::~GameEngine(void)
@@ -62,8 +62,7 @@ void GameEngine::Display()
 		SetGameView();
 		strFps.SetText("FPS = " + Util::int2str((int)(1/(currentTime-lastTime))) +
 					   "\nFrame time = " + Util::flo2str(window.GetFrameTime()) +
-					   "\nMouse: " + Util::int2str( GetMouseCoords().x ) + ", " + Util::int2str(GetMouseCoords().y )+
-					   "\nElapsed time: " + Util::flo2str(currentTime) );
+					   "\nMouse: " + Util::int2str( GetMouseCoords().x ) + ", " + Util::int2str(GetMouseCoords().y ));
 		SetDefaultView();
 		window.Draw( strFps );
 		lastTime = currentTime;
@@ -359,8 +358,16 @@ sf::Vector2f GameEngine::GetMouseCoords()
 
 	return window.ConvertCoords( mouse_x, mouse_y, &window.GetView() );
 }
-
-sf::Clock& GameEngine::GetTimer()
+STATE GameEngine::GetCurrentState()
 {
-	return time;
+	return currentState;
+}
+GameEngine* GameEngine::engine = NULL;
+GameEngine* GameEngine::getInstance(void)
+{
+	if(engine == NULL)	
+	{
+		engine = new GameEngine();
+	}
+	return engine;
 }

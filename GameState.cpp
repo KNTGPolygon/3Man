@@ -2,6 +2,7 @@
 #include "Cursor.h"
 #include "Fx/EffectLayer.h"
 #include "Levels/Armor.h"
+#include "Levels/Invincibility.h"
 
 bool GameState::restart_level;
 bool GameState::death_effect;
@@ -50,7 +51,8 @@ void GameState::LoadLevel(const std::string& filename)
 	
 	DrawableEntityList.push_back(hero);
 	DrawableEntityList.push_back(pirate);
-	DrawableEntityList.push_back(new Armor(400, 400));
+	DrawableEntityList.push_back(new Armor(384, 384));
+	DrawableEntityList.push_back(new Invincibility(480, 480));
 
 	for( int i = 0; i < numberOfEnemies ; i++ )
 		DrawableEntityList.push_back( enemy[i] );

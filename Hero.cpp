@@ -20,6 +20,12 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 	depth = 0;
 	armor = false;
 	invincible = false;
+	invinc_timer.Reset();
+
+	sf::Image& invinc_effect_img = ImageManager::getInstance()->loadImage("Data/Textures/Powerups/Invinc_effect.png");
+	invinc_effect_img.SetSmooth(false);
+	invinc_effect.SetImage(invinc_effect_img);
+	invinc_effect.SetCenter(17,25);
 
 	MyTexture = ImageManager::getInstance()->loadImage( "Data/Textures/hero_sheet.png" );
 	MyTexture.CreateMaskFromColor(sf::Color(255,0,255));
@@ -35,7 +41,7 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
     Me.SetScale( 1, 1 ); 
 	Me.SetSubRect(sf::IntRect(64,0,64+SPRITE_SIZE,SPRITE_SIZE));
 	Me.SetPosition( 350, 425 );
-	Me.SetCenter(18,25);
+	Me.SetCenter(16,25);
 	Me.setType("Hero");
 	Me.setBoxMask(sf::IntRect(0,26,SPRITE_SIZE,SPRITE_SIZE)); //ustawia maske kolizji na prostakat
 
@@ -170,7 +176,7 @@ void Hero::GetEvent()
 		weapon[i]->active = false;
 		}
 
-		if ( GameEngine::getInstance()->DetectCollision(&Me, "YellowDeathBall.PNG") )
+		if ( !invincible && GameEngine::getInstance()->DetectCollision(&Me, "YellowDeathBall.PNG") )
 		{
 			if ( armor )
 			{
@@ -225,6 +231,12 @@ void Hero::Display(sf::RenderWindow *window)
 			break;	
 	}
 	
+	if ( invincible )
+	{
+		invinc_effect.SetPosition(myPosition);
+		window->Draw(invinc_effect);
+	}
+
 	GameEngine::getInstance()->SetDefaultView();
 	window->Draw( strMyPosition );
 	GameEngine::getInstance()->SetGameView();
@@ -278,7 +290,16 @@ void Hero::UpdatePosition()
 	 }
 
 	 if ( GameEngine::getInstance()->DetectCollision(&Me, "invincibility") )
+	 {
 		 invincible = true;
+		 invinc_timer.Reset();
+	 	 SoundPlayer::getInstance()->Play(Snd::ArmorUpgrade);
+	 }
+
+	 if ( invincible && invinc_timer.GetElapsedTime() >= 5 )
+	 {
+		 invincible = false;
+	 }
 }
 sf::Vector2f Hero::GetPosition()
 {

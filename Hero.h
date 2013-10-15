@@ -47,10 +47,12 @@ private:
 	Weapon **weapon;
 	SpriteExt Me;
 	SpriteExt Me_armor;
+	sf::Sprite invinc_effect;
 
 	sf::Image MyTexture;
 	sf::Image MyTexture_armor;
 	sf::String strMyPosition;
+	sf::Clock invinc_timer;
 
 const sf::Input &steering;//Interakcja z otoczeniem
 

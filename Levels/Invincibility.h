@@ -10,6 +10,8 @@ class Invincibility : public Drawable
 private:
 	sf::Image image;
 	SpriteExt sprite;
+	bool active;
+	bool deactivate;
 public:
 	Invincibility(float, float);
 	void UpdateSystem();

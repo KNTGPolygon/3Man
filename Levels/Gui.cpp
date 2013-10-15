@@ -41,6 +41,7 @@ Gui::~Gui(void)
 }
 void Gui::UpdateSystem()
 {
+	depth = -9999999;
 	SetHeroPosition(  Hero::myPosition );
 	SetCurrentWeapon( Hero::currentWeapon  );
 	sf::Vector2f tempPos;

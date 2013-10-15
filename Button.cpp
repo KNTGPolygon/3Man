@@ -32,7 +32,7 @@ void Button::GetEvent()
 {
 	box.SetColor(color);
 
-	if( GameEngine::getInstance()->getEvent().Type == sf::Event::EventType::MouseMoved )
+	if( GameEngine::getInstance()->getEvent().Type == sf::Event::MouseMoved )
 		isMouseOn = true;
 	
 	if(  ( (GameEngine::getInstance()->GetMouseCoords().x) < ( size.x + position.x) && (GameEngine::getInstance()->GetMouseCoords().x) > (position.x) )

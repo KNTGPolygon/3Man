@@ -120,6 +120,7 @@ void Enemy::Colliding(bool minusCollision,bool plusCollision)
 					myAI = DEAD;
 					SoundPlayer::getInstance()->Play(Snd::EnemyDeath);
 				}
+
 			SetImage(value);
 		}
 		else
@@ -156,7 +157,11 @@ void Enemy::Colliding(bool minusCollision,bool plusCollision)
 			if ( value == 0 )
 			{
 				isMinus = false;
-				if(!isX) myAI = DEAD;
+				if(!isX)
+				{
+					myAI = DEAD;
+					SoundPlayer::getInstance()->Play(Snd::EnemyDeath);
+				}
 				isX		= false;
 			}
 			SetImage(value);

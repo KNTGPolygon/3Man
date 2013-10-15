@@ -1,5 +1,4 @@
 #include "MainMenuState.h"
-#include "ImageManager.h"
 
 MainMenuState::MainMenuState():State()
 {
@@ -35,13 +34,14 @@ void MainMenuState::Init()
 			       sf::Vector2f(100.0,50.0),
 			       sf::Color(125,125,125),
 			       "Wyjscie");
-
+	
 	title.SetImage(ImageManager::getInstance()->loadImage("Data/Textures/title.png"));
 	title.SetCenter(0, 0);
 	title.SetPosition(105,50);
 	info.SetText("alpha version");
 	info.SetScale(0.5, 0.5);
 	info.SetPosition(560, 140);
+
 
 	init = 1;
 }
@@ -59,6 +59,7 @@ void MainMenuState::Display()
 	exit->Display( &GameEngine::getInstance()->getWindow() );
 	GameEngine::getInstance()->getWindow().Draw(title);
 	GameEngine::getInstance()->getWindow().Draw(info);
+
 }
 
 void MainMenuState::EventHandling()

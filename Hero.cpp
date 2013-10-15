@@ -39,6 +39,7 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 	animate[1] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,10,sf::Vector2i(4,0)); //LEFT
 	animate[2] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,10,sf::Vector2i(6,0)); //RIGHT
 	animate[3] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,10); //UP
+
 	
 	weapon = new Weapon*[numberOfWeapons];	
 	weapon[0] = new Weapon(Plus);
@@ -147,12 +148,18 @@ void Hero::GetEvent()
 		weapon[i]->active = false;
 		}
 
+		/*if ( steering.IsKeyDown(sf::Key::Space) && !GameState::death_effect)
+		{
+			GameState::death_effect = true;
+			GameState::death_anim_timer.Reset();
+			GameState::restart_level = true;
+		}*/
+
 		if ( GameEngine::getInstance()->DetectCollision(&Me, "YellowDeathBall.PNG") && !GameState::death_effect )
 		{
 			GameState::death_effect = true;
 			GameState::death_anim_timer.Reset();
 			GameState::restart_level = true;
-			SoundPlayer::getInstance()->Play(Snd::HeroDeath);
 		}
 
 }
@@ -233,9 +240,10 @@ void Hero::UpdatePosition()
 	 depth = (int)( -Me.GetPosition().y );
 	 if ( GameEngine::getInstance()->DetectCollision(&Me, "armor") && !armor)
 	 {
-		 armor = true;
+ 		 armor = true;
 		 SoundPlayer::getInstance()->Play(Snd::ArmorUpgrade);
 	 }
+
 	 if ( GameEngine::getInstance()->DetectCollision(&Me, "invincibility") )
 		 invincible = true;
 }

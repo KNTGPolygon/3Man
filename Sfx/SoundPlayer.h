@@ -2,7 +2,6 @@
 #define SOUNDPLAYER_H_
 #include <SFML/Audio.hpp>
 #include <string>
-#include "../Singleton.h"
 
 namespace Snd
 {
@@ -17,15 +16,17 @@ namespace Snd
 	};
 }
 
-class SoundPlayer : public Singleton<SoundPlayer>
+class SoundPlayer
 {
 private:
+	static SoundPlayer* INSTANCE;
 	std::string paths[7];
 	sf::Sound sounds[7];
 
 public:
 	SoundPlayer();
 	void Play( unsigned int );
+	static SoundPlayer* getInstance();
 };
 
 #endif /* SOUNDPLAYER_H_ */

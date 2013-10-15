@@ -22,7 +22,7 @@ void Armor::UpdateSystem()
 
 void Armor::EventHandling()
 {
-	depth = -sprite.GetPosition().y-16;
+	depth = -sprite.GetPosition().y -16;
 }
 
 

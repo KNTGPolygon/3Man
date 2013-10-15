@@ -3,15 +3,18 @@
 #include <map>
 #include <string>
 #include <SFML/Audio.hpp>
-#include "../Singleton.h"
 
-class SoundBufferManager : public Singleton<SoundBufferManager>
+class SoundBufferManager
 {
 private:
+
+	static SoundBufferManager* INSTANCE;
 	std::map<std::string, sf::SoundBuffer> images;
 	sf::SoundBuffer buffer_empty;
 
 public:
+
+	static SoundBufferManager* getInstance();
 	sf::SoundBuffer& loadSound( std::string filename );
 };
 

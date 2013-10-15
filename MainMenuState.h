@@ -16,6 +16,7 @@ private:
 	sf::Sprite title;
 	sf::String info;
 
+
 public:
 	MainMenuState();
 	void Init();

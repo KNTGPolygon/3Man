@@ -46,6 +46,7 @@ void Missle::Logic()
 	{
 		colisionWithiObiect = true;
         SoundPlayer::getInstance()->Play(Snd::Shoot);
+		
 	}
 
 	if(currentDistance < range)

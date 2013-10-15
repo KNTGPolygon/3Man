@@ -1,6 +1,6 @@
 #include "Animate.h"
 
-Animate::Animate(std::string filePath,sf::Vector2i FrameSize,sf::Vector2f Position,int NumberOfFrames,int FrameRate,int Shift )
+Animate::Animate(std::string filePath,sf::Vector2i FrameSize,sf::Vector2f Position,int NumberOfFrames,int FrameRate,sf::Vector2i Shift )
 :frameRate(FrameRate),numberOfFrames(NumberOfFrames)
 {
 		time.Reset();
@@ -14,7 +14,7 @@ Animate::Animate(std::string filePath,sf::Vector2i FrameSize,sf::Vector2f Positi
 		for(int i = 0 ; i < NumberOfFrames ; i++)
 		{
 			mySprite[i].SetImage(myTexture);
-			mySprite[i].SetSubRect(sf::IntRect(i*FrameSize.x,Shift*FrameSize.y,FrameSize.x + i*FrameSize.x,Shift*FrameSize.y+FrameSize.y));
+			mySprite[i].SetSubRect(sf::IntRect((i+Shift.x)*FrameSize.x,Shift.y*FrameSize.y,FrameSize.x + (i+Shift.x)*FrameSize.x,Shift.y*FrameSize.y+FrameSize.y));
 			mySprite[i].SetPosition(Position);
 			mySprite[i].SetCenter(18,25);
 		}

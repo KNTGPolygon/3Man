@@ -12,7 +12,7 @@ private:
 	int numberOfFrames;
 public:
 
-	Animate(std::string filePath,sf::Vector2i FrameSize,sf::Vector2f Position,int NumberOfFrames,int FrameRate,int Shift = 0);
+	Animate(std::string filePath,sf::Vector2i FrameSize,sf::Vector2f Position,int NumberOfFrames,int FrameRate,sf::Vector2i Shift = sf::Vector2i(0,0));
 	~Animate(void);
 
 	void Update(sf::Vector2f Position);

@@ -18,7 +18,7 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 	armor = false;
 	invincible = false;
 
-	MyTexture = ImageManager::getInstance()->loadImage( "Data/Textures/Player.PNG" );
+	MyTexture = ImageManager::getInstance()->loadImage( "Data/Textures/hero_sheet.png" );
 	MyTexture.CreateMaskFromColor(sf::Color(255,0,255));
 	MyTexture.SetSmooth(false);
 	strMyPosition.SetScale(0.5,0.5);
@@ -34,10 +34,10 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 	Me.setBoxMask(sf::IntRect(0,26,SPRITE_SIZE,SPRITE_SIZE)); //ustawia maske kolizji na prostakat
 
 	animate = new Animate*[4];
-	animate[0] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),3,15);   //DOWN
-	animate[1] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,15,1); //LEFT
-	animate[2] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,15,2); //RIGHT
-	animate[3] = new Animate("Data/Textures/Player.PNG",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),3,15,3); //UP
+	animate[0] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,15,sf::Vector2i(2,0));   //DOWN
+	animate[1] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,15,sf::Vector2i(4,0)); //LEFT
+	animate[2] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,15,sf::Vector2i(6,0)); //RIGHT
+	animate[3] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,15); //UP
 	
 	weapon = new Weapon*[numberOfWeapons];	
 	weapon[0] = new Weapon(Plus);

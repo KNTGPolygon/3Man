@@ -12,7 +12,7 @@
 class Hero : public Drawable
 {
 public:
-	static const int SPRITE_SIZE  = 42; // 42 bo szerokosc tekstury
+	static const int SPRITE_SIZE  = 32; // 42 bo szerokosc tekstury
 	static sf::Vector2f myPosition;	//hero position
 private:
 

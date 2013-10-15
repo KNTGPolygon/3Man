@@ -16,6 +16,7 @@ private:
 
 	const sf::Input &steering;
 public:
+	bool isMouseOn;
 	bool pressed;
 	bool singlePressed;
 	Button(const sf::Input &_steering,sf::Vector2f _position,sf::Vector2f _size,sf::Color _color,std::string _text);

@@ -4,14 +4,14 @@
 
 Armor::Armor(float x, float y)
 {
-	image = ImageManager::getInstance()->loadImage("Data/Textures/MapObjects/Wall.png");
+	image = ImageManager::getInstance()->loadImage("Data/Textures/Powerups/Armor.png");
 	image.SetSmooth(false);
 	sprite.SetImage(image);
     sprite.SetScale( 1, 1 );
-    sprite.SetSubRect(sf::IntRect(0,0,32,64));
+    sprite.SetSubRect(sf::IntRect(0,0,32,32));
 	sprite.SetPosition( x, y );
-	sprite.SetCenter(0,32);
-	sprite.setBoxMask(sf::IntRect(1,33,31,64));
+	sprite.SetCenter(0,0);
+	sprite.setBoxMask(sf::IntRect(1,16,31,31));
 	sprite.setType("armor");
 }
 
@@ -22,7 +22,7 @@ void Armor::UpdateSystem()
 
 void Armor::EventHandling()
 {
-	depth = -sprite.GetPosition().y;
+	depth = -sprite.GetPosition().y-16;
 }
 
 

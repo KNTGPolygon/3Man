@@ -38,6 +38,14 @@ void OptionsMenuState::Init()
 
 	soundTextBox->SetText( GameEngine::getInstance()->Sounds() ? "Tak" : "Nie" );
 	soundTextBox->SetTextPosition( sf::Vector2f( soundTextBox->GetTextBoxPosition().x + 10 ,soundTextBox->GetTextBoxPosition().y + 15 ) );
+
+	title.SetImage(ImageManager::getInstance()->loadImage("Data/Textures/title.png"));
+	title.SetCenter(0, 0);
+	title.SetPosition(105,50);
+	info.SetText("alpha version");
+	info.SetScale(0.5, 0.5);
+	info.SetPosition(560, 140);
+
 	init = 1;
 }
 
@@ -53,6 +61,8 @@ void OptionsMenuState::Display()
 	mainMenu->Display(&GameEngine::getInstance()->getWindow());
 	musicTextBox->Display(&GameEngine::getInstance()->getWindow());
 	soundTextBox->Display(&GameEngine::getInstance()->getWindow());
+	GameEngine::getInstance()->getWindow().Draw(title);
+	GameEngine::getInstance()->getWindow().Draw(info);
 }
 
 void OptionsMenuState::EventHandling()

@@ -13,6 +13,8 @@ private:
 	Button* mapEditor;
 	Button* exit;
 	Button* options;
+	sf::Sprite title;
+	sf::String info;
 
 public:
 	MainMenuState();

@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Collision/BoxMask.h"
 #include "Fx/EffectLayer.h"
+#include "Sfx/SoundPlayer.h"
 //-------------------------------- Hero
 
 sf::Vector2f Hero::myPosition;
@@ -34,10 +35,10 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 	Me.setBoxMask(sf::IntRect(0,26,SPRITE_SIZE,SPRITE_SIZE)); //ustawia maske kolizji na prostakat
 
 	animate = new Animate*[4];
-	animate[0] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,15,sf::Vector2i(2,0));   //DOWN
-	animate[1] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,15,sf::Vector2i(4,0)); //LEFT
-	animate[2] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,15,sf::Vector2i(6,0)); //RIGHT
-	animate[3] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,15); //UP
+	animate[0] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,10,sf::Vector2i(2,0));   //DOWN
+	animate[1] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,10,sf::Vector2i(4,0)); //LEFT
+	animate[2] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,10,sf::Vector2i(6,0)); //RIGHT
+	animate[3] = new Animate("Data/Textures/hero_sheet.png",sf::Vector2i(SPRITE_SIZE,SPRITE_SIZE),Me.GetPosition(),2,10); //UP
 	
 	weapon = new Weapon*[numberOfWeapons];	
 	weapon[0] = new Weapon(Plus);
@@ -236,8 +237,11 @@ void Hero::UpdatePosition()
 	 for(int i = 0 ; i < 4 ; i++)
 	 animate[i]->Update(Me.GetPosition());
 	 depth = (int)( -Me.GetPosition().y );
-	 if ( GameEngine::getInstance()->DetectCollision(&Me, "armor") )
+	 if ( GameEngine::getInstance()->DetectCollision(&Me, "armor") && !armor)
+	 {
 		 armor = true;
+		 SoundPlayer::getInstance()->Play(Snd::ArmorUpgrade);
+	 }
 	 if ( GameEngine::getInstance()->DetectCollision(&Me, "invincibility") )
 		 invincible = true;
 }

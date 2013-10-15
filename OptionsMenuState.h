@@ -14,6 +14,8 @@ private:
 	Button* mainMenu;
 	TextBox* musicTextBox;
 	TextBox* soundTextBox;
+	sf::Sprite title;
+	sf::String info;
 
 public:
 	OptionsMenuState();

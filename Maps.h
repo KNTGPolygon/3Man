@@ -31,13 +31,13 @@ private:
 	Tile ** map_data;
 	std::vector <GameNonActiveObject *> mapGameObjects;
 	std::vector <GameActiveObject*> mapGameActiveObjects;
+	int ** arrayOfFieldsOccupiedWithObjects;
 	std::vector <sf::Vector3i> listOfEnemies;
 
 	std::map <int, int> typeOfTileAnimations;
 
 	std::map <int, sf::Image> mapGraphics;
 	std::map <int, sf::Sprite> tileSprites;
-
 	
 public:
 	Maps(const std::string& filename);

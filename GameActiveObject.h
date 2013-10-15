@@ -13,6 +13,7 @@ class GameActiveObject : public GameObject
 	sf::Image upTexture;
 	SpriteExt upSprite;
 
+	int distanceOfHeroTargeting;
 	bool targetingHero;
 
 	sf::Vector2i targetRotationAndDirection;
@@ -25,6 +26,10 @@ class GameActiveObject : public GameObject
 	void UpdateSystem();
 	void Display(sf::RenderWindow*);
 	void doSomeAnimations();
+
+	void targetHero(sf::Vector2f distanceBetweenHeroAndTrap, sf::Vector2i distanceSigns);
+	void targetHero_checkWhichWayToTurn();
+	void targetHero_decideOnAngle(sf::Vector2f distanceBetweenHeroAndTrap, sf::Vector2i distanceSigns);
 
 	void doSomeAnimations_DecideOnNewTargetAngle();
 	void doSomeAnimations_CountShortestRotationPath();

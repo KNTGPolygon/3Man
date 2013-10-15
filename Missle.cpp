@@ -40,12 +40,12 @@ void Missle::Logic()
 	{
 		colisionWithiObiect = true;
 		if ( missleColider == "enemy" )
-            SoundPlayer::getInstance()->Play(Snd::EnemyDeath);
+            SoundPlayer::getInstance()->Play(Snd::Shoot);
 	}else
 	if( GameEngine::getInstance()->DetectCollision(&mySprite,"wall") )
 	{
 		colisionWithiObiect = true;
-        SoundPlayer::getInstance()->Play(Snd::EnemyDeath);
+        SoundPlayer::getInstance()->Play(Snd::Shoot);
 	}
 
 	if(currentDistance < range)

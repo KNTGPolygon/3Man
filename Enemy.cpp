@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "Hero.h"
 #include "GameEngine.h"
+#include "Sfx/SoundPlayer.h"
 
 Enemy::Enemy(sf::Vector2i Position, int _value, bool _isX, std::string fileName,
 	float Velocity , float PullRange)
@@ -114,7 +115,11 @@ void Enemy::Colliding(bool minusCollision,bool plusCollision)
 			value--;
 			isMinus = false;
 			if ( value == 0 )
-				if(!isX) myAI = DEAD;
+				if(!isX)
+				{
+					myAI = DEAD;
+					SoundPlayer::getInstance()->Play(Snd::EnemyDeath);
+				}
 			SetImage(value);
 		}
 		else
@@ -125,7 +130,11 @@ void Enemy::Colliding(bool minusCollision,bool plusCollision)
 				if ( value == 0 )
 				{
 					isMinus = false;
-					if(!isX) myAI = DEAD;
+					if(!isX)
+					{
+						myAI = DEAD;
+						SoundPlayer::getInstance()->Play(Snd::EnemyDeath);
+					}
 					isX     = false;
 				}
 				SetImage(value);

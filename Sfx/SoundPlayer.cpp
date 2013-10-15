@@ -5,9 +5,9 @@
 
 SoundPlayer::SoundPlayer()
 {
-	paths[0] = "Data/Sounds/shoot.wav";
+	paths[0] = "Data/Sounds/shooting.wav";
 	paths[1] = "Data/Sounds/menu_select.wav";
-	paths[2] = "Data/Sounds/enemy_death.wav";
+	paths[2] = "Data/Sounds/enemydeath.wav";
 	paths[3] = "Data/Sounds/hero_death.wav";
 	paths[4] = "Data/Sounds/gun.wav";
 	paths[5] = "Data/Sounds/armor.wav";

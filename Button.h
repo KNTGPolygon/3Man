@@ -12,6 +12,7 @@ private:
 	sf::Shape box;
 	sf::Vector2f position;
 	sf::Vector2f size;
+	sf::Font font;
 
 	const sf::Input &steering;
 public:

@@ -5,11 +5,13 @@
 Button::Button(const sf::Input &_steering,sf::Vector2f _position,sf::Vector2f _size,sf::Color _color,std::string _text)
 : color(_color), position(_position), size(_size), steering(_steering), pressed(false)
 {
-
+	font.LoadFromFile("Data/Fonts/8-BIT WONDER.ttf");
 	box   = sf::Shape::Rectangle(0,0,size.x,size.y,color);
+	text.SetFont(font);
 	text.SetColor(sf::Color(255,255,255));
 	box.SetPosition(position);
 	text.SetText( _text );
+	text.SetSize(12);
 	//text.SetCenter(box.GetCenter());
 	text.SetCenter(text.GetRect().GetWidth() /2,text.GetRect().GetHeight()/2);
 	text.SetPosition(box.GetPosition().x + size.x/2,box.GetPosition().y + size.y/2);

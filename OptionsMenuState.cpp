@@ -18,7 +18,7 @@ void OptionsMenuState::Init()
 			       (float)GameEngine::SCREEN_HEIGHT/2),
 			       sf::Vector2f(100.0,50.0),
 			       sf::Color(125,125,125),
-			       "Dzwieki");      
+			       "Dzwieki");
 	mainMenu = new Button(GameEngine::getInstance()->getSteering(),
 			       sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -50.0),
 			       (float)(GameEngine::SCREEN_HEIGHT/2 + 150)),

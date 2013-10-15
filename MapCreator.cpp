@@ -579,7 +579,7 @@ void MapCreator::GetEvent(sf::Event& event)
 
 			if(event.Key.Code == sf::Key::L)
 			{
-				LoadMap("Data/Maps/Test.map");
+				LoadMap("Data/Maps/UserMap.map");
 			}
 		}
 
@@ -679,7 +679,7 @@ void MapCreator::toolboxManagement(sf::Vector2i toolboxClickPosition)
 		}
 		else if(submenuButtonRectangles[3].Contains(toolboxClickPosition.x, toolboxClickPosition.y))
 		{
-			saveMapToFile("Test");
+			saveMapToFile("UserMap");
 		}
 	}
 

@@ -17,6 +17,8 @@ Button::Button(const sf::Input &_steering,sf::Vector2f _position,sf::Vector2f _s
 	text.SetPosition(box.GetPosition().x + size.x/2,box.GetPosition().y + size.y/2);
 	//text.SetCenter((text.GetRect().GetWidth() - size.x)/2, (text.GetRect().GetHeight() + size.y)/2);
 	singlePressed = false;
+	pressed = false;
+	isMouseOn = false;
 }
 
 Button::~Button(void)
@@ -28,18 +30,24 @@ void Button::SetPosition(sf::Vector2f newPosition)
 }
 void Button::GetEvent()
 {
-		box.SetColor(color);
+	box.SetColor(color);
 
+	if( GameEngine::getInstance()->getEvent().Type == sf::Event::EventType::MouseMoved )
+		isMouseOn = true;
+	
 	if(  ( (GameEngine::getInstance()->GetMouseCoords().x) < ( size.x + position.x) && (GameEngine::getInstance()->GetMouseCoords().x) > (position.x) )
 	  && ( (GameEngine::getInstance()->GetMouseCoords().y) < ( size.y + position.y) && (GameEngine::getInstance()->GetMouseCoords().y) > (position.y) ))
+	
 	{
 		box.SetColor(sf::Color(255,255,255));
-		if( steering.IsMouseButtonDown(sf::Mouse::Left) )
+		if( steering.IsMouseButtonDown(sf::Mouse::Left) && isMouseOn )
 		{
+		
 		if( pressed == false )
 			singlePressed = true;
 		else 
 			singlePressed = false;
+
 		pressed = true;
 		} else
 		{

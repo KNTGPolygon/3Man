@@ -14,6 +14,7 @@ class Hero : public Drawable
 public:
 	static const int SPRITE_SIZE  = 32; // 32 bo szerokosc tekstury
 	static sf::Vector2f myPosition;	//hero position
+	static int currentWeapon;
 	static bool armor; //pancerz
 	static bool invincible; //niesmiertelnosc
 private:

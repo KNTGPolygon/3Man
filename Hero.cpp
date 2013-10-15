@@ -9,6 +9,7 @@
 //-------------------------------- Hero
 
 sf::Vector2f Hero::myPosition;
+int Hero::currentWeapon;
 bool Hero::armor;
 bool Hero::invincible;
 
@@ -18,6 +19,7 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 	ANIMATION_TYPE = STAY;
 
 	depth = 0;
+	currentWeapon = weaponType;
 	armor = false;
 	invincible = false;
 	invinc_timer.Reset();
@@ -26,6 +28,7 @@ Hero::Hero(const sf::Input &_steering,float _velocity)
 	invinc_effect_img.SetSmooth(false);
 	invinc_effect.SetImage(invinc_effect_img);
 	invinc_effect.SetCenter(17,25);
+
 
 	MyTexture = ImageManager::getInstance()->loadImage( "Data/Textures/hero_sheet.png" );
 	MyTexture.CreateMaskFromColor(sf::Color(255,0,255));
@@ -166,8 +169,9 @@ void Hero::GetEvent()
 		if( steering.IsKeyDown(sf::Key::Num3) )weaponType=2;
 		if( steering.IsKeyDown(sf::Key::Num4) )weaponType=3;
 
+		currentWeapon = weaponType;
 		weapon[weaponType]->active = true;
-
+	
 		for(int i = 0; i < 4 ; i++)
 		{
 		weapon[i]->SetFiringPosition(Me.GetPosition());
@@ -230,7 +234,7 @@ void Hero::Display(sf::RenderWindow *window)
 			else animate_armor[0]->Display( window );
 			break;	
 	}
-	
+		
 	if ( invincible )
 	{
 		invinc_effect.SetPosition(myPosition);
@@ -289,9 +293,9 @@ void Hero::UpdatePosition()
 		 SoundPlayer::getInstance()->Play(Snd::ArmorUpgrade);
 	 }
 
-	 if ( GameEngine::getInstance()->DetectCollision(&Me, "invincibility") )
+	 	if ( GameEngine::getInstance()->DetectCollision(&Me, "invincibility") )
 	 {
-		 invincible = true;
+ 		 invincible = true;
 		 invinc_timer.Reset();
 	 	 SoundPlayer::getInstance()->Play(Snd::ArmorUpgrade);
 	 }
@@ -300,6 +304,7 @@ void Hero::UpdatePosition()
 	 {
 		 invincible = false;
 	 }
+
 }
 sf::Vector2f Hero::GetPosition()
 {

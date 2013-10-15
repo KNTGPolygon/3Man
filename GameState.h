@@ -8,6 +8,7 @@
 #include "Enemies/PathFinder.h"
 #include <string>
 #include <vector>
+#include "Levels/Gui.h"
 
 #ifndef GAMESTATE_H
 #define GAMESTATE_H

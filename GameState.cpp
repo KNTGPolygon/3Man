@@ -2,6 +2,7 @@
 #include "Cursor.h"
 #include "Fx/EffectLayer.h"
 #include "Levels/Armor.h"
+#include "Levels/Gui.h"
 #include "Levels/Invincibility.h"
 
 bool GameState::restart_level;
@@ -19,6 +20,9 @@ void GameState::Init()
 	death_effect = false;
 	death_anim_timer.Reset();
 	GameEngine::getInstance()->getCursor().setType(CROSSHAIR);
+	if( GameEngine::getInstance()->GetCurrentState() == STATE::USERGAME )
+	current_level = "Data/Maps/UserMap.map";
+	else
 	current_level = "Data/Maps/Test.map";
 	LoadLevel(current_level);
 }
@@ -53,6 +57,7 @@ void GameState::LoadLevel(const std::string& filename)
 	DrawableEntityList.push_back(pirate);
 	DrawableEntityList.push_back(new Armor(384, 384));
 	DrawableEntityList.push_back(new Invincibility(480, 480));
+	DrawableEntityList.push_back(new Gui(GameEngine::getInstance()->SCREEN_WIDTH,GameEngine::getInstance()->SCREEN_HEIGHT));
 
 	for( int i = 0; i < numberOfEnemies ; i++ )
 		DrawableEntityList.push_back( enemy[i] );

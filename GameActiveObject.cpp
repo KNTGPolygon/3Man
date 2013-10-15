@@ -9,6 +9,8 @@ GameActiveObject::GameActiveObject()
 GameActiveObject::GameActiveObject(float x, float y, int _type, std::string imageFilePath)
 {
 	targetingHero = false;
+	distanceOfHeroTargeting = 150;
+
 	targetRotationAndDirection.x = 90;
 	targetRotationAndDirection.y = 1;
 	rotationCooldown = 0;
@@ -54,9 +56,43 @@ void GameActiveObject::EventHandling()
 	depth = -mySprite.GetPosition().y;
 
 	sf::Vector2f heroPosition = Hero::myPosition;
+	sf::Vector2f trapPosition = mySprite.GetPosition();
 
-	if(targetingHero == false)
+	sf::Vector2f distanceBetweenHeroAndTrap;
+	sf::Vector2i signsOfDistances;
+
+	if(heroPosition.x - trapPosition.x >= 0)
+	{
+		distanceBetweenHeroAndTrap.x =  heroPosition.x - trapPosition.x;
+		signsOfDistances.x = -1;
+	}
+	else
+	{
+		distanceBetweenHeroAndTrap.x =  trapPosition.x - heroPosition.x;
+		signsOfDistances.x = 1;
+	}
+
+	if(heroPosition.y - trapPosition.y >= 0)
+	{
+		distanceBetweenHeroAndTrap.y = heroPosition.y - trapPosition.y;
+		signsOfDistances.y = -1;
+	}
+	else
+	{
+		distanceBetweenHeroAndTrap.y = trapPosition.y - heroPosition.y;
+		signsOfDistances.y = 1;
+	}
+	
+
+	if(distanceOfHeroTargeting * distanceOfHeroTargeting > distanceBetweenHeroAndTrap.x * distanceBetweenHeroAndTrap.x + distanceBetweenHeroAndTrap.y * distanceBetweenHeroAndTrap.y)
+	{
+		targetHero(distanceBetweenHeroAndTrap, signsOfDistances);
+	}
+	else
+	{
 		doSomeAnimations();
+	}
+		
 
 }
 
@@ -68,6 +104,8 @@ void GameActiveObject::doSomeAnimations()
 		}
 		else if(rotationCooldown <= 0)
 		{
+			rotationCooldown = rand() % 300;
+
 			doSomeAnimations_DecideOnNewTargetAngle();
 			doSomeAnimations_CountShortestRotationPath();
 		}
@@ -77,9 +115,68 @@ void GameActiveObject::doSomeAnimations()
 		}
 }
 
+void GameActiveObject::targetHero(sf::Vector2f distanceBetweenHeroAndTrap, sf::Vector2i distanceSigns)
+{
+	targetHero_decideOnAngle(distanceBetweenHeroAndTrap, distanceSigns);
+	doSomeAnimations_CountShortestRotationPath();
+	upSprite.Rotate(targetRotationAndDirection.y);
+}
+
+void GameActiveObject::targetHero_decideOnAngle(sf::Vector2f distanceBetweenHeroAndTrap, sf::Vector2i distanceSigns)
+{
+	if(distanceSigns.x == 1 && distanceSigns.y == 1)
+	{
+		if(distanceBetweenHeroAndTrap.x >= distanceBetweenHeroAndTrap.y)
+		{
+			targetRotationAndDirection.x = 90;
+		}
+		else
+		{
+			targetRotationAndDirection.x = 0;
+		}
+	}
+	else if (distanceSigns.x == 1 && distanceSigns.y == -1)
+	{
+		if(distanceBetweenHeroAndTrap.x >= distanceBetweenHeroAndTrap.y)
+		{
+			targetRotationAndDirection.x = 90;
+		}
+		else
+		{
+			targetRotationAndDirection.x = 180;
+		}
+	}
+	else if (distanceSigns.x == -1 && distanceSigns.y == 1)
+	{
+		if(distanceBetweenHeroAndTrap.x >= distanceBetweenHeroAndTrap.y)
+		{
+			targetRotationAndDirection.x = 270;
+		}
+		else
+		{
+			targetRotationAndDirection.x = 0;
+		}
+	}
+	else if (distanceSigns.x == -1 && distanceSigns.y == -1)
+	{
+		if(distanceBetweenHeroAndTrap.x >= distanceBetweenHeroAndTrap.y)
+		{
+			targetRotationAndDirection.x = 270;
+		}
+		else
+		{
+			targetRotationAndDirection.x = 180;
+		}
+	}
+}
+
+void GameActiveObject::targetHero_checkWhichWayToTurn()
+{
+	
+}
+
 void GameActiveObject::doSomeAnimations_CountShortestRotationPath()
 {
-	rotationCooldown = rand() % 300;
 
 			int distanceToAngle = targetRotationAndDirection.x - upSprite.GetRotation();
 

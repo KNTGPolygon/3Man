@@ -186,6 +186,11 @@ void Maps::MapFileLoading(const std::string& filename)
 							objects.push_back( tempVector );
 
 							temp_ObjectVectorRepresentations.push_back(sf::Vector3i(colNumber * 32, rowNumber * 32, objectType));
+							arrayOfFieldsOccupiedWithObjects[rowNumber][colNumber] = 1;
+						}
+						else
+						{
+							arrayOfFieldsOccupiedWithObjects[rowNumber][colNumber] = -1;
 						}
 						
 						
@@ -286,6 +291,10 @@ void Maps::MapFileLoading_PrepareTileArrayAccordingToSize()
 	map_data = new Tile*[Size];
 	for(int i = 0; i < Size; ++i)
 		map_data[i] = new Tile[Size];
+
+	arrayOfFieldsOccupiedWithObjects = new int* [2*Size];
+	for(int i = 0; i < 2*Size; ++i)
+		arrayOfFieldsOccupiedWithObjects[i] = new int[2*Size];
 
 }
 
@@ -464,6 +473,12 @@ Maps::~Maps()
 		delete []map_data [i];
 	}
 	delete[] map_data;
+
+	for(unsigned int i = 0; i < 2*Size; i++)
+	{
+		delete []arrayOfFieldsOccupiedWithObjects [i];
+	}
+	delete[] arrayOfFieldsOccupiedWithObjects;
 
 	for(int i = 0; i < numberOfObjects; i++)
 	{

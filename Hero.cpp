@@ -159,7 +159,8 @@ void Hero::GetEvent()
 		float xstep = Util::lengthdir_x( currentVelocity, direction );
 		float ystep = Util::lengthdir_y( currentVelocity, direction );
 
-		Me.Move( xstep, ystep );
+		if (!GameState::death_effect)
+			Me.Move( xstep, ystep );
 		
 		if ( GameEngine::getInstance()->DetectCollision(&Me, "wall") )
 			Me.Move( -xstep, -ystep );

@@ -190,7 +190,7 @@ void Maps::MapFileLoading(const std::string& filename)
 						}
 						else
 						{
-							arrayOfFieldsOccupiedWithObjects[rowNumber][colNumber] = -1;
+							arrayOfFieldsOccupiedWithObjects[rowNumber][colNumber] = 0;
 						}
 						
 						
@@ -263,7 +263,7 @@ void Maps::MapFileLoading(const std::string& filename)
 				for(int i = 0; i < activeElementsVector.size(); i++)
 				{
 					sf::Vector3i tempVector = activeElementsVector.at(i);
-					mapGameActiveObjects.push_back(new GameActiveObject(tempVector.x, tempVector.y, tempVector.z, addressesOfActiveGraphics[tempVector.z - numberOfNonActiveObjects]));
+					mapGameActiveObjects.push_back(new GameActiveObject(tempVector.x, tempVector.y, tempVector.z - numberOfNonActiveObjects , addressesOfActiveGraphics[tempVector.z - numberOfNonActiveObjects], arrayOfFieldsOccupiedWithObjects, 2*Size));
 				}
 
 				std::cout << " Map loaded succesfully! " << std::endl;

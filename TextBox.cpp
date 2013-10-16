@@ -3,6 +3,8 @@
 TextBox::TextBox(sf::Vector2f _position,sf::Vector2f _size,sf::Color _color,std::string _text)
 : color(_color), position(_position), size(_size)
 {
+	font.LoadFromFile("Data/Fonts/8-BIT WONDER.ttf");
+	//text.SetFont( font );
 	box   = sf::Shape::Rectangle(0,0,size.x,size.y,color);
 	box.SetPosition(position);
 

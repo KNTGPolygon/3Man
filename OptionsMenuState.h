@@ -14,6 +14,8 @@ private:
 	Button* mainMenu;
 	TextBox* musicTextBox;
 	TextBox* soundTextBox;
+	Button* fullscreen;
+	TextBox* fullscreenTextBox;
 	sf::Sprite title;
 	sf::String info;
 

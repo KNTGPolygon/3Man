@@ -3,10 +3,9 @@
 
 GameEngine::GameEngine(void):steering(window.GetInput())
 {	
-	window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Integrator", sf::Style::Close);
-	window.SetFramerateLimit(60);
-	window.ShowMouseCursor(false);
-	window.SetView(window.GetDefaultView());
+	//window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Integrator", sf::Style::Close);
+	SetFullscreen(false);
+	SetupWindow();
 	View.SetFromRect( sf::Rect<float>(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT) );
 
 	States[GAME] = new GameState();
@@ -362,6 +361,30 @@ STATE GameEngine::GetCurrentState()
 {
 	return currentState;
 }
+
+void GameEngine::SetFullscreen(bool full)
+{
+	if (full)
+		window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Integrator", sf::Style::Fullscreen);
+	else
+		window.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Integrator", sf::Style::Close);
+
+	fullscreen = full;
+	SetupWindow();
+}
+
+bool GameEngine::IsFullscreen()
+{
+	return fullscreen;
+}
+
+void GameEngine::SetupWindow()
+{
+	window.SetFramerateLimit(60);
+	window.ShowMouseCursor(false);
+	window.SetView(window.GetDefaultView());
+}
+
 GameEngine* GameEngine::engine = NULL;
 GameEngine* GameEngine::getInstance(void)
 {

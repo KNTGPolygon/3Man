@@ -9,6 +9,7 @@ protected:
 	sf::Shape box;
 	sf::Vector2f position;
 	sf::Vector2f size;
+	sf::Font font;
 
 public:
 	TextBox(sf::Vector2f _position = sf::Vector2f(0.0,0.0),

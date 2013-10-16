@@ -21,23 +21,37 @@ void OptionsMenuState::Init()
 			       "Dzwieki");
 	mainMenu = new Button(GameEngine::getInstance()->getSteering(),
 			       sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -50.0),
-			       (float)(GameEngine::SCREEN_HEIGHT/2 + 150)),
+			       (float)(GameEngine::SCREEN_HEIGHT/2 + 200)),
 			       sf::Vector2f(100.0,50.0),
 			       sf::Color(125,125,125),
 			       "Powrot");
 	musicTextBox =  new TextBox(sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 +100 ),
 			       (float)( GameEngine::SCREEN_HEIGHT/2 - 100.0 ) ),
 				   sf::Vector2f((float)(50),(float)(50)) );
+
 	soundTextBox =  new TextBox(sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 +100 ),
 			       (float)(GameEngine::SCREEN_HEIGHT/2 )),
 				   sf::Vector2f((float)(50),(float)(50)) );
 	
-	
+	fullscreen = new Button(GameEngine::getInstance()->getSteering(),
+			       sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 -50.0),
+			       (float)(GameEngine::SCREEN_HEIGHT/2 + 100)),
+			       sf::Vector2f(100.0,50.0),
+			       sf::Color(125,125,125),
+			       "Fullscreen");
+
+	fullscreenTextBox =  new TextBox(sf::Vector2f((float)(GameEngine::SCREEN_WIDTH/2 +100 ),
+			       (float)(GameEngine::SCREEN_HEIGHT/2 + 100 )),
+				   sf::Vector2f((float)(50),(float)(50)) );
+
 	musicTextBox->SetText( GameEngine::getInstance()->getMusic().GetStatus() == sf::Sound::Playing ? "Tak" : "Nie" );
 	musicTextBox->SetTextPosition( sf::Vector2f( musicTextBox->GetTextBoxPosition().x + 10 ,musicTextBox->GetTextBoxPosition().y + 15 ) );
 
 	soundTextBox->SetText( GameEngine::getInstance()->Sounds() ? "Tak" : "Nie" );
 	soundTextBox->SetTextPosition( sf::Vector2f( soundTextBox->GetTextBoxPosition().x + 10 ,soundTextBox->GetTextBoxPosition().y + 15 ) );
+
+	fullscreenTextBox->SetText( GameEngine::getInstance()->IsFullscreen() ? "Tak" : "Nie" );
+	fullscreenTextBox->SetTextPosition( sf::Vector2f( fullscreenTextBox->GetTextBoxPosition().x + 10 ,fullscreenTextBox->GetTextBoxPosition().y + 15 ) );
 
 	title.SetImage(ImageManager::getInstance()->loadImage("Data/Textures/title.png"));
 	title.SetCenter(0, 0);
@@ -61,6 +75,8 @@ void OptionsMenuState::Display()
 	mainMenu->Display(&GameEngine::getInstance()->getWindow());
 	musicTextBox->Display(&GameEngine::getInstance()->getWindow());
 	soundTextBox->Display(&GameEngine::getInstance()->getWindow());
+	fullscreen->Display(&GameEngine::getInstance()->getWindow());
+	fullscreenTextBox->Display(&GameEngine::getInstance()->getWindow());
 	GameEngine::getInstance()->getWindow().Draw(title);
 	GameEngine::getInstance()->getWindow().Draw(info);
 }
@@ -71,6 +87,7 @@ void OptionsMenuState::EventHandling()
 	music->GetEvent();
 	sounds->GetEvent();
 	mainMenu->GetEvent();
+	fullscreen->GetEvent();
 	
 	if ( mainMenu->pressed )
 	{
@@ -105,6 +122,21 @@ void OptionsMenuState::EventHandling()
 			soundTextBox->SetText("Nie");
 		}
 	}
+
+	if ( fullscreen->singlePressed )
+	{
+		std::string temp = fullscreenTextBox->GetText().GetText();
+		if( temp == "Nie" )
+		{
+			GameEngine::getInstance()->SetFullscreen(true);
+			fullscreenTextBox->SetText("Tak");
+		}
+		else
+		{
+			GameEngine::getInstance()->SetFullscreen(false);
+			fullscreenTextBox->SetText("Nie");
+		}
+	}
 }
 
 void OptionsMenuState::GetEvents()
@@ -123,6 +155,8 @@ void OptionsMenuState::Cleanup()
 	delete mainMenu;
 	delete musicTextBox;
 	delete soundTextBox;
+	delete fullscreen;
+	delete fullscreenTextBox;
 	init = 0;
 }
 

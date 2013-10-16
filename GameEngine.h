@@ -78,7 +78,7 @@ private:
 	sf::SoundBuffer soundBuffer;
 	sf::Music soundtrack;
 
-
+	bool fullscreen;
 
 	void Display();
 
@@ -124,6 +124,9 @@ public:
 	std::vector<sf::Vector3i> GetObjects();
 	sf::Vector2i GetGridSize();
 	STATE GetCurrentState();
+	void SetFullscreen(bool);
+	bool IsFullscreen();
+	void SetupWindow();
 
 private:
 	static GameEngine * engine;

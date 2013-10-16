@@ -340,9 +340,22 @@ void GameActiveObject::Display(sf::RenderWindow * window)
 		}
 
 		sf::Vector2f heroPosition = Hero::myPosition;
-		if((heroPosition.x > upSprite.GetPosition().x - 2 && heroPosition.x < upSprite.GetPosition().x + 2) || (heroPosition.y > upSprite.GetPosition().y - 2 && heroPosition.y < upSprite.GetPosition().y + 2))
+		if(numberOfFieldsToDraw > 0)
 		{
-			Hero::getHitByLaser();
+			if(heroPosition.x > upSprite.GetPosition().x - 2 && heroPosition.x < upSprite.GetPosition().x + 2)
+			{
+				if(upSprite.GetRotation() == 180 && (upSprite.GetPosition().y < heroPosition.y))
+					Hero::getHitByLaser();
+				else if(upSprite.GetRotation() == 0 && (upSprite.GetPosition().y > heroPosition.y))
+					Hero::getHitByLaser();
+			}
+			else if(heroPosition.y > upSprite.GetPosition().y - 2 && heroPosition.y < upSprite.GetPosition().y + 2)
+			{
+				if(upSprite.GetRotation() == 270 && (upSprite.GetPosition().x < heroPosition.x))
+					Hero::getHitByLaser();
+				else if(upSprite.GetRotation() == 90 && (upSprite.GetPosition().x > heroPosition.x))
+					Hero::getHitByLaser();
+			}
 		}
 
 		if(laserExistanceTime <= 0)

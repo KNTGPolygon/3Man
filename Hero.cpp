@@ -180,7 +180,7 @@ void Hero::GetEvent()
 		weapon[i]->active = false;
 		}
 
-		if ( !invincible && GameEngine::getInstance()->DetectCollision(&Me, "YellowDeathBall.PNG") )
+		if ( !invincible && (GameEngine::getInstance()->DetectCollision(&Me, "YellowDeathBall.PNG")))
 		{
 			if ( armor )
 			{
@@ -196,6 +196,22 @@ void Hero::GetEvent()
 			}
 		}
 
+}
+
+void Hero::getHitByLaser()
+{
+	if ( armor )
+			{
+				armor = false;
+				SoundPlayer::getInstance()->Play(Snd::ArmorDestroy);
+			}
+			else if (!GameState::death_effect)
+			{
+				GameState::death_effect = true;
+				GameState::death_anim_timer.Reset();
+				GameState::restart_level = true;
+				SoundPlayer::getInstance()->Play(Snd::HeroDeath);
+			}
 }
 
 void Hero::EventHandling()

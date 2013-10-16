@@ -76,6 +76,10 @@ public:
 	void PutScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);
 	void UpdateCollision();
 
+	//
+	static void getHitByLaser();
+	//
+
 	void SetCamera(sf::View *View, sf::RenderWindow *window);			      //Ustawienie kamery
 };
 #endif

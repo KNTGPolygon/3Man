@@ -460,8 +460,11 @@ int Enemy::FindPath(sf::Vector2i Target)
 		pathfinderPath.resize(0);
 		iterator = 0;
 		pathStatus = GameEngine::getInstance()->pathfinder->FindPath( myID, myPosition , Target );
+		if( pathStatus == PathFinder::FOUND )
+		{
 		pathfinderPath = GameEngine::getInstance()->pathfinder->GetPath( myID );
 		pathSearched = true;	
+		}
 				
 	}
 	return pathStatus;

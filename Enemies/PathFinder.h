@@ -7,7 +7,7 @@
 class Cell
 {
 public:
-	int openListID;
+	//int openListID;
 	int walkability;
 	int whichList;
 	int GCost;

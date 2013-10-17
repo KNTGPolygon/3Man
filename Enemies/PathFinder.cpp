@@ -203,7 +203,6 @@ int OpenList::GetPointID( sf::Vector2i point )
 }
 void PathFinder::Initialization(std::vector<sf::Vector3i> objectList, int _gridXSize, int _gridYSize)
 {
-	//numberOfMobs = _numberOfMobs;
 	if(loaded == true )
 	{
 			Cleanup();
@@ -236,11 +235,8 @@ int PathFinder::FindPath(int pathfinderID, sf::Vector2i _start, sf::Vector2i _ta
 	int counter;
 	sf::Vector2i thisPoint;
 
-	start  = sf::Vector2i( _start.x / gridCellSize   , _start.y / gridCellSize ); //stare
-	target = sf::Vector2i( _target.x / gridCellSize  , _target.y /gridCellSize ); //stare
-	
-	//start  = sf::Vector2i( _start.y / gridCellSize   , _start.x / gridCellSize ); 
-	//target = sf::Vector2i( _target.y / gridCellSize  , _target.x /gridCellSize ); 
+	start  = sf::Vector2i( _start.x / gridCellSize   , _start.y / gridCellSize ); 
+	target = sf::Vector2i( _target.x / gridCellSize  , _target.y /gridCellSize );  
 
 	//Sprawdz czy nie szukano juz takiej drogi/ czy jest / czy nie stoje na targecie	
 
@@ -269,14 +265,8 @@ int PathFinder::FindPath(int pathfinderID, sf::Vector2i _start, sf::Vector2i _ta
 	do{
 		if( openList->size != 0 )
 		{
-		//std::cout<<"loops made : "<<counter<<std::endl;
 			thisPointID = openList->GetLowestFCostPointID();
 			thisPoint   = openList->pointCoords[ thisPointID ];
-
-			//std::cout<<"lowest Fcost[0] = "<<openList->FCost[0]<<std::endl;
-			//if( openList->size > 1 )
-			//std::cout<<"lowest Fcost[1] = "<<openList->FCost[1]<<std::endl;
-
 
 			cell[ thisPoint.x ][ thisPoint.y ].whichList = closedListMarker; 
 
@@ -286,18 +276,18 @@ int PathFinder::FindPath(int pathfinderID, sf::Vector2i _start, sf::Vector2i _ta
 		}
 		else
 		{
-			std::cout<<"not-found\n";
+			//std::cout<<"not-found\n"; //do testow
 			pathStatus[ pathfinderID ] = NONEXISTENT; break;
 		}
 		if ( cell[target.x][target.y].whichList == openListMarker )
 		{
-			std::cout<<"found\n";
+			//std::cout<<"found\n";		//do testow
 			pathStatus[ pathfinderID ] = FOUND; break;
 		}
 
 	counter++;
 	}while(1);
-	//std::cout<<"Total loops made : "<<counter<<std::endl;
+	//std::cout<<"Total loops made : "<<counter<<std::endl; //do testow
 
 	if( pathStatus[ pathfinderID ] == FOUND )
 	{
@@ -420,19 +410,10 @@ int PathFinder::SaveFoundedPath(int pathfinderID , sf::Vector2i starting )
 	pathLength[pathfinderID] = 0;
 
 	do{
-		//std::cout<<"tempCell :X = "<<tempCell.x<<" Y = "<<tempCell.y<<std::endl;
 		oldTempCell = tempCell;
-		//std::cout<<"FCost = "<<cell[oldTempCell.x][oldTempCell.y].FCost<<std::endl;
 		tempCell = cell[tempCell.x][tempCell.y].parent;	
 		if( cell[tempCell.x][tempCell.y].parent == oldTempCell )
 		{
-			/*std::cout<<"starting point : X = "<<starting.x<<" Y = "<<starting.y<<std::endl;
-			std::cout<<"closedListMarker = "<<closedListMarker<<std::endl;
-			std::cout<<"openListMarker = "<<openListMarker<<std::endl;
-			std::cout<<"whichList : "<<cell[oldTempCell.x][oldTempCell.y].whichList<<std::endl;
-			std::cout<<"HCost : "<<cell[oldTempCell.x][oldTempCell.y].HCost<<std::endl;
-			system("Pause");
-			*/		
 			std::cout<<"Path Corrupted ! \n";
 			return NONEXISTENT;
 		}
@@ -448,7 +429,6 @@ int PathFinder::SaveFoundedPath(int pathfinderID , sf::Vector2i starting )
 	do{
 		pathBank[pathfinderID][ iterator ] = tempCell;
 		tempCell = cell[tempCell.x][tempCell.y].parent;	
-		//std::cout<<"X = "<<tempCell.x<<" Y = "<<tempCell.y<<std::endl;
 		iterator--;
 	}while( tempCell != starting );
 

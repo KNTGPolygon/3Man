@@ -43,7 +43,6 @@ protected:
 
 	float velocity;
 	float distanceFromTarget;
-
 	float pullRange;
 	float escapeRange;
 	float distanceFromHero;
@@ -51,11 +50,10 @@ protected:
 	std::vector<sf::Vector2i> *randomPatrolPath;
 	std::vector<sf::Vector2i> pathfinderPath;
 
-	State pathMode;
 	State myAI;
-
 	SpriteExt mySprite;
 	sf::Image myTexture;
+	sf::String exponent;
 
 	sf::Vector2i myPosition;
 	sf::Vector2i startPosition;
@@ -65,14 +63,12 @@ protected:
 	sf::Vector2f shiftVector;
 	sf::Vector2i oldHeroPosition;
 
-	sf::String exponent;
-
+	int FindPath(sf::Vector2i Target);
 	void Combat();
 	void RandomPathWalk();
 	void PathWalk();
 	void Follow();
 	void ReturnToPathWalk();
-	int FindPath(sf::Vector2i Target);
 	void Colliding(bool minusCollision,bool plusCollision);
 	void TypeSwichColliding();
 	void SetImage(int Value);
@@ -103,7 +99,7 @@ public:
 	void GenerateRandomPath();
 	void SetStartPosition(sf::Vector2f Position);
 	Enemy(sf::Vector2i Position = sf::Vector2i(300,300),int _value = 7, bool _isX = false,
-		  std::string fileName = "Pirate.PNG" ,float Velocity = 1.0 , float PullRange = 200.0 );
+		  std::string fileName = "Pirate.PNG" ,float Velocity = 1.0 , float PullRange = 250.0 );
 	~Enemy(void);
 
 	void SetHeroPosition( sf::Vector2f HeroPosition );

@@ -1,5 +1,5 @@
 #pragma once
-#include "Enemy.h"
+#include "Enemies/Enemy.h"
 #include "Drawable.h"
 class Number : public Enemy//protected
 {

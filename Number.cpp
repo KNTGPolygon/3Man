@@ -2,7 +2,7 @@
 #include "GameEngine.h"
 #include <math.h>
 Number::Number(sf::Vector2i Position,int Value, bool RandomPathMode
-			   ,float Velocity , float PullRange) 
+			   ,float Velocity , float PullRange)
 :value( Value )
 {
 	pullRange = PullRange;
@@ -25,7 +25,7 @@ Number::Number(sf::Vector2i Position,int Value, bool RandomPathMode
 	mySprite.SetPosition((float) Position.x ,(float) Position.y );
 	mySprite.SetCenter(mySprite.GetSize().x/2,mySprite.GetSize().y/2);
 	mySprite.setType( "enemy" );
-	
+
 	startPosition   = Position;
 	pathFinderPoint = Position;
 	target			= Position;
@@ -37,12 +37,12 @@ Number::Number(sf::Vector2i Position,int Value, bool RandomPathMode
 	if( RandomPathMode )
 	{
 		myAI = RANDOM_PATHWALK;
-	pathMode = RANDOM_PATHWALK;
+	//pathMode = RANDOM_PATHWALK;
 	}
 	else
 	{
 		myAI = PATHWALK;
-	pathMode = PATHWALK;
+	//pathMode = PATHWALK;
 	}
 
 	inMove		  = false;
@@ -84,7 +84,7 @@ void Number::SetImage(int Value)
 void Number::UpdateCollision()
 {
  	GameEngine::getInstance()->AddToCollisionQuadtree(&mySprite);
-	Colliding( GameEngine::getInstance()->DetectCollision(&mySprite,"Minus.PNG") 
+	Colliding( GameEngine::getInstance()->DetectCollision(&mySprite,"Minus.PNG")
 			 , GameEngine::getInstance()->DetectCollision(&mySprite,"Plus.PNG" ) );
 	myWeapon->UpdateCollision();
 }
@@ -108,7 +108,7 @@ void Number::Colliding(bool minusCollision,bool plusCollision)
 			{
 			value--;
 			isMinus = true;
-				if ( value == 0 ) isMinus = false;		
+				if ( value == 0 ) isMinus = false;
 			SetImage(value);
 			}
 	}
@@ -125,7 +125,7 @@ void Number::Colliding(bool minusCollision,bool plusCollision)
 		{
 			value++;
 			isMinus = true;
-			if ( value == 0 ) isMinus = false;		
+			if ( value == 0 ) isMinus = false;
 			SetImage(value);
 		}
 	}
@@ -136,7 +136,7 @@ void Number::Display(sf::RenderWindow *window)
 	window->Draw( mySprite );
 	if ( isMinus )
 	{
-		sign.SetPosition( mySprite.GetPosition().x - 20,mySprite.GetPosition().y);	
+		sign.SetPosition( mySprite.GetPosition().x - 20,mySprite.GetPosition().y);
 		window->Draw( sign );
 	}
 	if(GameEngine::getInstance()->devmode)

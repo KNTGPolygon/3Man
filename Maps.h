@@ -11,7 +11,7 @@
 #include "MapObject.h"
 #include "GameNonActiveObject.h"
 #include "GameActiveObject.h"
-#include "Enemy.h"
+#include "Enemies/Enemy.h"
 
 #ifndef MAPS_H
 #define MAPS_H

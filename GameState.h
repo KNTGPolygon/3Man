@@ -2,8 +2,7 @@
 #include "Hero.h"
 #include "Maps.h"
 #include "Levels/Wall.h"
-#include "Enemy.h"
-#include "Number.h"
+#include "Enemies/Enemy.h"
 #include "Collision/QuadtreeNode.h"
 #include "Enemies/PathFinder.h"
 #include <string>

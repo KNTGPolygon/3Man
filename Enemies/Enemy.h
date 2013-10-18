@@ -3,12 +3,12 @@
 #include <vector>
 #include <iostream>
 
-#include "Drawable.h" 
-#include "Util.h"
-#include "SpriteExt.h"
-#include "ImageManager.h"
-#include "Collision/BoxMask.h"
-#include "Weapon.h"
+#include "../Drawable.h" 
+#include "../Util.h"
+#include "../SpriteExt.h"
+#include "../ImageManager.h"
+#include "../Collision/BoxMask.h"
+#include "../Weapon.h"
 
 class Enemy : public Drawable
 {

@@ -18,7 +18,7 @@ GameNonActiveObject::GameNonActiveObject(float x, float y, int _type, std::strin
 	mySprite.SetImage(myTexture);
     mySprite.SetScale( 1, 1 );
 	mySprite.SetPosition( x, y);
-	mySprite.SetCenter(16,textureHeight/2);
+	mySprite.SetCenter((float)16,(float)(textureHeight/2));
 	mySprite.setBoxMask(sf::IntRect(2, textureHeight - 8 ,30,textureHeight));
 	mySprite.setType("wall");
 
@@ -31,7 +31,7 @@ void GameNonActiveObject::UpdateSystem()
 
 void GameNonActiveObject::EventHandling()
 {
-	depth = -mySprite.GetPosition().y;
+	depth = (int)(-mySprite.GetPosition().y);
 }
 
 void GameNonActiveObject::Display(sf::RenderWindow * window)

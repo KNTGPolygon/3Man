@@ -24,7 +24,7 @@ private:
 	int clockCounter;
 
 	int Size;
-	int numberOfObjects;
+	unsigned int numberOfObjects;
 	std::map<const int, std::string> addresses;
 	std::map<const int, std::string> addressesOfActiveGraphics;
 

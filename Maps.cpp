@@ -165,7 +165,7 @@ void Maps::MapFileLoading(const std::string& filename)
 				 looping = true;
 						do
 						{
-							if((unsigned int)colNumber >= 2*Size)
+							if(colNumber >= 2*Size)
 							{
 								break;
 							}
@@ -218,7 +218,7 @@ void Maps::MapFileLoading(const std::string& filename)
 					objectType = temp_ObjectVectorRepresentations.at(i).z;
 
 					if(objectType < numberOfNonActiveObjects)
-						mapGameObjects.push_back(new GameNonActiveObject(objectPosition.x, objectPosition.y, objectType, tempAddressesArray[objectType]));
+						mapGameObjects.push_back(new GameNonActiveObject((float)objectPosition.x, (float)objectPosition.y, objectType, tempAddressesArray[objectType]));
 					else
 						activeElementsVector.push_back(sf::Vector3i(objectPosition.x, objectPosition.y, objectType));
 				}
@@ -250,20 +250,14 @@ void Maps::MapFileLoading(const std::string& filename)
 							break;
 						}
 
-						std::cout << sub << std::endl;
 						addressesOfActiveGraphics[counter] = sub;
 						counter++;
 				}
-
-				for(int x = 0; x < 3 ; x++)
-				{
-					std::cout << addressesOfActiveGraphics[x] << std::endl;
-				}
 				
-				for(int i = 0; i < activeElementsVector.size(); i++)
+				for(unsigned int i = 0; i < activeElementsVector.size(); i++)
 				{
 					sf::Vector3i tempVector = activeElementsVector.at(i);
-					mapGameActiveObjects.push_back(new GameActiveObject(tempVector.x, tempVector.y, tempVector.z - numberOfNonActiveObjects , addressesOfActiveGraphics[tempVector.z - numberOfNonActiveObjects], arrayOfFieldsOccupiedWithObjects, 2*Size));
+					mapGameActiveObjects.push_back(new GameActiveObject((float)tempVector.x, (float)tempVector.y, tempVector.z - numberOfNonActiveObjects , addressesOfActiveGraphics[tempVector.z - numberOfNonActiveObjects], arrayOfFieldsOccupiedWithObjects, 2*Size));
 				}
 
 				std::cout << " Map loaded succesfully! " << std::endl;
@@ -468,19 +462,19 @@ void Maps::CreateTiles()
 
 Maps::~Maps()
 {
-	for(unsigned int i = 0; i < Size; i++)
+	for(int i = 0; i < Size; i++)
 	{
 		delete []map_data [i];
 	}
 	delete[] map_data;
 
-	for(unsigned int i = 0; i < 2*Size; i++)
+	for(int i = 0; i < 2*Size; i++)
 	{
 		delete []arrayOfFieldsOccupiedWithObjects [i];
 	}
 	delete[] arrayOfFieldsOccupiedWithObjects;
 
-	for(int i = 0; i < numberOfObjects; i++)
+	for(unsigned int i = 0; i < numberOfObjects; i++)
 	{
 		delete mapGameObjects[i];
 	}

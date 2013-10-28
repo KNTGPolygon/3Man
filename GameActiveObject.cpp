@@ -36,7 +36,7 @@ GameActiveObject::GameActiveObject(float x, float y, int _type, std::string imag
 	mySprite.SetImage(myTexture);
     mySprite.SetScale( 1, 1 );
 	mySprite.SetPosition( x + 16, y + 16);
-	mySprite.SetCenter(16,textureHeight/2);
+	mySprite.SetCenter((float)16,(float)(textureHeight/2));
 	mySprite.setBoxMask(sf::IntRect(2, textureHeight - 30 ,30,textureHeight));
 	mySprite.setType("wall");
 
@@ -50,7 +50,7 @@ GameActiveObject::GameActiveObject(float x, float y, int _type, std::string imag
 	upSprite.SetImage(upTexture);
     upSprite.SetScale( 1, 1 );
 	upSprite.SetPosition( x + 16, y + 16);
-	upSprite.SetCenter(16,textureHeight/2);
+	upSprite.SetCenter((float)16,(float)(textureHeight/2));
 	upSprite.setBoxMask(sf::IntRect(2, textureHeight - 30 ,30,textureHeight));
 	upSprite.setType("wall");
 
@@ -81,7 +81,7 @@ GameActiveObject::GameActiveObject(float x, float y, int _type, std::string imag
 	shotSprite.SetImage(shotTexture);
     shotSprite.SetScale( 1, 1 );
 	shotSprite.SetPosition( x + 16, y + 16);
-	shotSprite.SetCenter(16,textureHeight/2);
+	shotSprite.SetCenter((float)16,(float)(textureHeight/2));
 	shotSprite.setType("Lazer");
 
 
@@ -95,7 +95,7 @@ void GameActiveObject::UpdateSystem()
 
 void GameActiveObject::EventHandling()
 {
-	depth = -mySprite.GetPosition().y;
+	depth = (int)(-mySprite.GetPosition().y);
 
 	sf::Vector2f heroPosition = Hero::myPosition;
 	sf::Vector2f trapPosition = mySprite.GetPosition();
@@ -143,7 +143,7 @@ void GameActiveObject::doSomeAnimations()
 	{
 		if(upSprite.GetRotation() != targetRotationAndDirection.x && rotationCooldown <= 0)
 			{
-				upSprite.Rotate(targetRotationAndDirection.y);
+				upSprite.Rotate((float)targetRotationAndDirection.y);
 			}
 		else if(rotationCooldown <= 0)
 			{
@@ -195,7 +195,7 @@ void GameActiveObject::targetHero(sf::Vector2f distanceBetweenHeroAndTrap, sf::V
 
 	if(upSprite.GetRotation() != targetRotationAndDirection.x && chargingAttack == false)
 	{
-		upSprite.Rotate(targetRotationAndDirection.y);
+		upSprite.Rotate((float)targetRotationAndDirection.y);
 	}
 	else
 	{
@@ -271,7 +271,7 @@ void GameActiveObject::attackHero()
 void GameActiveObject::doSomeAnimations_CountShortestRotationPath()
 {
 
-			int distanceToAngle = targetRotationAndDirection.x - upSprite.GetRotation();
+			int distanceToAngle = targetRotationAndDirection.x - (int)upSprite.GetRotation();
 
 			if( distanceToAngle > 0)
 			{
@@ -389,9 +389,9 @@ int GameActiveObject::Display_howLongShouldTheLaserBe()
 
 		if(shootDirection.x > 0 || shootDirection.y > 0)
 		{
-			for( int row = (upSprite.GetPosition().y - 16)/32; row < arrayOfOccupiedFieldsSize; row)
+			for( int row = (int)((upSprite.GetPosition().y - 16)/32); row < arrayOfOccupiedFieldsSize; row)
 				{
-					for( int col = (upSprite.GetPosition().x - 16)/32; col < arrayOfOccupiedFieldsSize; col)
+					for( int col = (int)((upSprite.GetPosition().x - 16)/32); col < arrayOfOccupiedFieldsSize; col)
 					{
 						row += shootDirection.y;
 						col += shootDirection.x;
@@ -410,9 +410,9 @@ int GameActiveObject::Display_howLongShouldTheLaserBe()
 		}
 		else
 		{
-			for( int row = (upSprite.GetPosition().y - 16)/32; row > 0; row)
+			for( int row = (int)((upSprite.GetPosition().y - 16)/32); row > 0; row)
 				{
-					for( int col = (upSprite.GetPosition().x - 16)/32; col > 0; col)
+					for( int col = (int)((upSprite.GetPosition().x - 16)/32); col > 0; col)
 					{
 						row += shootDirection.y;
 						col += shootDirection.x;

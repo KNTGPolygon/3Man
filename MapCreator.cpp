@@ -422,7 +422,7 @@ void MapCreator::CreateSprites()
 		spr.SetImage(objectGraphics[i]);
 		sf::Vector2f spriteSize = spr.GetSize();
 
-		spr.SetSubRect(sf::IntRect(0,0,spriteSize.x,spriteSize.y));
+		spr.SetSubRect(sf::IntRect(0, 0, (int)spriteSize.x, (int)spriteSize.y));
 		spr.SetScale(0.5,0.5);
 		objectSprites.push_back(spr);
 	}

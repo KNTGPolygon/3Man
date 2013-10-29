@@ -65,11 +65,18 @@ private:
 
 	const sf::Input &steering;
 
-	bool saveMapToFile (std::string filename);
-	bool saveMap_SavingUsedObjectsNamesPhase(std::ifstream& editorLoadingFile_inputStream, std::ofstream& outputFileStream);
-	bool saveMap_SavingGroundTilesPhase(std::ofstream& outputFileStream);
-	bool saveMap_SavingObjectsPhase(std::ofstream& outputFileStream);
-	bool saveMap_SavingEnemiesPhase(std::ofstream& outputFileStream);
+	void saveMapToFile (std::string filename);
+	void saveMap_SavingUsedObjectsNamesPhase(std::ifstream& editorLoadingFile_inputStream, std::ofstream& outputFileStream);
+	void saveMap_SavingGroundTilesPhase(std::ofstream& outputFileStream);
+	void saveMap_SavingObjectsPhase(std::ofstream& outputFileStream);
+	void saveMap_SavingEnemiesPhase(std::ofstream& outputFileStream);
+
+	void LoadMapFromFile (const std::string& filename);
+	void LoadMap_LoadSize(std::ifstream &inputFileStream);
+	void LoadMap_SkipTileAndObjectNames(std::ifstream &inputFileStream);
+	void LoadMap_LoadGroundTiles(std::ifstream &inputFileStream);
+	void LoadMap_LoadObjects(std::ifstream &inputFileStream);
+	void LoadMap_LoadEnemies(std::ifstream &inputFileStream);
 
 public:
 	MapCreator(const sf::Input &_steering);
@@ -97,9 +104,6 @@ public:
 	void MoveCamera(sf::View *View, sf::RenderWindow *window);
 	void GetScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);
 
-	void LoadMapFromFile (const std::string& filename);
-	void LoadMap_LoadSize(std::ifstream &inputFileStream);
-	void LoadMap_SkipTileAndObjectNames(std::ifstream &inputFileStream);
 
 	~MapCreator();
 

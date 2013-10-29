@@ -41,6 +41,49 @@ MapCreator::MapCreator(const sf::Input &_steering)
 
 }
 
+MapCreator::~MapCreator()
+{
+	
+	if(createdMap != NULL)
+	{
+	for(unsigned int i = 0; i < Size; i++)
+    delete [] createdMap[i];
+	delete [] createdMap;
+
+
+	for(unsigned int i = 0; i < 2*Size; i++)
+    delete [] mapObjects[i];
+	delete [] mapObjects;
+
+	for(int i = 0; i < 6; i++)
+	{
+		delete submenuButtonSprite[i];
+	}
+
+	}
+
+}
+
+
+
+
+void MapCreator::GetScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT)
+{
+	SCREEN_WIDTH  = _SCREEN_WIDTH;
+	SCREEN_HEIGHT = _SCREEN_HEIGHT;
+
+	noOfTilesVisible.x = (int)(SCREEN_WIDTH/32);
+	noOfTilesVisible.y = (int)(SCREEN_WIDTH/32);
+
+	int numberOfToolboxRectangles = (int)((SCREEN_WIDTH-20)/96) - 1;
+
+	for(int rectangleCreator = 1; rectangleCreator <= numberOfToolboxRectangles ; rectangleCreator ++)
+	{
+		toolboxRectangles[rectangleCreator] = sf::IntRect (20 + (rectangleCreator - 1)*96 , 20, 84 + (rectangleCreator - 1)*96 , 84);
+	}
+
+}
+
 void MapCreator::InitializeMapCreatorArrays (unsigned int Size)
 {
 	//defining size of map
@@ -91,6 +134,183 @@ void MapCreator::DestroyMapCreatorArrays(unsigned int Size)
 				delete [] arrayOfEnemies[i];
 			delete [] arrayOfEnemies;
 }
+
+
+
+bool MapCreator::LoadTileGraphics()
+{
+	int counter = 0;
+	ImageManager* imgmng = ImageManager::getInstance();
+	//creating map tiles (will be anchanced)
+	std::string pathToFiles = "Data/Textures/MapTiles/";
+	std::ifstream dataSet("Data/Textures/LoadingFile.txt");
+	std::string str;
+
+		 if (!dataSet) {
+        std::cerr << "Nie udało się załadował pliku " <<" LoadingFile.txt "<< "\n";
+		return 0;
+				 }
+
+		 if(dataSet.good() == true)
+		 {
+
+			 //loading tileGraphics
+		  while( !dataSet.eof() )
+			{	
+				getline (dataSet,str);
+
+				//reading paths and ignoring everything after space
+				std::istringstream iss(str);
+				iss >> str;
+					if(str.at(0) == '-')
+				{
+					counter = 0;
+					break;
+				}
+				
+				
+				tileGraphics[counter] = imgmng->loadImage(pathToFiles + str);
+				counter ++;
+			
+			 }
+
+	//------------- 
+		  pathToFiles = "Data/Textures/MapObjects/";
+		   //loading passiveObjectGraphics
+		   while( !dataSet.eof() )
+			{	
+				dataSet >> str;
+					if(str.at(0) == '-')
+				{
+					counter = 0;
+					break;
+				}
+				
+				objectGraphics[counter] = imgmng->loadImage(pathToFiles + str);
+				counter ++;
+			
+			 }
+
+	//-------------
+		 pathToFiles = "Data/Textures/Enemy/";
+		     while( !dataSet.eof() )
+			{	
+				dataSet >> str;
+					if(str.at(0) == '-')
+				{
+					counter = 0;
+					break;
+				}
+				
+				enemyGraphics[counter] = imgmng->loadImage(pathToFiles + str);
+				counter ++;
+			
+			 }
+
+
+	 //------------- 
+		  pathToFiles = "Data/Textures/MapObjects/";
+		  counter = objectGraphics.size();
+		   //loading activeObjectGraphics
+		   while( !dataSet.eof() )
+			{	
+				dataSet >> str;
+					if(str.at(0) == '-')
+				{
+					counter = 0;
+					break;
+				}
+				
+				objectGraphics[counter] = imgmng->loadImage(pathToFiles + str);
+				counter ++;
+			
+			 }
+
+		   dataSet.close();
+		 }
+	 //------------- 
+
+	for(unsigned int i = 0; i < tileGraphics.size(); i++)
+	{
+		tileGraphics[i].CreateMaskFromColor(sf::Color(255,0,255));
+		tileGraphics[i].SetSmooth(false);
+	}
+
+
+	for(unsigned int i = 0; i < objectGraphics.size(); i++)
+	{
+		objectGraphics[i].CreateMaskFromColor(sf::Color(255,0,255));
+		objectGraphics[i].SetSmooth(false);
+	}
+
+	for(unsigned int i = 0; i < enemyGraphics.size(); i++)
+	{
+		enemyGraphics[i].CreateMaskFromColor(sf::Color(255,0,255));
+		enemyGraphics[i].SetSmooth(false);
+	}
+
+	submenuButtonImage[0] = imgmng->loadImage("Data/Textures/Buttons/Tiles.bmp");
+	submenuButtonImage[1] = imgmng->loadImage("Data/Textures/Buttons/Objects.bmp");
+	submenuButtonImage[2] = imgmng->loadImage("Data/Textures/Buttons/Enemies.bmp");
+	submenuButtonImage[3] = imgmng->loadImage("Data/Textures/Buttons/Save.bmp");
+	submenuButtonImage[4] = imgmng->loadImage("Data/Textures/Buttons/ButtonFocus.bmp");
+	submenuButtonImage[5] = imgmng->loadImage("Data/Textures/Buttons/Back.bmp");
+
+	for(int i = 0; i < 6; i++)
+	{
+		submenuButtonImage[i].CreateMaskFromColor(sf::Color (255,0,255));
+	}
+
+	//here sprites are created
+	CreateSprites();
+	return 1;
+}
+
+void MapCreator::CreateSprites()
+{
+	//creating sprites for each available image in MapCreator
+	
+	for(unsigned int i = 0; i<tileGraphics.size();i++)
+	{
+		sf::Sprite spr;
+		spr.SetImage(tileGraphics[i]);
+		spr.SetScale(0.5,0.5);
+		tileSprites.push_back(spr);
+	}
+
+	for(unsigned int i = 0; i<objectGraphics.size();i++)
+	{
+		sf::Sprite spr;
+		spr.SetImage(objectGraphics[i]);
+		sf::Vector2f spriteSize = spr.GetSize();
+
+		spr.SetSubRect(sf::IntRect(0, 0, (int)spriteSize.x, (int)spriteSize.y));
+
+		if(spriteSize.y > 32)
+			spr.SetCenter(0,spriteSize.y - 32);
+
+		spr.SetScale(0.5,0.5);
+		objectSprites.push_back(spr);
+	}
+
+	for(unsigned int i = 0; i<enemyGraphics.size();i++)
+	{
+		sf::Sprite spr;
+		spr.SetImage(enemyGraphics[i]);
+		spr.SetScale(0.75,0.75);
+		enemySprites.push_back(spr);
+	}
+
+	for(int i = 0; i < 6; i++)
+	{
+	submenuButtonSprite[i] = new sf::Sprite();
+	submenuButtonSprite[i]->SetImage(submenuButtonImage[i]);
+	submenuButtonSprite[i]->SetScale(1,1);
+	}
+
+}
+
+
 
 void MapCreator::Display(sf::RenderWindow *window)
 {
@@ -291,179 +511,6 @@ void MapCreator::Display(sf::RenderWindow *window)
 
 }
 
-bool MapCreator::LoadTileGraphics()
-{
-	int counter = 0;
-	ImageManager* imgmng = ImageManager::getInstance();
-	//creating map tiles (will be anchanced)
-	std::string pathToFiles = "Data/Textures/MapTiles/";
-	std::ifstream dataSet("Data/Textures/LoadingFile.txt");
-	std::string str;
-
-		 if (!dataSet) {
-        std::cerr << "Nie udało się załadował pliku " <<" LoadingFile.txt "<< "\n";
-		return 0;
-				 }
-
-		 if(dataSet.good() == true)
-		 {
-
-			 //loading tileGraphics
-		  while( !dataSet.eof() )
-			{	
-				getline (dataSet,str);
-
-				//reading paths and ignoring everything after space
-				std::istringstream iss(str);
-				iss >> str;
-					if(str.at(0) == '-')
-				{
-					counter = 0;
-					break;
-				}
-				
-				
-				tileGraphics[counter] = imgmng->loadImage(pathToFiles + str);
-				counter ++;
-			
-			 }
-
-	//------------- 
-		  pathToFiles = "Data/Textures/MapObjects/";
-		   //loading passiveObjectGraphics
-		   while( !dataSet.eof() )
-			{	
-				dataSet >> str;
-					if(str.at(0) == '-')
-				{
-					counter = 0;
-					break;
-				}
-				
-				objectGraphics[counter] = imgmng->loadImage(pathToFiles + str);
-				counter ++;
-			
-			 }
-
-	//-------------
-		 pathToFiles = "Data/Textures/Enemy/";
-		     while( !dataSet.eof() )
-			{	
-				dataSet >> str;
-					if(str.at(0) == '-')
-				{
-					counter = 0;
-					break;
-				}
-				
-				enemyGraphics[counter] = imgmng->loadImage(pathToFiles + str);
-				counter ++;
-			
-			 }
-
-
-	 //------------- 
-		  pathToFiles = "Data/Textures/MapObjects/";
-		  counter = objectGraphics.size();
-		   //loading activeObjectGraphics
-		   while( !dataSet.eof() )
-			{	
-				dataSet >> str;
-					if(str.at(0) == '-')
-				{
-					counter = 0;
-					break;
-				}
-				
-				objectGraphics[counter] = imgmng->loadImage(pathToFiles + str);
-				counter ++;
-			
-			 }
-
-		   dataSet.close();
-		 }
-	 //------------- 
-
-	for(unsigned int i = 0; i < tileGraphics.size(); i++)
-	{
-		tileGraphics[i].CreateMaskFromColor(sf::Color(255,0,255));
-		tileGraphics[i].SetSmooth(false);
-	}
-
-
-	for(unsigned int i = 0; i < objectGraphics.size(); i++)
-	{
-		objectGraphics[i].CreateMaskFromColor(sf::Color(255,0,255));
-		objectGraphics[i].SetSmooth(false);
-	}
-
-	for(unsigned int i = 0; i < enemyGraphics.size(); i++)
-	{
-		enemyGraphics[i].CreateMaskFromColor(sf::Color(255,0,255));
-		enemyGraphics[i].SetSmooth(false);
-	}
-
-	submenuButtonImage[0] = imgmng->loadImage("Data/Textures/Buttons/Tiles.bmp");
-	submenuButtonImage[1] = imgmng->loadImage("Data/Textures/Buttons/Objects.bmp");
-	submenuButtonImage[2] = imgmng->loadImage("Data/Textures/Buttons/Enemies.bmp");
-	submenuButtonImage[3] = imgmng->loadImage("Data/Textures/Buttons/Save.bmp");
-	submenuButtonImage[4] = imgmng->loadImage("Data/Textures/Buttons/ButtonFocus.bmp");
-	submenuButtonImage[5] = imgmng->loadImage("Data/Textures/Buttons/Back.bmp");
-
-	for(int i = 0; i < 6; i++)
-	{
-		submenuButtonImage[i].CreateMaskFromColor(sf::Color (255,0,255));
-	}
-
-	//here sprites are created
-	CreateSprites();
-	return 1;
-}
-
-void MapCreator::CreateSprites()
-{
-	//creating sprites for each available image in MapCreator
-	
-	for(unsigned int i = 0; i<tileGraphics.size();i++)
-	{
-		sf::Sprite spr;
-		spr.SetImage(tileGraphics[i]);
-		spr.SetScale(0.5,0.5);
-		tileSprites.push_back(spr);
-	}
-
-	for(unsigned int i = 0; i<objectGraphics.size();i++)
-	{
-		sf::Sprite spr;
-		spr.SetImage(objectGraphics[i]);
-		sf::Vector2f spriteSize = spr.GetSize();
-
-		spr.SetSubRect(sf::IntRect(0, 0, (int)spriteSize.x, (int)spriteSize.y));
-
-		if(spriteSize.y > 32)
-			spr.SetCenter(0,spriteSize.y - 32);
-
-		spr.SetScale(0.5,0.5);
-		objectSprites.push_back(spr);
-	}
-
-	for(unsigned int i = 0; i<enemyGraphics.size();i++)
-	{
-		sf::Sprite spr;
-		spr.SetImage(enemyGraphics[i]);
-		spr.SetScale(0.75,0.75);
-		enemySprites.push_back(spr);
-	}
-
-	for(int i = 0; i < 6; i++)
-	{
-	submenuButtonSprite[i] = new sf::Sprite();
-	submenuButtonSprite[i]->SetImage(submenuButtonImage[i]);
-	submenuButtonSprite[i]->SetScale(1,1);
-	}
-
-}
-
 void MapCreator::GetSteeringEvent()
 {
 	
@@ -657,29 +704,14 @@ void MapCreator::GetEvent(sf::Event& event)
 
 }
 
+
+
 void MapCreator::MoveCamera(sf::View *View, sf::RenderWindow *window)
 {
 	View->SetHalfSize((float)SCREEN_WIDTH/2,(float)SCREEN_HEIGHT/2); 
 	View->SetCenter(cameraPosition);
 	window->SetView(*View);
 }	
-
-void MapCreator::GetScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT)
-{
-	SCREEN_WIDTH  = _SCREEN_WIDTH;
-	SCREEN_HEIGHT = _SCREEN_HEIGHT;
-
-	noOfTilesVisible.x = (int)(SCREEN_WIDTH/32);
-	noOfTilesVisible.y = (int)(SCREEN_WIDTH/32);
-
-	int numberOfToolboxRectangles = (int)((SCREEN_WIDTH-20)/96) - 1;
-
-	for(int rectangleCreator = 1; rectangleCreator <= numberOfToolboxRectangles ; rectangleCreator ++)
-	{
-		toolboxRectangles[rectangleCreator] = sf::IntRect (20 + (rectangleCreator - 1)*96 , 20, 84 + (rectangleCreator - 1)*96 , 84);
-	}
-
-}
 
 void MapCreator::toolboxManagement(sf::Vector2i toolboxClickPosition)
 {
@@ -757,6 +789,7 @@ void MapCreator::toolboxManagement(sf::Vector2i toolboxClickPosition)
 	}
 
 }
+
 
 
 void MapCreator::changingSpriteInMap(sf::Vector2i mapClickPosition)
@@ -855,30 +888,7 @@ bool MapCreator::isChosenObjectFieldFreeOfEnemies(sf::Vector2i object_inObjectAr
 
 
 
-MapCreator::~MapCreator()
-{
-	
-	if(createdMap != NULL)
-	{
-	for(unsigned int i = 0; i < Size; i++)
-    delete [] createdMap[i];
-	delete [] createdMap;
-
-
-	for(unsigned int i = 0; i < 2*Size; i++)
-    delete [] mapObjects[i];
-	delete [] mapObjects;
-
-	for(int i = 0; i < 6; i++)
-	{
-		delete submenuButtonSprite[i];
-	}
-
-	}
-
-}
-
-bool MapCreator::saveMapToFile(std::string filename)
+void MapCreator::saveMapToFile(std::string filename)
 {
 	int counter = 0;
 	std::stringstream tempFilename;
@@ -892,7 +902,6 @@ bool MapCreator::saveMapToFile(std::string filename)
 		 if (!editorLoadingFile_inputStream) 
 			 {
 				std::cerr << "Nie udało się załadować pliku " <<" LoadingFile.txt "<< "\n";
-				return 0;
 			 }
 		
 			tempFilename << filename << ".map";
@@ -968,10 +977,9 @@ bool MapCreator::saveMapToFile(std::string filename)
 
 	editorLoadingFile_inputStream.close();
 	outputFileStream.close();
-	return true;
 }
 
-bool MapCreator::saveMap_SavingUsedObjectsNamesPhase(std::ifstream& editorLoadingFile_inputStream, std::ofstream& outputFileStream)
+void MapCreator::saveMap_SavingUsedObjectsNamesPhase(std::ifstream& editorLoadingFile_inputStream, std::ofstream& outputFileStream)
 {
 	std::string usedObjectName = "";
 
@@ -989,10 +997,9 @@ bool MapCreator::saveMap_SavingUsedObjectsNamesPhase(std::ifstream& editorLoadin
 				   }
 
 		outputFileStream << "*" << "\n";
-		return true;
 }
 
-bool MapCreator::saveMap_SavingGroundTilesPhase(std::ofstream& outputFileStream)
+void MapCreator::saveMap_SavingGroundTilesPhase(std::ofstream& outputFileStream)
 {
 	if(outputFileStream.good())
 	{
@@ -1009,12 +1016,10 @@ bool MapCreator::saveMap_SavingGroundTilesPhase(std::ofstream& outputFileStream)
 	else
 	{
 		std::cout << "Problem detected in saveMap_SavingGroundTilesPhase function" << std::endl;
-		return false;
 	}
-	return true;
 }
 
-bool MapCreator::saveMap_SavingObjectsPhase(std::ofstream& outputFileStream)
+void MapCreator::saveMap_SavingObjectsPhase(std::ofstream& outputFileStream)
 {
 	if(outputFileStream.good())
 	{
@@ -1038,13 +1043,11 @@ bool MapCreator::saveMap_SavingObjectsPhase(std::ofstream& outputFileStream)
 	else
 	{
 		std::cout << "Problem detected in saveMap_SavingObjectsPhase function" << std::endl;
-		return false;
 	}
 
-		return true;
 }
 
-bool MapCreator::saveMap_SavingEnemiesPhase(std::ofstream& outputFileStream)
+void MapCreator::saveMap_SavingEnemiesPhase(std::ofstream& outputFileStream)
 {
 
 	if(outputFileStream.good())
@@ -1069,140 +1072,32 @@ bool MapCreator::saveMap_SavingEnemiesPhase(std::ofstream& outputFileStream)
 	else
 	{
 		std::cout << "Problem detected in saveMap_SavingEnemiesPhase function" << std::endl;
-		return false;
 	}
 
-	return true;
 }
 
 
 
 void MapCreator::LoadMapFromFile(const std::string& filename)
 {
-	std::ifstream map(filename.c_str());
-		 if (!map) 
-		 {
-			std::cerr << "Nie udalo sie zaladowac pliku mapy!!! " << filename << "\n";
-		 }
+	std::ifstream inputStream(filename.c_str());
+	if (!inputStream) 
+		{
+		std::cerr << "MapCreator, main loading function: something is wrong with input stream!!!\nCaused for filename:" << filename << "\n";
+		}
 
-		  std::string stringRepresentingFileLine;
-		  std::string mapTilesPath;
+		DestroyMapCreatorArrays(Size);
 
-		  DestroyMapCreatorArrays(Size);
+		LoadMap_LoadSize(inputStream);
+		InitializeMapCreatorArrays(Size);
 
-		  LoadMap_LoadSize(map);
-		  InitializeMapCreatorArrays(Size);
+		LoadMap_SkipTileAndObjectNames(inputStream);
+		LoadMap_LoadGroundTiles(inputStream);
+		LoadMap_LoadObjects(inputStream);
+		LoadMap_LoadEnemies(inputStream);
 
-		  mapTilesPath = "Data/Textures/MapTiles/";	
-
-		  LoadMap_SkipTileAndObjectNames(map);
-
-			unsigned int rowNumber = 0;
-			unsigned int colNumber = 0;
-
-
-			  do{
-				 colNumber = 0;
-				 getline (map,stringRepresentingFileLine);
-					
-				 std::istringstream iss(stringRepresentingFileLine);
-				 std::string sub;
-
-				 int tileType = -1;
-
-				 if(stringRepresentingFileLine.at(0) != '*')
-				 {
-						do
-						{
-						iss >>sub;
-
-							if(colNumber < Size)
-							{
-								tileType = atoi(sub.c_str());
-								createdMap[rowNumber][colNumber] = Tile(tileType,colNumber*32 - 32, 48 + rowNumber*32);
-								
-								colNumber++;
-
-							}
-
-						}
-						while(iss);
-				 }
-
-						rowNumber++;					
-
-				}while(stringRepresentingFileLine.at(0) != '*');
-
-			
-			  //---------------------------
-
-			  rowNumber = 0;
-
-			  
-				do{
-
-				 colNumber = 0;
-				 getline (map,stringRepresentingFileLine);
-				 std::istringstream iss(stringRepresentingFileLine);
-				 std::string sub;
-
-				 if(stringRepresentingFileLine.at(0) != '*')
-				 {
-						do
-						{
-
-						iss >>sub;
-
-						if(colNumber < 2*Size)
-							{
-							mapObjects[rowNumber][colNumber] = MapObject (atoi(sub.c_str()), colNumber * 16 - 32,48 + rowNumber * 16);
-							colNumber++;
-							}
-
-						}while(iss);
-
-						rowNumber++;
-				}
-
-				}while(stringRepresentingFileLine.at(0) != '*');
-
-
-			  //------------------------
-			  	rowNumber = 0;
-				colNumber = 0;
-
-
-			  do{
-				 colNumber = 0;
-
-				 getline (map,stringRepresentingFileLine);
-				 std::istringstream iss(stringRepresentingFileLine);
-				 std::string sub;
-
-				 int enemyType = -1;
-
-				 if(stringRepresentingFileLine.at(0) != '*')
-				 {
-						do
-						{
-						iss >>sub;
-
-						if(colNumber < Size)
-							{
-								enemyType = atoi(sub.c_str());
-								arrayOfEnemies[rowNumber][colNumber] = enemyType;
-								colNumber++;
-							}
-
-						}while(iss);
-
-						rowNumber++;
-				 }
-
-				}while(stringRepresentingFileLine.at(0) != '*');
-
-			  std::cout << "Editor says: Map loaded succesfully!" << std::endl;
-			  map.close();
+		std::cout << "Editor says: Map loaded succesfully!" << std::endl;
+		inputStream.close();
 
 }
 
@@ -1241,4 +1136,119 @@ void MapCreator::LoadMap_SkipTileAndObjectNames(std::ifstream &inputFileStream)
 
 			 }while(skippedObjectNameLine.at(0) != '*');
 
+}
+
+void MapCreator::LoadMap_LoadGroundTiles(std::ifstream &inputFileStream)
+{
+
+	unsigned int colNumber = 0;
+	unsigned int rowNumber = 0;
+	int tileType = -1;
+	std::string stringRepresentingFileLine = "";
+
+
+			  do{
+				 colNumber = 0;
+				 tileType = -1;
+
+				 getline (inputFileStream,stringRepresentingFileLine);
+					
+				 std::istringstream iss(stringRepresentingFileLine);
+				 std::string sub;		 
+
+				 if(stringRepresentingFileLine.at(0) != '*')
+				 {
+						do
+						{
+						iss >>sub;
+
+							if(colNumber < Size)
+							{
+								tileType = atoi(sub.c_str());
+								createdMap[rowNumber][colNumber] = Tile(tileType,colNumber*32 - 32, 48 + rowNumber*32);
+								
+								colNumber++;
+
+							}
+
+						}
+						while(iss);
+				 }
+
+						rowNumber++;					
+
+				}while(stringRepresentingFileLine.at(0) != '*');
+
+}
+
+void MapCreator::LoadMap_LoadObjects(std::ifstream &inputFileStream)
+{
+	unsigned int colNumber = 0;
+	unsigned int rowNumber = 0;
+	std::string stringRepresentingFileLine = "";
+
+	do{
+
+				 colNumber = 0;
+				 getline (inputFileStream,stringRepresentingFileLine);
+				 std::istringstream iss(stringRepresentingFileLine);
+
+				 std::string sub;
+
+				 if(stringRepresentingFileLine.at(0) != '*')
+				 {
+						do
+						{
+
+						iss >>sub;
+
+						if(colNumber < 2*Size)
+							{
+							mapObjects[rowNumber][colNumber] = MapObject (atoi(sub.c_str()), colNumber * 16 - 32,48 + rowNumber * 16);
+							colNumber++;
+							}
+
+						}while(iss);
+
+						rowNumber++;
+				}
+
+				}while(stringRepresentingFileLine.at(0) != '*');
+}
+
+void MapCreator::LoadMap_LoadEnemies(std::ifstream &inputFileStream)
+{
+
+	unsigned int colNumber = 0;
+	unsigned int rowNumber = 0;
+	std::string stringRepresentingFileLine = "";
+
+	do{
+			colNumber = 0;
+
+			getline (inputFileStream,stringRepresentingFileLine);
+			std::istringstream iss(stringRepresentingFileLine);
+			std::string sub;
+
+			int enemyType = -1;
+
+			if(stringRepresentingFileLine.at(0) != '*')
+			{
+				do
+				{
+				iss >>sub;
+
+				if(colNumber < Size)
+					{
+						enemyType = atoi(sub.c_str());
+						arrayOfEnemies[rowNumber][colNumber] = enemyType;
+						colNumber++;
+					}
+
+				}while(iss);
+
+				rowNumber++;
+			}
+
+	}while(stringRepresentingFileLine.at(0) != '*');
 }

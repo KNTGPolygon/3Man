@@ -3,6 +3,7 @@
 MapCreator::MapCreator(const sf::Input &_steering)
 	:steering(_steering)
 {
+	this->Size = 0;
 
 	toolboxMenuState = SUBMENU_CHOICE;
 
@@ -40,7 +41,7 @@ MapCreator::MapCreator(const sf::Input &_steering)
 
 }
 
-void MapCreator::initializeMapArrays (unsigned int Size)
+void MapCreator::InitializeMapCreatorArrays (unsigned int Size)
 {
 	//defining size of map
 	this->Size = Size;
@@ -48,15 +49,15 @@ void MapCreator::initializeMapArrays (unsigned int Size)
 	//creating dynamic two-dimensional arrays
 	createdMap = new Tile*[Size];
 	for(unsigned int i = 0; i < Size; ++i)
-    createdMap[i] = new Tile[Size];
+		createdMap[i] = new Tile[Size];
 
 	mapObjects = new MapObject*[Size*2];
 	for(unsigned int i = 0; i < Size*2; ++i)
-    mapObjects[i] = new MapObject[Size*2];
+		mapObjects[i] = new MapObject[Size*2];
 
 	arrayOfEnemies = new int*[Size];
 	for(unsigned int i = 0; i < Size; ++i)
-    arrayOfEnemies[i] = new int[Size];
+		arrayOfEnemies[i] = new int[Size];
 
 	//initialization of createdMap array (representation of created map) with first, default tile
 	for(unsigned int row = 0; row < Size; row++)
@@ -74,6 +75,21 @@ void MapCreator::initializeMapArrays (unsigned int Size)
 			mapObjects[row][col] = MapObject(-1,col*16 - 32, 48 + row*16);
 		}
 
+}
+
+void MapCreator::DestroyMapCreatorArrays(unsigned int Size)
+{
+			for(unsigned int i = 0; i < Size; ++i)
+				delete [] createdMap[i];
+			delete [] createdMap;
+
+			for(unsigned int i = 0; i < 2*Size; ++i)
+				delete mapObjects[i];
+			delete mapObjects;
+
+			for(unsigned int i = 0; i < Size; ++i)
+				delete [] arrayOfEnemies[i];
+			delete [] arrayOfEnemies;
 }
 
 void MapCreator::Display(sf::RenderWindow *window)
@@ -549,7 +565,7 @@ void MapCreator::GetTextboxEvent(sf::Event& event, std::string text, CreatorStat
 				std::cout << " Size too big! Over 256! Setting to default 256 " << std::endl;
 				x = 256;
 			}
-		initializeMapArrays(x);
+		InitializeMapCreatorArrays(x);
 		state = MAIN;
 	}
 
@@ -583,7 +599,7 @@ void MapCreator::GetEvent(sf::Event& event)
 
 			if(event.Key.Code == sf::Key::L)
 			{
-				LoadMap("Data/Maps/UserMap.map");
+				LoadMapFromFile("Data/Maps/UserMap.map");
 			}
 		}
 
@@ -984,12 +1000,7 @@ bool MapCreator::saveMap_SavingGroundTilesPhase(std::ofstream& outputFileStream)
 			{
 				for(unsigned int col = 0; col < Size ; col++)
 				{
-					if(col != Size-1)
 						outputFileStream << createdMap[row][col].getType() << " ";
-					else
-					{
-						outputFileStream << createdMap[row][col].getType();
-					}
 				}
 				outputFileStream << "\n" ;
 			}
@@ -1011,22 +1022,14 @@ bool MapCreator::saveMap_SavingObjectsPhase(std::ofstream& outputFileStream)
 			{
 				for(unsigned int col = 0; col < Size*2; col++)
 				{
-					if(col != Size*2-1 && mapObjects[row][col].getType() != -1 && mapObjects[row][col].getType() < 10)
-					{
-						outputFileStream << " " << mapObjects[row][col].getType() << " ";
-					}
-					else if(col != Size*2-1)
+					if(mapObjects[row][col].getType() == -1 || mapObjects[row][col].getType() >= 10)
 					{
 						outputFileStream << mapObjects[row][col].getType() << " ";
 					}
-					else if(mapObjects[row][col].getType() != -1 && mapObjects[row][col].getType() < 10)
-					{
-						outputFileStream << " " << mapObjects[row][col].getType();
-					}
 					else
 					{
-						outputFileStream << mapObjects[row][col].getType();
-					}
+						outputFileStream << " " << mapObjects[row][col].getType() << " ";
+					} 
 				}
 				outputFileStream << "\n" ;
 			}
@@ -1043,25 +1046,20 @@ bool MapCreator::saveMap_SavingObjectsPhase(std::ofstream& outputFileStream)
 
 bool MapCreator::saveMap_SavingEnemiesPhase(std::ofstream& outputFileStream)
 {
+
 	if(outputFileStream.good())
 	{
 		for(unsigned int row = 0; row < Size; row++)
 			{
 				for(unsigned int col = 0; col < Size; col++)
 				{
-					if(col != Size-1 && arrayOfEnemies[row][col] != -1)
-						outputFileStream << " " << arrayOfEnemies[row][col] << " ";
-					else if(col != Size-1)
+					if(arrayOfEnemies[row][col] == -1 || arrayOfEnemies[row][col] >= 10)
 					{
 						outputFileStream << arrayOfEnemies[row][col] << " ";
 					}
-					else if(arrayOfEnemies[row][col] != -1)
-					{
-						outputFileStream << " " << arrayOfEnemies[row][col];
-					}
 					else
 					{
-						outputFileStream << arrayOfEnemies[row][col];
+						outputFileStream << " " << arrayOfEnemies[row][col] << " ";
 					}
 				}
 				outputFileStream << "\n" ;
@@ -1077,248 +1075,170 @@ bool MapCreator::saveMap_SavingEnemiesPhase(std::ofstream& outputFileStream)
 	return true;
 }
 
-bool MapCreator::LoadMap(const std::string& filename)
+
+
+void MapCreator::LoadMapFromFile(const std::string& filename)
 {
 	std::ifstream map(filename.c_str());
 		 if (!map) 
 		 {
 			std::cerr << "Nie udalo sie zaladowac pliku mapy!!! " << filename << "\n";
-			return false;
 		 }
 
-		   std::string stringRepresentingFileLine;
+		  std::string stringRepresentingFileLine;
 		  std::string mapTilesPath;
-		  bool looping = true;
 
-		   for(unsigned int i = 0; i < Size; ++i)
-			delete [] createdMap[i];
-			delete [] createdMap;
+		  DestroyMapCreatorArrays(Size);
 
-			for(unsigned int i = 0; i < 2*Size; ++i)
-			delete mapObjects[i];
-			delete mapObjects;
+		  LoadMap_LoadSize(map);
+		  InitializeMapCreatorArrays(Size);
 
-			for(unsigned int i = 0; i < Size; ++i)
-			delete [] arrayOfEnemies[i];
-			delete [] arrayOfEnemies;
+		  mapTilesPath = "Data/Textures/MapTiles/";	
 
-		  do{
-			 if(map.good())
-				 {
-					 getline (map,stringRepresentingFileLine);
-					 if(stringRepresentingFileLine.at(0) != '*')
-						{
-						std::istringstream iss(stringRepresentingFileLine);
-						iss >> Size;
-						}
-					 else
-					 {
-						 looping = false;
-					 }
-				 }
-		  }while(looping);
+		  LoadMap_SkipTileAndObjectNames(map);
 
-		
-		createdMap = new Tile*[Size];
-		for(unsigned int i = 0; i < Size; ++i)
-			createdMap[i] = new Tile[Size];
+			unsigned int rowNumber = 0;
+			unsigned int colNumber = 0;
 
-
-		mapObjects = new MapObject*[Size*2];
-		for(unsigned int i = 0; i < Size*2; ++i)
-		mapObjects[i] = new MapObject[Size*2];
-
-		arrayOfEnemies = new int*[Size];
-		for(unsigned int i = 0; i < Size; ++i)
-			arrayOfEnemies[i] = new int[Size];
-
-
-		mapTilesPath = "Data/Textures/MapTiles/";
-		looping = true;		
-
-			 
-			 //---------------
-
-			 looping = true;
-			 std::string substring;
-
-			 //passing info about map tiles' graphics (first row of map file)
-			 do{
-				if(map.good())
-				{
-					getline (map,stringRepresentingFileLine);
-
-					if(stringRepresentingFileLine.at(0) != '*')
-					{
-
-					}
-					else
-					{
-						looping = false;
-					}
-				}
-			 }while(looping);
-
-			 //------------
-
-			 looping = true;
 
 			  do{
-				if(map.good())
-				{
-					getline (map,stringRepresentingFileLine);
-
-					if(stringRepresentingFileLine.at(0) != '*')
-					{
-
-					}
-					else
-					{
-						looping = false;
-					}
-				}
-				else
-				{
-					std::cout<<"map is not good\n";
-					break;
-
-				}
-			 }while(looping);
-
-
-			  //------------------------
-			  	int rowNumber = 0;
-				int colNumber = 0;
-
-
-			  while ( map.good() )
-				{
-						int fieldType = -1;
-						 getline (map,stringRepresentingFileLine);
+				 colNumber = 0;
+				 getline (map,stringRepresentingFileLine);
 					
 				 std::istringstream iss(stringRepresentingFileLine);
 				 std::string sub;
 
-				 looping = true;
 				 int tileType = -1;
+
+				 if(stringRepresentingFileLine.at(0) != '*')
+				 {
 						do
 						{
 						iss >>sub;
-						if(sub.at(0) == '*')
-						{
-							break;
-						}
-						//geting type of tile <ID 1,2,3... which tells what is it's picture
-							tileType = atoi(sub.c_str());
-							createdMap[rowNumber][colNumber] = Tile(tileType,colNumber*32 - 32, 48 + rowNumber*32);
-							colNumber++;
-							if(colNumber == Size)
+
+							if(colNumber < Size)
 							{
-								break;
+								tileType = atoi(sub.c_str());
+								createdMap[rowNumber][colNumber] = Tile(tileType,colNumber*32 - 32, 48 + rowNumber*32);
+								
+								colNumber++;
+
 							}
 
 						}
 						while(iss);
+				 }
 
 						rowNumber++;					
 
-						colNumber = 0;
-
-						if(sub.at(0) == '*')
-							{
-								break;
-							}
-
-				}
+				}while(stringRepresentingFileLine.at(0) != '*');
 
 			
 			  //---------------------------
 
 			  rowNumber = 0;
 
-			  while ( map.good() )
-				{
-				colNumber = 0;
+			  
+				do{
+
+				 colNumber = 0;
 				 getline (map,stringRepresentingFileLine);
 				 std::istringstream iss(stringRepresentingFileLine);
 				 std::string sub;
-				 looping = true;
+
+				 if(stringRepresentingFileLine.at(0) != '*')
+				 {
 						do
 						{
-							if((unsigned int)colNumber >= 2*Size)
-							{
-								break;
-							}
 
 						iss >>sub;
-						if(sub.at(0) == '*')
-						{
-							break;
-						}
-						mapObjects[rowNumber][colNumber] = MapObject (atoi(sub.c_str()), colNumber * 16 - 32,48 + rowNumber * 16);
-						
-						colNumber++;
-						}
-						while(iss);
+
+						if(colNumber < 2*Size)
+							{
+							mapObjects[rowNumber][colNumber] = MapObject (atoi(sub.c_str()), colNumber * 16 - 32,48 + rowNumber * 16);
+							colNumber++;
+							}
+
+						}while(iss);
 
 						rowNumber++;
-						if(rowNumber == 2*Size)
-						{
-							break;
-						}
-
 				}
+
+				}while(stringRepresentingFileLine.at(0) != '*');
 
 
 			  //------------------------
-			   getline (map,stringRepresentingFileLine);
 			  	rowNumber = 0;
 				colNumber = 0;
 
 
-			  while ( map.good() )
-				{
-				 int fieldType = -1;
+			  do{
+				 colNumber = 0;
+
 				 getline (map,stringRepresentingFileLine);
 				 std::istringstream iss(stringRepresentingFileLine);
 				 std::string sub;
 
-				 looping = true;
 				 int enemyType = -1;
+
+				 if(stringRepresentingFileLine.at(0) != '*')
+				 {
 						do
 						{
 						iss >>sub;
-						if(sub.at(0) == '*')
-						{
-							break;
-						}
-						//geting type of tile <ID 1,2,3... which tells what is it's picture
-							enemyType = atoi(sub.c_str());
-							arrayOfEnemies[rowNumber][colNumber] = enemyType;
-							colNumber++;
-							if(colNumber == Size)
+
+						if(colNumber < Size)
 							{
-								break;
+								enemyType = atoi(sub.c_str());
+								arrayOfEnemies[rowNumber][colNumber] = enemyType;
+								colNumber++;
 							}
 
-						}
-						while(iss);
+						}while(iss);
 
-						rowNumber++;					
+						rowNumber++;
+				 }
 
-						colNumber = 0;
-
-						if(sub.at(0) == '*')
-							{
-								break;
-							}
-
-				}
+				}while(stringRepresentingFileLine.at(0) != '*');
 
 			  std::cout << "Editor says: Map loaded succesfully!" << std::endl;
 			  map.close();
 
+}
+
+void MapCreator::LoadMap_LoadSize(std::ifstream &inputFileStream)
+{
+	std::string stringRepresentingFileLine = "";
+
+	do{
+				getline (inputFileStream,stringRepresentingFileLine);
+
+				if(stringRepresentingFileLine.at(0) != '*')
+					{
+					std::istringstream iss(stringRepresentingFileLine);
+					iss >> Size;
+					}
+
+		  }while(stringRepresentingFileLine.at(0) != '*');
+
+}
+
+void MapCreator::LoadMap_SkipTileAndObjectNames(std::ifstream &inputFileStream)
+{
+
+	std::string skippedTileNameLine = "";
+			 do{	
+
+					getline (inputFileStream,skippedTileNameLine);
+
+			 }while(skippedTileNameLine.at(0) != '*');
 
 
-	return true;
+	std::string skippedObjectNameLine = "";
+			  do{
+
+					getline (inputFileStream,skippedObjectNameLine);
+
+			 }while(skippedObjectNameLine.at(0) != '*');
+
 }

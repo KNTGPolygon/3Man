@@ -87,7 +87,8 @@ public:
 	void changingObjectInMap(sf::Vector2i mapClickPosition);
 	void changingEnemyInMap(sf::Vector2i mapClickPosition);
 
-	void initializeMapArrays (unsigned int Size);
+	void InitializeMapCreatorArrays (unsigned int Size);
+	void DestroyMapCreatorArrays (unsigned int Size);
 
 	void GetSteeringEvent();
 	void GetEvent(sf::Event&);
@@ -96,7 +97,10 @@ public:
 	void MoveCamera(sf::View *View, sf::RenderWindow *window);
 	void GetScreenSize(int _SCREEN_WIDTH, int _SCREEN_HEIGHT);
 
-	bool LoadMap (const std::string& filename);
+	void LoadMapFromFile (const std::string& filename);
+	void LoadMap_LoadSize(std::ifstream &inputFileStream);
+	void LoadMap_SkipTileAndObjectNames(std::ifstream &inputFileStream);
+
 	~MapCreator();
 
 };

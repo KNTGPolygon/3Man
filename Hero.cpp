@@ -206,7 +206,7 @@ void Hero::getHitByLaser()
 				armor = false;
 				SoundPlayer::getInstance()->Play(Snd::ArmorDestroy);
 			}
-			else if (!GameState::death_effect)
+			else if (!GameState::death_effect && !invincible)
 			{
 				GameState::death_effect = true;
 				GameState::death_anim_timer.Reset();
